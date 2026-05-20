@@ -1,0 +1,6 @@
+packages:
+  - 'packages/*'
+allowBuilds:
+  aws-sdk: true
+  es5-ext: true
+  sauce-connect-launcher: true

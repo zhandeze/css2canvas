@@ -1,0 +1,60 @@
+<view class="page">
+  <view class="toolbar">
+    <picker mode="selector" range="{{exampleNames}}" value="{{selectedIndex}}" bindchange="onExampleChange">
+      <view class="picker">样例：{{exampleNames[selectedIndex] || '未选择'}}</view>
+    </picker>
+    <button class="render-button" size="mini" type="primary" bindtap="onRenderTap">重新渲染</button>
+    <button class="compare-button" size="mini" type="default" bindtap="onCompareTap">上传比对</button>
+  </view>
+
+  <view class="meta">
+    <text>{{status}}</text>
+    <text>{{compareStatus}}</text>
+    <text wx:if="{{compareSummary}}">{{compareSummary}}</text>
+    <text>CSS尺寸：{{canvasWidth}} x {{canvasHeight}}</text>
+    <text>像素尺寸：{{pixelWidth}} x {{pixelHeight}}</text>
+    <text>scale：{{renderScale}}</text>
+  </view>
+
+  <scroll-view class="canvas-scroll" scroll-x="true" scroll-y="true">
+    <image
+      wx:if="{{previewImagePath}}"
+      class="preview-image"
+      mode="widthFix"
+      src="{{previewImagePath}}"
+      style="width: {{canvasWidth}}px;"
+      bindtap="onPreviewTap"
+    ></image>
+    <view wx:else class="preview-placeholder">渲染完成后会在这里显示导出的图片</view>
+  </scroll-view>
+
+  <view wx:if="{{compareDiffImageUrl || compareReferenceImageUrl || compareActualImageUrl}}" class="compare-results">
+    <view wx:if="{{compareDiffImageUrl}}" class="result-card">
+      <text class="result-title">像素差异图</text>
+      <image class="result-image" mode="widthFix" src="{{compareDiffImageUrl}}"></image>
+    </view>
+    <view wx:if="{{compareReferenceImageUrl}}" class="result-card">
+      <text class="result-title">html2canvas 原图</text>
+      <image class="result-image" mode="widthFix" src="{{compareReferenceImageUrl}}"></image>
+    </view>
+    <view wx:if="{{compareExtractedImageUrl}}" class="result-card">
+      <text class="result-title">browser 提取版</text>
+      <image class="result-image" mode="widthFix" src="{{compareExtractedImageUrl}}"></image>
+    </view>
+    <view wx:if="{{compareActualImageUrl}}" class="result-card">
+      <text class="result-title">miniapp 实际图</text>
+      <image class="result-image" mode="widthFix" src="{{compareActualImageUrl}}"></image>
+    </view>
+  </view>
+
+  <view class="hidden-layer">
+    <canvas
+      type="2d"
+      id="displayCanvas"
+      class="hidden-canvas"
+      style="width: {{canvasWidth}}px; height: {{canvasHeight}}px;"
+    ></canvas>
+    <canvas type="2d" id="measureCanvas" class="hidden-canvas"></canvas>
+    <canvas wx:for="{{tempCanvasIds}}" wx:key="*this" type="2d" id="{{item}}" class="hidden-canvas"></canvas>
+  </view>
+</view>
