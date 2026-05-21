@@ -1,4 +1,4 @@
-import type {ElementContainer} from '../dom/element-container';
+import type {ElementContainerLike} from '../dom/element-container';
 import {getAbsoluteValue, getAbsoluteValueForTuple} from '../css/types/length-percentage';
 import {Vector} from './vector';
 import {BezierCurve} from './bezier-curve';
@@ -30,7 +30,7 @@ export class BoundCurves {
 	readonly bottomRightContentBox: Path;
 	readonly bottomLeftContentBox: Path;
 
-	constructor(element: ElementContainer) {
+	constructor(element: ElementContainerLike) {
 		const styles = element.styles;
 		const bounds = element.bounds;
 

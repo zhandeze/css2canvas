@@ -5,6 +5,7 @@ import {
 	RenderConfigurations
 } from '../render/canvas/extracted-canvas-renderer';
 import {ElementPaint} from '../render/stacking-context';
+import {ElementContainerLike, ElementContainerRenderStyle} from '../dom/element-container';
 import {Bounds} from '../css/layout/bounds';
 import {contains} from '../core/bitwise';
 import {DISPLAY} from '../css/property-descriptors/display';
@@ -26,8 +27,15 @@ import {
 import {transformPath, Path} from '../render/path';
 import {getBackgroundValueForIndex} from '../render/background';
 import {isBezierCurve} from '../render/bezier-curve';
-
-type PlainObject = {[key: string]: any};
+import {
+	MiniAppRenderInput,
+	SerializedImageContainer,
+	SerializedListItemContainer,
+	SerializedMiniAppContainer,
+	SerializedOrderedListContainer,
+	SerializedStyles,
+	SerializedTextNode
+} from './render-input';
 
 const MASK_OFFSET = 10000;
 const NATIVE_MINIAPP_TEXT_BASELINE_OFFSET = 3.25;
@@ -36,42 +44,68 @@ const DEFAULT_MINIAPP_USER_AGENT =
 const DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE = true;
 const FONT_METRICS_SAMPLE_TEXT = 'Hidden Text';
 
+type RevivedStyles = ElementContainerRenderStyle & {
+	isVisible(): boolean;
+	isTransformed(): boolean;
+	isPositioned(): boolean;
+	isFloating(): boolean;
+	isInlineLevel(): boolean;
+};
+
+type RevivedTextBound = {
+	text: string;
+	bounds: Bounds;
+};
+
+type RevivedTextNode = {
+	text: string;
+	textBounds: RevivedTextBound[];
+};
+
+type RevivedBaseContainer = ElementContainerLike & {
+	containerType: SerializedMiniAppContainer['containerType'];
+	styles: RevivedStyles;
+	textNodes: RevivedTextNode[];
+	elements: RevivedContainer[];
+};
+
+type RevivedElementContainer = RevivedBaseContainer & {
+	containerType: 'element';
+};
+
+type RevivedImageContainer = RevivedBaseContainer & {
+	containerType: 'image';
+	src: string;
+	intrinsicWidth: number;
+	intrinsicHeight: number;
+};
+
+type RevivedListItemContainer = RevivedBaseContainer & {
+	containerType: 'li';
+	value: number;
+};
+
+type RevivedOrderedListContainer = RevivedBaseContainer & {
+	containerType: 'ol';
+	start: number;
+	reversed: boolean;
+};
+
+type RevivedContainer =
+	| RevivedElementContainer
+	| RevivedImageContainer
+	| RevivedListItemContainer
+	| RevivedOrderedListContainer;
+
 export interface MiniAppCanvasLike {
 	width: number;
 	height: number;
+	ownerDocument?: Document;
 	getContext(type: '2d'): CanvasRenderingContext2D;
 	style?: {
 		width: string;
 		height: string;
 	};
-}
-
-export interface MiniAppRenderInput {
-	selector?: string;
-	renderOptions: {
-		backgroundColor: number | null;
-		scale: number;
-		x: number;
-		y: number;
-		width: number;
-		height: number;
-		canvas?: {
-			width: number;
-			height: number;
-			dataURL?: string;
-		};
-	};
-	windowBounds: {
-		left: number;
-		top: number;
-		width: number;
-		height: number;
-	};
-	environment: {
-		userAgent: string;
-		useMiterTextStroke: boolean;
-	};
-	root: PlainObject;
 }
 
 export interface MiniAppRendererOptions {
@@ -84,18 +118,6 @@ export interface MiniAppRendererOptions {
 	useMiterTextStroke?: boolean;
 	logging?: boolean;
 }
-
-type RevivedContainer = PlainObject & {
-	elements?: RevivedContainer[];
-	tree?: RevivedContainer;
-};
-
-const UNSUPPORTED_MEDIA_TYPES = {
-	canvas: true,
-	iframe: true,
-	svg: true,
-	video: true
-} as const;
 
 class MiniAppCache {
 	private readonly images: {[key: string]: Promise<any> | undefined} = {};
@@ -124,26 +146,21 @@ class MiniAppCache {
 	}
 }
 
-const attachStyleHelpers = (styles: PlainObject): PlainObject => {
-	styles.isVisible = function (): boolean {
+const attachStyleHelpers = (styles: SerializedStyles): RevivedStyles => ({
+	...styles,
+	isVisible(): boolean {
 		return this.display > 0 && this.opacity > 0 && this.visibility === VISIBILITY.VISIBLE;
-	};
-	styles.isTransparent = function (): boolean {
-		return this.backgroundColor === 0;
-	};
-	styles.isTransformed = function (): boolean {
+	},
+	isTransformed(): boolean {
 		return this.transform !== null;
-	};
-	styles.isPositioned = function (): boolean {
+	},
+	isPositioned(): boolean {
 		return this.position !== POSITION.STATIC;
-	};
-	styles.isPositionedWithZIndex = function (): boolean {
-		return this.isPositioned() && !this.zIndex.auto;
-	};
-	styles.isFloating = function (): boolean {
+	},
+	isFloating(): boolean {
 		return this.float !== FLOAT.NONE;
-	};
-	styles.isInlineLevel = function (): boolean {
+	},
+	isInlineLevel(): boolean {
 		return (
 			contains(this.display, DISPLAY.INLINE) ||
 			contains(this.display, DISPLAY.INLINE_GRID) ||
@@ -152,48 +169,63 @@ const attachStyleHelpers = (styles: PlainObject): PlainObject => {
 			contains(this.display, DISPLAY.INLINE_LIST_ITEM) ||
 			contains(this.display, DISPLAY.INLINE_BLOCK)
 		);
-	};
-	return styles;
-};
+	}
+});
 
-const reviveTextNode = (textNode: PlainObject): PlainObject => ({
+const reviveTextNode = (textNode: SerializedTextNode): RevivedTextNode => ({
 	text: textNode.text,
-	textBounds: textNode.textBounds.map((item: PlainObject) => ({
+	textBounds: textNode.textBounds.map((item) => ({
 		text: item.text,
 		bounds: new Bounds(item.bounds.left, item.bounds.top, item.bounds.width, item.bounds.height)
 	}))
 });
 
-const reviveContainer = (container: PlainObject): RevivedContainer => {
-	const containerType = typeof container.containerType === 'string' ? container.containerType : 'element';
-	const normalizedContainerType = isUnsupportedMediaContainer(containerType) ? 'element' : containerType;
-	const revived: RevivedContainer = {
-		...container,
-		containerType: normalizedContainerType,
-		bounds: new Bounds(
-			container.bounds.left,
-			container.bounds.top,
-			container.bounds.width,
-			container.bounds.height
-		),
-		styles: attachStyleHelpers({...container.styles}),
-		textNodes: (container.textNodes || []).map(reviveTextNode),
-		elements: (container.elements || []).map(reviveContainer)
-	};
+const reviveBaseContainer = (
+	container: SerializedMiniAppContainer
+): Pick<RevivedBaseContainer, 'flags' | 'bounds' | 'styles' | 'textNodes' | 'elements'> => ({
+	flags: typeof container.flags === 'number' ? container.flags : 0,
+	bounds: new Bounds(container.bounds.left, container.bounds.top, container.bounds.width, container.bounds.height),
+	styles: attachStyleHelpers(container.styles),
+	textNodes: container.textNodes.map(reviveTextNode),
+	elements: container.elements.map(reviveContainer)
+});
 
-	if (container.tree) {
-		revived.tree = reviveContainer(container.tree);
+const reviveImageContainer = (container: SerializedImageContainer): RevivedImageContainer => ({
+	containerType: 'image',
+	src: container.src,
+	intrinsicWidth: container.intrinsicWidth,
+	intrinsicHeight: container.intrinsicHeight,
+	...reviveBaseContainer(container)
+});
+
+const reviveListItemContainer = (container: SerializedListItemContainer): RevivedListItemContainer => ({
+	containerType: 'li',
+	value: typeof container.value === 'number' ? container.value : 0,
+	...reviveBaseContainer(container)
+});
+
+const reviveOrderedListContainer = (container: SerializedOrderedListContainer): RevivedOrderedListContainer => ({
+	containerType: 'ol',
+	start: container.start,
+	reversed: container.reversed,
+	...reviveBaseContainer(container)
+});
+
+const reviveContainer = (container: SerializedMiniAppContainer): RevivedContainer => {
+	switch (container.containerType) {
+		case 'image':
+			return reviveImageContainer(container);
+		case 'li':
+			return reviveListItemContainer(container);
+		case 'ol':
+			return reviveOrderedListContainer(container);
+		case 'element':
+		default:
+			return {
+				containerType: 'element',
+				...reviveBaseContainer(container)
+			};
 	}
-	if (typeof revived.flags !== 'number') {
-		revived.flags = 0;
-	}
-	if (typeof revived.value === 'undefined' && revived.containerType === 'li') {
-		revived.value = 0;
-	}
-	if (typeof revived.type === 'undefined' && typeof revived.inputType === 'string') {
-		revived.type = revived.inputType;
-	}
-	return revived;
 };
 
 const createEnvironment = (
@@ -345,7 +377,6 @@ export const renderMiniAppCanvas = async (
 	const context = createRenderContext(input, options, cache);
 	const useNativeCanvas = isNativeMiniAppCanvas(options.canvas);
 	const fontMetrics = resolveFontMetrics(options, useNativeCanvas);
-
 	const root = reviveContainer(input.root);
 
 	const renderOptions: RenderConfigurations = {
@@ -366,27 +397,20 @@ export const renderMiniAppCanvas = async (
 		createEnvironment(input, options, fontMetrics),
 		useNativeCanvas
 	);
-	await renderer.render(root as any);
+	await renderer.render(root);
 	return options.canvas;
 };
 
-const preloadImages = async (container: PlainObject, cache: MiniAppCache): Promise<void> => {
-	if (container.containerType === 'image' && typeof container.src === 'string') {
+const preloadImages = async (container: RevivedContainer, cache: MiniAppCache): Promise<void> => {
+	if (container.containerType === 'image') {
 		await cache.addImage(container.src);
 	}
-	for (const child of container.elements || []) {
+	for (const child of container.elements) {
 		await preloadImages(child, cache);
-	}
-	if (container.tree) {
-		await preloadImages(container.tree, cache);
 	}
 };
 
-const isUnsupportedMediaContainer = (containerType: string): boolean =>
-	Object.prototype.hasOwnProperty.call(UNSUPPORTED_MEDIA_TYPES, containerType);
-
-const isNativeMiniAppCanvas = (canvas: MiniAppCanvasLike): boolean =>
-	typeof (canvas as HTMLCanvasElement & {ownerDocument?: Document}).ownerDocument === 'undefined';
+const isNativeMiniAppCanvas = (canvas: MiniAppCanvasLike): boolean => typeof canvas.ownerDocument === 'undefined';
 
 const resolveFontMetrics = (options: MiniAppRendererOptions, useNativeCanvas: boolean): FontMetricsProvider => {
 	const baseFontMetrics =
@@ -464,7 +488,24 @@ const createNativeMiniAppFontMetrics = (fontMetrics: FontMetricsProvider): FontM
 	};
 };
 
-const shouldUseRectangularSolidBorderFill = (curves: BoundCurves, styles: PlainObject): boolean => {
+const shouldUseRectangularSolidBorderFill = (
+	curves: BoundCurves,
+	styles: Pick<
+		RevivedStyles,
+		| 'borderTopStyle'
+		| 'borderTopColor'
+		| 'borderTopWidth'
+		| 'borderRightStyle'
+		| 'borderRightColor'
+		| 'borderRightWidth'
+		| 'borderBottomStyle'
+		| 'borderBottomColor'
+		| 'borderBottomWidth'
+		| 'borderLeftStyle'
+		| 'borderLeftColor'
+		| 'borderLeftWidth'
+	>
+): boolean => {
 	const borders = [
 		{style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth},
 		{style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth},

@@ -1,4 +1,4 @@
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -12,81 +12,86 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
-/* global Reflect, Promise */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
 
 var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-    return extendStatics(d, b);
+  extendStatics = Object.setPrototypeOf ||
+      ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+      function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+  return extendStatics(d, b);
 };
 
 function __extends(d, b) {
-    if (typeof b !== "function" && b !== null)
-        throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  if (typeof b !== "function" && b !== null)
+      throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+  extendStatics(d, b);
+  function __() { this.constructor = d; }
+  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
 
 var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+  __assign = Object.assign || function __assign(t) {
+      for (var s, i = 1, n = arguments.length; i < n; i++) {
+          s = arguments[i];
+          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+      return t;
+  };
+  return __assign.apply(this, arguments);
 };
 
 function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+  function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+  return new (P || (P = Promise))(function (resolve, reject) {
+      function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+      function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+      function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+      step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
 }
 
 function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
+  var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+  return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+  function verb(n) { return function (v) { return step([n, v]); }; }
+  function step(op) {
+      if (f) throw new TypeError("Generator is already executing.");
+      while (g && (g = 0, op[0] && (_ = 0)), _) try {
+          if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+          if (y = 0, t) op = [op[0] & 2, t.value];
+          switch (op[0]) {
+              case 0: case 1: t = op; break;
+              case 4: _.label++; return { value: op[1], done: false };
+              case 5: _.label++; y = op[1]; op = [0]; continue;
+              case 7: op = _.ops.pop(); _.trys.pop(); continue;
+              default:
+                  if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                  if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                  if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                  if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                  if (t[2]) _.ops.pop();
+                  _.trys.pop(); continue;
+          }
+          op = body.call(thisArg, _);
+      } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+      if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+  }
 }
 
 function __spreadArray(to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || from);
+  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+      if (ar || !(i in from)) {
+          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+          ar[i] = from[i];
+      }
+  }
+  return to.concat(ar || Array.prototype.slice.call(from));
 }
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+  var e = new Error(message);
+  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
 
 var contains = function (bit, value) { return (bit & value) !== 0; };
 
@@ -551,7 +556,9 @@ var BoundCurves = /** @class */ (function () {
                 : new Vector(bounds.left + borderLeftWidth + paddingLeft, bounds.top + borderTopWidth + paddingTop);
         this.topRightContentBox =
             trh > 0 || trv > 0
-                ? getCurvePoints(bounds.left + Math.min(topWidth, bounds.width + borderLeftWidth + paddingLeft), bounds.top + borderTopWidth + paddingTop, topWidth > bounds.width + borderLeftWidth + paddingLeft ? 0 : trh - borderLeftWidth + paddingLeft, trv - (borderTopWidth + paddingTop), CORNER.TOP_RIGHT)
+                ? getCurvePoints(bounds.left + Math.min(topWidth, bounds.width + borderLeftWidth + paddingLeft), bounds.top + borderTopWidth + paddingTop, topWidth > bounds.width + borderLeftWidth + paddingLeft
+                    ? 0
+                    : trh - borderLeftWidth + paddingLeft, trv - (borderTopWidth + paddingTop), CORNER.TOP_RIGHT)
                 : new Vector(bounds.left + bounds.width - (borderRightWidth + paddingRight), bounds.top + borderTopWidth + paddingTop);
         this.bottomRightContentBox =
             brh > 0 || brv > 0
@@ -1120,7 +1127,9 @@ var processListItems = function (owner, elements) {
     var reversed = isOrderedListContainer(owner) ? owner.reversed : false;
     for (var i = 0; i < elements.length; i++) {
         var item = elements[i];
-        if (isListItemContainer(item.container) && typeof item.container.value === 'number' && item.container.value !== 0) {
+        if (isListItemContainer(item.container) &&
+            typeof item.container.value === 'number' &&
+            item.container.value !== 0) {
             numbering = item.container.value;
         }
         item.listValue = createCounterText(numbering, item.container.styles.listStyleType, true);
@@ -2942,11 +2951,7 @@ var isTextInputElement = function (container) {
 var isImageContainer = function (container) { return container.containerType === 'image'; };
 var isInputContainer = function (container) { return container.containerType === 'input'; };
 var isInputTextContainer = function (container) {
-    if (container.containerType !== 'input') {
-        return false;
-    }
-    var input = container;
-    return input.type !== RADIO && input.type !== CHECKBOX;
+    return isInputContainer(container) && container.type !== RADIO && container.type !== CHECKBOX;
 };
 var calculateBackgroundCurvedPaintingArea$1 = function (clip, curves) {
     switch (clip) {
@@ -3065,12 +3070,6 @@ var NATIVE_MINIAPP_TEXT_BASELINE_OFFSET = 3.25;
 var DEFAULT_MINIAPP_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
 var DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE = true;
 var FONT_METRICS_SAMPLE_TEXT = 'Hidden Text';
-var UNSUPPORTED_MEDIA_TYPES = {
-    canvas: true,
-    iframe: true,
-    svg: true,
-    video: true
-};
 var MiniAppCache = /** @class */ (function () {
     function MiniAppCache(loadImage) {
         this.loadImage = loadImage;
@@ -3097,35 +3096,22 @@ var MiniAppCache = /** @class */ (function () {
     };
     return MiniAppCache;
 }());
-var attachStyleHelpers = function (styles) {
-    styles.isVisible = function () {
+var attachStyleHelpers = function (styles) { return (__assign(__assign({}, styles), { isVisible: function () {
         return this.display > 0 && this.opacity > 0 && this.visibility === 0 /* VISIBLE */;
-    };
-    styles.isTransparent = function () {
-        return this.backgroundColor === 0;
-    };
-    styles.isTransformed = function () {
+    }, isTransformed: function () {
         return this.transform !== null;
-    };
-    styles.isPositioned = function () {
+    }, isPositioned: function () {
         return this.position !== 0 /* STATIC */;
-    };
-    styles.isPositionedWithZIndex = function () {
-        return this.isPositioned() && !this.zIndex.auto;
-    };
-    styles.isFloating = function () {
+    }, isFloating: function () {
         return this.float !== 0 /* NONE */;
-    };
-    styles.isInlineLevel = function () {
+    }, isInlineLevel: function () {
         return (contains(this.display, 4 /* INLINE */) ||
             contains(this.display, 536870912 /* INLINE_GRID */) ||
             contains(this.display, 268435456 /* INLINE_FLEX */) ||
             contains(this.display, 134217728 /* INLINE_TABLE */) ||
             contains(this.display, 67108864 /* INLINE_LIST_ITEM */) ||
             contains(this.display, 33554432 /* INLINE_BLOCK */));
-    };
-    return styles;
-};
+    } })); };
 var reviveTextNode = function (textNode) { return ({
     text: textNode.text,
     textBounds: textNode.textBounds.map(function (item) { return ({
@@ -3133,23 +3119,28 @@ var reviveTextNode = function (textNode) { return ({
         bounds: new Bounds(item.bounds.left, item.bounds.top, item.bounds.width, item.bounds.height)
     }); })
 }); };
+var reviveBaseContainer = function (container) { return ({
+    flags: typeof container.flags === 'number' ? container.flags : 0,
+    bounds: new Bounds(container.bounds.left, container.bounds.top, container.bounds.width, container.bounds.height),
+    styles: attachStyleHelpers(container.styles),
+    textNodes: container.textNodes.map(reviveTextNode),
+    elements: container.elements.map(reviveContainer)
+}); };
+var reviveImageContainer = function (container) { return (__assign({ containerType: 'image', src: container.src, intrinsicWidth: container.intrinsicWidth, intrinsicHeight: container.intrinsicHeight }, reviveBaseContainer(container))); };
+var reviveListItemContainer = function (container) { return (__assign({ containerType: 'li', value: typeof container.value === 'number' ? container.value : 0 }, reviveBaseContainer(container))); };
+var reviveOrderedListContainer = function (container) { return (__assign({ containerType: 'ol', start: container.start, reversed: container.reversed }, reviveBaseContainer(container))); };
 var reviveContainer = function (container) {
-    var containerType = typeof container.containerType === 'string' ? container.containerType : 'element';
-    var normalizedContainerType = isUnsupportedMediaContainer(containerType) ? 'element' : containerType;
-    var revived = __assign(__assign({}, container), { containerType: normalizedContainerType, bounds: new Bounds(container.bounds.left, container.bounds.top, container.bounds.width, container.bounds.height), styles: attachStyleHelpers(__assign({}, container.styles)), textNodes: (container.textNodes || []).map(reviveTextNode), elements: (container.elements || []).map(reviveContainer) });
-    if (container.tree) {
-        revived.tree = reviveContainer(container.tree);
+    switch (container.containerType) {
+        case 'image':
+            return reviveImageContainer(container);
+        case 'li':
+            return reviveListItemContainer(container);
+        case 'ol':
+            return reviveOrderedListContainer(container);
+        case 'element':
+        default:
+            return __assign({ containerType: 'element' }, reviveBaseContainer(container));
     }
-    if (typeof revived.flags !== 'number') {
-        revived.flags = 0;
-    }
-    if (typeof revived.value === 'undefined' && revived.containerType === 'li') {
-        revived.value = 0;
-    }
-    if (typeof revived.type === 'undefined' && typeof revived.inputType === 'string') {
-        revived.type = revived.inputType;
-    }
-    return revived;
 };
 var createEnvironment = function (input, options, fontMetrics) {
     var _a, _b, _c, _d;
@@ -3176,7 +3167,8 @@ var MiniAppCanvasRenderer = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.useNativeBorderRectangles || !shouldUseRectangularSolidBorderFill(paint.curves, paint.container.styles)) {
+                        if (!this.useNativeBorderRectangles ||
+                            !shouldUseRectangularSolidBorderFill(paint.curves, paint.container.styles)) {
                             return [2 /*return*/, _super.prototype.renderNodeBackgroundAndBorders.call(this, paint)];
                         }
                         this.applyEffects(paint.getEffects(2 /* BACKGROUND_BORDERS */));
@@ -3299,13 +3291,13 @@ var preloadImages = function (container, cache) { return __awaiter(void 0, void 
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                if (!(container.containerType === 'image' && typeof container.src === 'string')) return [3 /*break*/, 2];
+                if (!(container.containerType === 'image')) return [3 /*break*/, 2];
                 return [4 /*yield*/, cache.addImage(container.src)];
             case 1:
                 _b.sent();
                 _b.label = 2;
             case 2:
-                _i = 0, _a = container.elements || [];
+                _i = 0, _a = container.elements;
                 _b.label = 3;
             case 3:
                 if (!(_i < _a.length)) return [3 /*break*/, 6];
@@ -3317,22 +3309,11 @@ var preloadImages = function (container, cache) { return __awaiter(void 0, void 
             case 5:
                 _i++;
                 return [3 /*break*/, 3];
-            case 6:
-                if (!container.tree) return [3 /*break*/, 8];
-                return [4 /*yield*/, preloadImages(container.tree, cache)];
-            case 7:
-                _b.sent();
-                _b.label = 8;
-            case 8: return [2 /*return*/];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
-var isUnsupportedMediaContainer = function (containerType) {
-    return Object.prototype.hasOwnProperty.call(UNSUPPORTED_MEDIA_TYPES, containerType);
-};
-var isNativeMiniAppCanvas = function (canvas) {
-    return typeof canvas.ownerDocument === 'undefined';
-};
+var isNativeMiniAppCanvas = function (canvas) { return typeof canvas.ownerDocument === 'undefined'; };
 var resolveFontMetrics = function (options, useNativeCanvas) {
     var _a, _b;
     var baseFontMetrics = (_a = options.fontMetrics) !== null && _a !== void 0 ? _a : createMiniAppFontMetricsProvider((_b = options.measureCanvas) !== null && _b !== void 0 ? _b : options.createCanvas());
@@ -3434,5 +3415,5 @@ var calculateBackgroundCurvedPaintingArea = function (clip, curves) {
     }
 };
 
-module.exports = {renderMiniAppCanvas: renderMiniAppCanvas};
+export { renderMiniAppCanvas };
 //# sourceMappingURL=canvas-renderer-miniapp.js.map

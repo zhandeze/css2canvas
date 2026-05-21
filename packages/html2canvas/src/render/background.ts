@@ -1,6 +1,6 @@
 import {Bounds} from '../css/layout/bounds';
 import {BACKGROUND_ORIGIN} from '../css/property-descriptors/background-origin';
-import type {ElementContainer} from '../dom/element-container';
+import type {ElementContainerLike} from '../dom/element-container';
 import {BACKGROUND_SIZE, BackgroundSizeInfo} from '../css/property-descriptors/background-size';
 import {Vector} from './vector';
 import {BACKGROUND_REPEAT} from '../css/property-descriptors/background-repeat';
@@ -12,7 +12,7 @@ import {BACKGROUND_CLIP} from '../css/property-descriptors/background-clip';
 
 export const calculateBackgroundPositioningArea = (
 	backgroundOrigin: BACKGROUND_ORIGIN,
-	element: ElementContainer
+	element: ElementContainerLike
 ): Bounds => {
 	if (backgroundOrigin === BACKGROUND_ORIGIN.BORDER_BOX) {
 		return element.bounds;
@@ -25,7 +25,10 @@ export const calculateBackgroundPositioningArea = (
 	return paddingBox(element);
 };
 
-export const calculateBackgroundPaintingArea = (backgroundClip: BACKGROUND_CLIP, element: ElementContainer): Bounds => {
+export const calculateBackgroundPaintingArea = (
+	backgroundClip: BACKGROUND_CLIP,
+	element: ElementContainerLike
+): Bounds => {
 	if (backgroundClip === BACKGROUND_CLIP.BORDER_BOX) {
 		return element.bounds;
 	}
@@ -38,7 +41,7 @@ export const calculateBackgroundPaintingArea = (backgroundClip: BACKGROUND_CLIP,
 };
 
 export const calculateBackgroundRendering = (
-	container: ElementContainer,
+	container: ElementContainerLike,
 	index: number,
 	intrinsicSize: [number | null, number | null, number | null]
 ): [Path[], number, number, number, number] => {

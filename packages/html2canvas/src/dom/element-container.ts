@@ -1,11 +1,28 @@
 import {CSSParsedDeclaration} from '../css/index';
+import type {MiniAppSerializedStyleDeclaration} from '../css/index';
 import type {TextContainer} from './text-container';
 import {Bounds, parseBounds} from '../css/layout/bounds';
 import {Context} from '../core/context';
 import {DebuggerType, isDebugging} from '../core/debugger';
 import {ContainerType, FLAGS} from './container-flags';
 
-export class ElementContainer {
+type ElementContainerRenderStyleMethods = Pick<
+	CSSParsedDeclaration,
+	'isVisible' | 'isPositioned' | 'isTransformed' | 'isFloating' | 'isInlineLevel'
+>;
+
+export type ElementContainerRenderStyle = MiniAppSerializedStyleDeclaration & ElementContainerRenderStyleMethods;
+
+export interface ElementContainerLike {
+	readonly containerType: ContainerType;
+	readonly styles: ElementContainerRenderStyle;
+	readonly textNodes: TextContainer[];
+	readonly elements: ElementContainerLike[];
+	bounds: Bounds;
+	flags: number;
+}
+
+export class ElementContainer implements ElementContainerLike {
 	readonly containerType: ContainerType = 'element';
 	readonly styles: CSSParsedDeclaration;
 	readonly textNodes: TextContainer[] = [];

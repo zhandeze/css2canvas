@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2015", "dom"],
+    "strict": true,
+    "declaration": false,
+    "outDir": "tmp-miniapp-emit"
+  },
+  "include": [
+    "src/miniapp/render-input.ts",
+    "src/miniapp/canvas-renderer-miniapp.ts"
+  ]
+}
