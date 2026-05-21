@@ -22,7 +22,7 @@ export interface ElementContainerLike {
 	flags: number;
 }
 
-export class ElementContainer implements ElementContainerLike {
+export class ElementContainer {
 	readonly containerType: ContainerType = 'element';
 	readonly styles: CSSParsedDeclaration;
 	readonly textNodes: TextContainer[] = [];

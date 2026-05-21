@@ -1,9 +1,9 @@
 import {ElementPaint, parseStackingContexts, StackingContext} from '../stacking-context';
 import {asString, Color, isTransparent} from '../../css/types/color';
-import type {ElementContainerLike} from '../../dom/element-container';
+import type {ElementContainer} from '../../dom/element-container';
 import {FLAGS} from '../../dom/container-flags';
 import {BORDER_STYLE} from '../../css/property-descriptors/border-style';
-import type {MiniAppSerializedStyleDeclaration} from '../../css';
+import {CSSParsedDeclaration} from '../../css';
 import type {TextContainer} from '../../dom/text-container';
 import {Path, transformPath} from '../path';
 import {BACKGROUND_CLIP} from '../../css/property-descriptors/background-clip';
@@ -171,7 +171,7 @@ export class ExtractedCanvasRenderer extends Renderer {
         }
     }
 
-    private createFontStyle(styles: MiniAppSerializedStyleDeclaration): string[] {
+    private createFontStyle(styles: CSSParsedDeclaration): string[] {
         const fontVariant = styles.fontVariant
             .filter((variant) => variant === 'normal' || variant === 'small-caps')
             .join('');
@@ -187,7 +187,7 @@ export class ExtractedCanvasRenderer extends Renderer {
         ];
     }
 
-    async renderTextNode(text: TextContainer, styles: MiniAppSerializedStyleDeclaration): Promise<void> {
+    async renderTextNode(text: TextContainer, styles: CSSParsedDeclaration): Promise<void> {
         const [font, fontFamily, fontSize] = this.createFontStyle(styles);
 
         this.ctx.font = font;
@@ -555,7 +555,7 @@ export class ExtractedCanvasRenderer extends Renderer {
         return canvas;
     }
 
-    async renderBackgroundImage(container: ElementContainerLike): Promise<void> {
+    async renderBackgroundImage(container: ElementContainer): Promise<void> {
         let index = container.styles.backgroundImage.length - 1;
         for (const backgroundImage of container.styles.backgroundImage.slice(0).reverse()) {
             if (backgroundImage.type === CSSImageType.URL) {
@@ -869,7 +869,7 @@ export class ExtractedCanvasRenderer extends Renderer {
         this.ctx.restore();
     }
 
-    async render(element: ElementContainerLike): Promise<HTMLCanvasElement> {
+    async render(element: ElementContainer): Promise<HTMLCanvasElement> {
         if (this.options.backgroundColor) {
             this.ctx.fillStyle = asString(this.options.backgroundColor);
             this.ctx.fillRect(this.options.x, this.options.y, this.options.width, this.options.height);
@@ -884,7 +884,7 @@ export class ExtractedCanvasRenderer extends Renderer {
 }
 
 const isTextInputElement = (
-    container: ElementContainerLike
+    container: ElementContainer
 ): container is TextInputContainer => {
     if (container.containerType === 'textarea') {
         return true;
@@ -903,27 +903,31 @@ type ImageContainer = ReplacedElementContainer & {
     intrinsicHeight: number;
 };
 
-type InputContainer = ElementContainerLike & {
+type InputContainer = ElementContainer & {
     containerType: 'input';
     type: string;
     checked: boolean;
     value: string;
 };
 
-const isImageContainer = (container: ElementContainerLike): container is ImageContainer => container.containerType === 'image';
+const isImageContainer = (container: ElementContainer): container is ImageContainer => container.containerType === 'image';
 
-const isInputContainer = (container: ElementContainerLike): container is InputContainer => container.containerType === 'input';
+const isInputContainer = (container: ElementContainer): container is InputContainer => container.containerType === 'input';
 
-type TextInputContainer = ElementContainerLike & {
+type TextInputContainer = ElementContainer & {
     containerType: 'input' | 'textarea' | 'select';
     value: string;
     type?: string;
 };
 
 const isInputTextContainer = (
-    container: ElementContainerLike
+    container: ElementContainer
 ): container is InputContainer & {type: string; value: string} => {
-    return isInputContainer(container) && container.type !== RADIO && container.type !== CHECKBOX;
+    if (container.containerType !== 'input') {
+        return false;
+    }
+    const input = container as InputContainer;
+    return input.type !== RADIO && input.type !== CHECKBOX;
 };
 
 const calculateBackgroundCurvedPaintingArea = (clip: BACKGROUND_CLIP, curves: BoundCurves): Path[] => {
@@ -962,7 +966,7 @@ const fixIOSSystemFonts = (fontFamilies: string[], userAgent: string): string[] 
 const hasCanvasStyle = (canvas: HTMLCanvasElement): canvas is HTMLCanvasElement & {style: {width: string; height: string}} =>
     typeof (canvas as HTMLCanvasElement & {style?: {width?: string; height?: string}}).style !== 'undefined';
 
-type ReplacedElementContainer = ElementContainerLike & {
+type ReplacedElementContainer = ElementContainer & {
     intrinsicWidth: number;
     intrinsicHeight: number;
 };

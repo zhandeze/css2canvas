@@ -1,4 +1,4 @@
-import type {ElementContainerLike} from '../dom/element-container';
+import type {ElementContainer} from '../dom/element-container';
 import {FLAGS} from '../dom/container-flags';
 import {contains} from '../core/bitwise';
 import {BoundCurves, calculateBorderBoxPath, calculatePaddingBoxPath} from './bound-curves';
@@ -36,10 +36,7 @@ export class ElementPaint {
 	readonly curves: BoundCurves;
 	listValue?: string;
 
-	constructor(
-		readonly container: ElementContainerLike,
-		readonly parent: ElementPaint | null
-	) {
+	constructor(readonly container: ElementContainer, readonly parent: ElementPaint | null) {
 		this.curves = new BoundCurves(this.container);
 		if (this.container.styles.opacity < 1) {
 			this.effects.push(new OpacityEffect(this.container.styles.opacity));
@@ -178,7 +175,7 @@ const parseStackTree = (
 	});
 };
 
-const processListItems = (owner: ElementContainerLike, elements: ElementPaint[]) => {
+const processListItems = (owner: ElementContainer, elements: ElementPaint[]) => {
 	let numbering = isOrderedListContainer(owner) ? owner.start : 1;
 	const reversed = isOrderedListContainer(owner) ? owner.reversed : false;
 	for (let i = 0; i < elements.length; i++) {
@@ -197,7 +194,7 @@ const processListItems = (owner: ElementContainerLike, elements: ElementPaint[])
 	}
 };
 
-export const parseStackingContexts = (container: ElementContainerLike): StackingContext => {
+export const parseStackingContexts = (container: ElementContainer): StackingContext => {
 	const paintContainer = new ElementPaint(container, null);
 	const root = new StackingContext(paintContainer);
 	const listItems: ElementPaint[] = [];
@@ -206,11 +203,11 @@ export const parseStackingContexts = (container: ElementContainerLike): Stacking
 	return root;
 };
 
-type OrderedListContainer = ElementContainerLike & {containerType: 'ol'; start: number; reversed: boolean};
-type ListItemContainer = ElementContainerLike & {containerType: 'li'; value: number};
+type OrderedListContainer = ElementContainer & {containerType: 'ol'; start: number; reversed: boolean};
+type ListItemContainer = ElementContainer & {containerType: 'li'; value: number};
 
-const isOrderedListContainer = (container: ElementContainerLike): container is OrderedListContainer =>
+const isOrderedListContainer = (container: ElementContainer): container is OrderedListContainer =>
 	container.containerType === 'ol';
 
-const isListItemContainer = (container: ElementContainerLike): container is ListItemContainer =>
+const isListItemContainer = (container: ElementContainer): container is ListItemContainer =>
 	container.containerType === 'li';

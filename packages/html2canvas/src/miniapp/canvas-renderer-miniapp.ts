@@ -4,8 +4,8 @@ import {
 	FontMetricsProvider,
 	RenderConfigurations
 } from '../render/canvas/extracted-canvas-renderer';
+import type {ElementContainer, ElementContainerLike, ElementContainerRenderStyle} from '../dom/element-container';
 import {ElementPaint} from '../render/stacking-context';
-import {ElementContainerLike, ElementContainerRenderStyle} from '../dom/element-container';
 import {Bounds} from '../css/layout/bounds';
 import {contains} from '../core/bitwise';
 import {DISPLAY} from '../css/property-descriptors/display';
@@ -397,7 +397,7 @@ export const renderMiniAppCanvas = async (
 		createEnvironment(input, options, fontMetrics),
 		useNativeCanvas
 	);
-	await renderer.render(root);
+	await renderer.render(root as unknown as ElementContainer);
 	return options.canvas;
 };
 
