@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": false,
+    "allowImportingTsExtensions": false,
+    "types": ["mocha"]
+  },
+  "include": ["./**/*.ts", "../build/reftests.ts", "../src/types/**/*.d.ts"]
+}

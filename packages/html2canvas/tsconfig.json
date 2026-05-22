@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["mocha"],
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "noEmit": true,
@@ -13,6 +14,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "miniapp.rollup.config.ts"],
-  "exclude": ["src/**/__tests__/**", "src/**/*.test.ts", "src/**/__mocks__/**"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "miniapp.rollup.config.ts", "rollup.config.ts", "tests/**/*.ts", "tests/**/*.d.ts"]
 }

@@ -9,6 +9,7 @@
     "src/**/__tests__/**/*.ts",
     "src/**/*.test.ts",
     "src/**/__mocks__/**/*.ts",
+    "src/types/**/*.d.ts",
     "jest.config.js"
   ]
 }

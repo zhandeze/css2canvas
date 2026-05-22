@@ -4,6 +4,13 @@
 const path = require('path');
 const simctl = require('node-simctl');
 const iosSimulator = require('appium-ios-simulator');
+const karmaMocha = require('karma-mocha');
+const karmaJunitReporter = require('karma-junit-reporter');
+const karmaChromeLauncher = require('karma-chrome-launcher');
+const karmaFirefoxLauncher = require('karma-firefox-launcher');
+const karmaIeLauncher = require('karma-ie-launcher');
+const karmaSafariNativeLauncher = require('karma-safarinative-launcher');
+const karmaSauceLauncher = require('karma-sauce-launcher');
 const listenAddress = 'localhost';
 const port = 9876;
 
@@ -214,7 +221,13 @@ module.exports = function (config) {
     ],
 
     plugins: [
-      'karma-*',
+      karmaMocha,
+      karmaJunitReporter,
+      karmaChromeLauncher,
+      karmaFirefoxLauncher,
+      karmaIeLauncher,
+      karmaSafariNativeLauncher,
+      karmaSauceLauncher,
       {
         'framework:inline-mocha-fix': ['factory', injectTypedArrayPolyfills]
       },
