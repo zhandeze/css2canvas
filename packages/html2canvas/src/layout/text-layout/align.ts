@@ -37,7 +37,7 @@ export function alignLines(
       x,
       y: 0,
       height: 0,
-      decorations: [],
+      decorations: []
     };
   });
 }

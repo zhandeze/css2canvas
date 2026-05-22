@@ -23,11 +23,11 @@ export function decorateLines(lines: TextLineBox[], style: NormalizedTextStyle):
       x: line.x,
       y: decorationY(textDecorationLine, line.y, style.fontSize, line.height || style.lineHeight),
       width: line.width,
-      thickness,
+      thickness
     }));
     return {
       ...line,
-      decorations,
+      decorations
     };
   });
 }

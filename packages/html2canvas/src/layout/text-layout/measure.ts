@@ -33,7 +33,7 @@ function getAutoTextMeasureSignature(style: AutoTextMeasureStyle): string {
     textDecoration: getTextDecorationSignature(style.textDecoration),
     textDecorationColor: style.textDecorationColor ?? '',
     color: style.color ?? '',
-    direction: style.direction ?? '',
+    direction: style.direction ?? ''
   });
 }
 

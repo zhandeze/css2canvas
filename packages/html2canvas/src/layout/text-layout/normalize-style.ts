@@ -98,7 +98,7 @@ export function normalizeTextStyle(style: TextStyleInput, text: string): Normali
     textDecorationLines: normalizeDecoration(style.textDecoration),
     textDecorationColor: style.textDecorationColor ?? style.color ?? 'black',
     color: style.color ?? 'black',
-    direction: normalizeDirection(style.direction),
+    direction: normalizeDirection(style.direction)
   };
   return normalized;
 }

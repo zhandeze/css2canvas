@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.node.json",
-  "compilerOptions": {
-    "types": ["node", "jest"],
-    "esModuleInterop": true,
-    "allowJs": true
-  },
-  "include": ["src/layout/**/*.ts"]
-}

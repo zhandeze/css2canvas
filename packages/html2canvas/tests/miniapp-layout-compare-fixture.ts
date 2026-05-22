@@ -1,6 +1,6 @@
 export const miniappLayoutCompareFixture = {
-	name: 'layout-text-block',
-	html: `
+  name: 'layout-text-block',
+  html: `
 		<div id="root">
 			<div class="card">
 				<div class="title">Hello world from layout</div>
@@ -8,7 +8,7 @@ export const miniappLayoutCompareFixture = {
 			</div>
 		</div>
 	`,
-	css: `
+  css: `
 		html, body {
 			margin: 0;
 			padding: 0;
@@ -37,5 +37,5 @@ export const miniappLayoutCompareFixture = {
 			font-size: 16px;
 			letter-spacing: 0.2px;
 		}
-	`,
+	`
 };

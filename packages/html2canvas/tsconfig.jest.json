@@ -2,8 +2,13 @@
   "extends": "./tsconfig.node.json",
   "compilerOptions": {
     "types": ["node", "jest"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "jest.config.js"],
-  "exclude": ["src/layout/tests/**"]
+  "include": [
+    "src/**/__tests__/**/*.ts",
+    "src/**/*.test.ts",
+    "src/**/__mocks__/**/*.ts",
+    "jest.config.js"
+  ]
 }

@@ -14,5 +14,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "miniapp.rollup.config.ts"],
-  "exclude": ["src/**/__tests__/**", "src/**/*.test.ts", "src/**/__mocks__/**", "src/layout/tests/**"]
+  "exclude": ["src/**/__tests__/**", "src/**/*.test.ts", "src/**/__mocks__/**"]
 }

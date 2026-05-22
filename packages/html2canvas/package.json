@@ -118,9 +118,7 @@
     "watch": "rollup -c rollup.config.ts -w",
     "watch:unittest": "mocha --require ts-node/register --watch-extensions ts -w src/**/__tests__/*.ts",
     "start": "ts-node --project tsconfig.node.json tests/server --port=8080 --cors=8081",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "layout:test": "jest --config jest.layout.config.js",
-    "layout:test:watch": "jest --config jest.layout.config.js --watch"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.jest.json --noEmit"
   },
   "homepage": "https://html2canvas.hertzen.com",
   "license": "MIT",
