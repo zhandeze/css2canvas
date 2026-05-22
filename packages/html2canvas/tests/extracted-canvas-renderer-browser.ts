@@ -12,12 +12,44 @@ import {
 import {Context} from '../src/core/context';
 import {ElementContainer} from '../src/dom/element-container';
 import {TextBounds} from '../src/css/layout/text-bounds';
+import {layoutToMiniAppRenderInput} from '../src/miniapp/layout-to-miniapp';
+import {renderMiniAppCanvas} from '../src/miniapp/canvas-renderer-miniapp';
+import {computeLayout, measureTextBlock} from 'layout';
 
 type CompareResult = {
 	identical: boolean;
 	originalSize: {width: number; height: number};
 	extractedSize: {width: number; height: number};
 	diffPixels: number;
+};
+
+type MiniAppLayoutCompareResult = {
+	compare: CompareResult;
+	input: SerializedRenderInput;
+};
+
+type LayoutFixtureNode = {
+	containerType: string;
+	style: Record<string, unknown> & {
+		text?: string;
+		fontFamily?: string;
+		fontSize?: number;
+		fontWeight?: number | string;
+		fontStyle?: string;
+		lineHeight?: number | string;
+		letterSpacing?: number;
+		textAlign?: string;
+		textDecoration?: string;
+		textDecorationColor?: string;
+		color?: string;
+	};
+	layout?: {left: number; top: number; width: number; height: number; right?: number; bottom?: number; direction?: string};
+	lastLayout?: any;
+	nextAbsoluteChild: LayoutFixtureNode | null;
+	nextFlexChild: LayoutFixtureNode | null;
+	flags?: number;
+	textNodes?: SerializedTextNode[];
+	children: LayoutFixtureNode[];
 };
 
 type CompareOptions = {
@@ -406,19 +438,126 @@ const exportRenderInput = async (rawOptions: string | CompareOptions): Promise<S
 	return serialized;
 };
 
+const renderMiniAppLayoutCompare = async (rawOptions: string | CompareOptions): Promise<MiniAppLayoutCompareResult> => {
+	const input = await exportRenderInput(rawOptions);
+	const compare = await renderOriginalAndExtracted(rawOptions);
+	const layoutRoot = buildLayoutFixture(input);
+	computeLayout(layoutRoot, input.renderOptions.width, 'ltr');
+	const miniInput = layoutToMiniAppRenderInput({
+		selector: input.selector,
+		renderOptions: input.renderOptions,
+		windowBounds: input.windowBounds,
+		environment: input.environment,
+		root: layoutRoot
+	});
+	const canvas = document.createElement('canvas');
+	canvas.width = Math.floor(input.renderOptions.width * input.renderOptions.scale);
+	canvas.height = Math.floor(input.renderOptions.height * input.renderOptions.scale);
+	canvas.style.width = `${input.renderOptions.width}px`;
+	canvas.style.height = `${input.renderOptions.height}px`;
+
+	await renderMiniAppCanvas(miniInput, {
+		canvas,
+		createCanvas: () => document.createElement('canvas'),
+		loadImage: (src: string) =>
+			new Promise((resolve, reject) => {
+				const img = new Image();
+				img.onload = () => resolve(img);
+				img.onerror = reject;
+				img.src = src;
+			}),
+		fontMetrics: createBrowserFontMetrics(document),
+		userAgent: window.navigator.userAgent,
+		useMiterTextStroke: 'chrome' in window,
+		logging: true
+	});
+
+	return {
+		compare: compareCanvases(compare.original, canvas),
+		input
+	};
+};
+
+const buildLayoutFixture = (input: SerializedRenderInput): LayoutFixtureNode => {
+	const text = input.root.textNodes
+		.map((node) => node.text)
+		.join('');
+	const layoutText = text || 'Miniapp compare';
+	const measure = (width: number) => measureTextBlock(layoutText, {
+		text: layoutText,
+		fontFamily: "'Noto Sans SC', Arial, sans-serif",
+		fontSize: 18,
+		fontWeight: 700,
+		fontStyle: 'normal',
+		lineHeight: 24,
+		textAlign: 'left',
+		textDecoration: 'underline',
+		color: '#102030'
+	}, width);
+
+	return {
+		containerType: 'element',
+		style: {
+			width: input.renderOptions.width,
+			padding: 24,
+			borderWidth: 6,
+			text: layoutText,
+			measure
+		},
+		children: [
+			{
+				containerType: 'element',
+				style: {
+					text: layoutText,
+					measure
+				},
+				children: [],
+				layout: undefined,
+				lastLayout: undefined,
+				nextAbsoluteChild: null,
+				nextFlexChild: null
+			}
+		],
+		layout: undefined,
+		lastLayout: undefined,
+		nextAbsoluteChild: null,
+		nextFlexChild: null
+	};
+};
+
 declare global {
 	interface Window {
 		extractedCanvasRendererBrowser: {
 			renderOriginalAndExtracted: typeof renderOriginalAndExtracted;
 			exportRenderInput: typeof exportRenderInput;
+			renderMiniAppLayoutCompare: typeof renderMiniAppLayoutCompare;
 		};
 	}
 }
 
 window.extractedCanvasRendererBrowser = {
 	renderOriginalAndExtracted,
-	exportRenderInput
+	exportRenderInput,
+	renderMiniAppLayoutCompare
 };
+
+function createBrowserFontMetrics(doc: Document) {
+	return {
+		getMetrics(fontFamily: string, fontSize: string) {
+			const canvas = doc.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+			if (!ctx) {
+				return {baseline: 0, middle: 0};
+			}
+			ctx.font = `${fontSize} ${fontFamily}`;
+			const metrics = ctx.measureText('Hidden Text');
+			return {
+				baseline: metrics.actualBoundingBoxAscent || 0,
+				middle: ((metrics.actualBoundingBoxAscent || 0) - (metrics.actualBoundingBoxDescent || 0)) / 2
+			};
+		}
+	};
+}
 
 const normalizeMiniAppContainerType = (containerType: string): string => {
 	switch (containerType) {

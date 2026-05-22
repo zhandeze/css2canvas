@@ -401,6 +401,8 @@ export const renderMiniAppCanvas = async (
 	return options.canvas;
 };
 
+export {serializeMiniAppRenderInput} from './render-input';
+
 const preloadImages = async (container: RevivedContainer, cache: MiniAppCache): Promise<void> => {
 	if (container.containerType === 'image') {
 		await cache.addImage(container.src);

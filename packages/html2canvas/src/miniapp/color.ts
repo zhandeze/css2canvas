@@ -1,11 +1,11 @@
-export type MiniAppColor = number;
+export type Color = number;
 
-export const TRANSPARENT_MINIAPP_COLOR: MiniAppColor = 0x00000000;
+export const TRANSPARENT_MINIAPP_COLOR: Color = 0x00000000;
 
-export const packMiniAppColor = (r: number, g: number, b: number, a = 1): MiniAppColor =>
+export const packColor = (r: number, g: number, b: number, a = 1): Color =>
 	((toByte(r) << 24) | (toByte(g) << 16) | (toByte(b) << 8) | toByte(clamp01(a) * 255)) >>> 0;
 
-export const parseMiniAppColor = (value: string): MiniAppColor => {
+export const parseColor = (value: string): Color => {
 	const input = value.trim().toLowerCase();
 
 	if (input === 'transparent') {
@@ -30,10 +30,10 @@ export const parseMiniAppColor = (value: string): MiniAppColor => {
 	throw new Error(`Unsupported miniapp color: ${value}`);
 };
 
-export const parseOptionalMiniAppColor = (value?: string | null): MiniAppColor | null =>
-	typeof value === 'string' ? parseMiniAppColor(value) : null;
+export const parseOptionalColor = (value?: string | null): Color | null =>
+	typeof value === 'string' ? parseColor(value) : null;
 
-const parseHexColor = (input: string): MiniAppColor | null => {
+const parseHexColor = (input: string): Color | null => {
 	const matched = /^#([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i.exec(input);
 	if (!matched) {
 		return null;
@@ -46,17 +46,17 @@ const parseHexColor = (input: string): MiniAppColor | null => {
 		const g = parseInt(hex[1] + hex[1], 16);
 		const b = parseInt(hex[2] + hex[2], 16);
 		const a = hex.length === 4 ? parseInt(hex[3] + hex[3], 16) / 255 : 1;
-		return packMiniAppColor(r, g, b, a);
+		return packColor(r, g, b, a);
 	}
 
 	const r = parseInt(hex.slice(0, 2), 16);
 	const g = parseInt(hex.slice(2, 4), 16);
 	const b = parseInt(hex.slice(4, 6), 16);
 	const a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
-	return packMiniAppColor(r, g, b, a);
+	return packColor(r, g, b, a);
 };
 
-const parseRgbColor = (input: string): MiniAppColor | null => {
+const parseRgbColor = (input: string): Color | null => {
 	const matched = /^rgba?\((.+)\)$/.exec(input);
 	if (!matched) {
 		return null;
@@ -72,10 +72,10 @@ const parseRgbColor = (input: string): MiniAppColor | null => {
 	const b = parseRgbChannel(parts[2]);
 	const a = parts.length === 4 ? parseAlpha(parts[3]) : 1;
 
-	return packMiniAppColor(r, g, b, a);
+	return packColor(r, g, b, a);
 };
 
-const parseHslColor = (input: string): MiniAppColor | null => {
+const parseHslColor = (input: string): Color | null => {
 	const matched = /^hsla?\((.+)\)$/.exec(input);
 	if (!matched) {
 		return null;
@@ -120,7 +120,7 @@ const parseHslColor = (input: string): MiniAppColor | null => {
 		b = x;
 	}
 
-	return packMiniAppColor((r + m) * 255, (g + m) * 255, (b + m) * 255, a);
+	return packColor((r + m) * 255, (g + m) * 255, (b + m) * 255, a);
 };
 
 const splitFunctionArgs = (input: string): string[] => {

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pretext smoke</title>
+  </head>
+  <body>
+    <pre id="output">loading</pre>
+    <script type="module">
+      import {layoutWithLines, prepareWithSegments} from '/node_modules/@chenglou/pretext/dist/layout.js';
+
+      const prepared = prepareWithSegments('alpha beta gamma', '16px sans-serif', {
+        letterSpacing: 0,
+        whiteSpace: 'normal',
+        wordBreak: 'normal'
+      });
+      const result = layoutWithLines(prepared, 70, 20);
+      const payload = {
+        lineCount: result.lineCount,
+        height: result.height,
+        lines: result.lines.map((line) => ({text: line.text, width: line.width}))
+      };
+
+      document.title = 'pretext smoke ok';
+      document.getElementById('output').textContent = JSON.stringify(payload, null, 2);
+    </script>
+  </body>
+</html>

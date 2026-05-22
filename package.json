@@ -1,0 +1,14 @@
+{
+  "name": "css2canvas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pnpm -C packages/layout test",
+    "test:layout": "pnpm -C packages/layout test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
