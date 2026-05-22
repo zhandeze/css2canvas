@@ -102,6 +102,7 @@
   "scripts": {
     "prebuild": "rimraf dist/ && rimraf build/ && if not exist dist mkdir dist && if not exist build mkdir build",
     "build": "tsc -p tsconfig.build.json && rollup -c rollup.config.ts && npm run build:create-reftest-list && npm run build:testrunner && npm run build:minify",
+    "build:miniapp": "rollup -c miniapp.rollup.config.ts && npm run build:miniapp-demo-assets",
     "build:miniapp-demo-assets": "node scripts/sync-miniapp-demo-assets.js",
     "build:testrunner": "rollup -c tests/rollup.config.ts",
     "build:minify": "uglifyjs --compress --comments /^!/ -o dist/html2canvas.min.js --mangle -- dist/html2canvas.js",

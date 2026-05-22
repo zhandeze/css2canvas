@@ -15,14 +15,34 @@ const ensureDir = (dirPath) => {
 const read = (filePath) => fs.readFileSync(filePath, 'utf8');
 const write = (filePath, content) => fs.writeFileSync(filePath, content, 'utf8');
 
+const toCommonJsNamedExports = (namedExports) =>
+  namedExports
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean)
+    .map((entry) => {
+      const aliasMatch = entry.match(/^([A-Za-z_$][\w$]*)\s+as\s+([A-Za-z_$][\w$]*)$/);
+
+      if (aliasMatch) {
+        const [, localName, exportedName] = aliasMatch;
+        return `${exportedName}: ${localName}`;
+      }
+
+      return `${entry}: ${entry}`;
+    })
+    .join(', ');
+
 const toCommonJsRuntime = (source) => {
-  if (!source.includes('export { renderMiniAppCanvas };')) {
+  const namedExportPattern = /^export\s*\{\s*([^}]+)\s*\};$/m;
+  const match = source.match(namedExportPattern);
+
+  if (!match) {
     throw new Error('Unexpected runtime export shape');
   }
 
   return source.replace(
-    'export { renderMiniAppCanvas };',
-    'module.exports = {renderMiniAppCanvas: renderMiniAppCanvas};'
+    namedExportPattern,
+    `module.exports = {${toCommonJsNamedExports(match[1])}};`
   );
 };
 

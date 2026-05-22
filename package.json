@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:miniapp": "pnpm -C packages/html2canvas build:miniapp",
     "test": "pnpm -C packages/layout test",
     "test:layout": "pnpm -C packages/layout test"
   },

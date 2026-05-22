@@ -28,6 +28,13 @@ export interface LayoutBox {
   direction?: LayoutDirection;
 }
 
+export interface LayoutClipRect {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
 export interface LayoutStyle {
   direction?: LayoutDirection;
   flexDirection?: FlexDirection;
@@ -82,6 +89,7 @@ export interface LayoutNode {
   shouldUpdate?: boolean;
   lastLayout: any;
   lineIndex?: number;
+  overflowClip?: LayoutClipRect;
   nextAbsoluteChild: LayoutNode | null;
   nextFlexChild: LayoutNode | null;
   [key: string]: any;
@@ -483,6 +491,14 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
       return node.style.position;
     }
     return 'relative';
+  }
+
+  function isOverflowHidden(node: LayoutNode): boolean {
+    const overflow = node.style.overflow;
+    const overflowX = node.style.overflowX;
+    const overflowY = node.style.overflowY;
+
+    return overflow === 'hidden' || overflowX === 'hidden' || overflowY === 'hidden';
   }
 
   function isFlex(node: LayoutNode): boolean {
@@ -1271,6 +1287,30 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
       currentAbsoluteChild = currentAbsoluteChild.nextAbsoluteChild;
       child.nextAbsoluteChild = null;
     }
+
+    if (
+      isOverflowHidden(node) &&
+      !isUndefined(node.layout.width) &&
+      !isUndefined(node.layout.height)
+    ) {
+      const leftBorder =
+        resolvedRowAxis === CSS_FLEX_DIRECTION_ROW
+          ? getLeadingBorder(node, resolvedRowAxis)
+          : getTrailingBorder(node, resolvedRowAxis);
+      const rightBorder =
+        resolvedRowAxis === CSS_FLEX_DIRECTION_ROW
+          ? getTrailingBorder(node, resolvedRowAxis)
+          : getLeadingBorder(node, resolvedRowAxis);
+
+      node.overflowClip = {
+        left: leftBorder,
+        top: getLeadingBorder(node, CSS_FLEX_DIRECTION_COLUMN),
+        right: (node.layout.width ?? 0) - rightBorder,
+        bottom: (node.layout.height ?? 0) - getTrailingBorder(node, CSS_FLEX_DIRECTION_COLUMN)
+      };
+    } else {
+      node.overflowClip = undefined;
+    }
   }
 
   function layoutNode(node: LayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection) {
@@ -1306,7 +1346,10 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
         child.layout.height = undefined;
         child.layout.top = 0;
         child.layout.left = 0;
+        child.overflowClip = undefined;
       });
+
+      node.overflowClip = undefined;
 
       layoutNodeImpl(node, parentMaxWidth, parentDirection);
 

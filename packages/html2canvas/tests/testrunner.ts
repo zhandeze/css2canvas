@@ -2,8 +2,9 @@
 // @ts-ignore
 import {testList, ignoredTests} from '../build/reftests';
 // @ts-ignore
-import 'es6-promise/auto';
+import 'es6-promise/dist/es6-promise.auto.js';
 import {ScreenshotRequest} from './types';
+import {registerMiniAppLayoutKarmaTests} from './miniapp-layout-karma';
 const testRunnerUrl = location.href;
 const hasHistoryApi = typeof window.history !== 'undefined' && typeof window.history.replaceState !== 'undefined';
 const platformInfo = (window as Window & {platform?: {name?: string; version?: string}}).platform ?? {};
@@ -112,3 +113,5 @@ testList
       });
     });
   });
+
+registerMiniAppLayoutKarmaTests();

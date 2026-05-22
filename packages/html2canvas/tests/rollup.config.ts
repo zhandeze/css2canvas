@@ -41,7 +41,7 @@ export default {
     }),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs({
-      include: 'node_modules/**'
+      include: /node_modules/
     }),
 
     // Resolve source maps to the original source

@@ -163,10 +163,11 @@ export class ExtractedCanvasRenderer extends Renderer {
       this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + baseline);
     } else {
       const letters = segmentGraphemes(text.text);
-      letters.reduce((left, letter) => {
+      letters.reduce((left, letter, index) => {
         this.ctx.fillText(letter, left, text.bounds.top + baseline);
 
-        return left + this.ctx.measureText(letter).width;
+        const spacing = index < letters.length - 1 ? letterSpacing : 0;
+        return left + this.ctx.measureText(letter).width + spacing;
       }, text.bounds.left);
     }
   }

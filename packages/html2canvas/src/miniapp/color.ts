@@ -1,9 +1,27 @@
+import {COLORS as CSS_NAMED_COLORS} from '../css/types/color';
+
 export type Color = number;
 
 export const TRANSPARENT_MINIAPP_COLOR: Color = 0x00000000;
 
+function clamp01(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.min(1, Math.max(0, value));
+}
+
+function toByte(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.min(255, Math.max(0, Math.round(value)));
+}
+
 export const packColor = (r: number, g: number, b: number, a = 1): Color =>
   ((toByte(r) << 24) | (toByte(g) << 16) | (toByte(b) << 8) | toByte(clamp01(a) * 255)) >>> 0;
+
+export const BLACK_MINIAPP_COLOR: Color = packColor(0, 0, 0, 1);
 
 export const parseColor = (value: string): Color => {
   const input = value.trim().toLowerCase();
@@ -25,6 +43,11 @@ export const parseColor = (value: string): Color => {
   const hsl = parseHslColor(input);
   if (hsl !== null) {
     return hsl;
+  }
+
+  const named = parseNamedColor(input);
+  if (named !== null) {
+    return named;
   }
 
   throw new Error(`Unsupported miniapp color: ${value}`);
@@ -54,6 +77,11 @@ const parseHexColor = (input: string): Color | null => {
   const b = parseInt(hex.slice(4, 6), 16);
   const a = hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1;
   return packColor(r, g, b, a);
+};
+
+const parseNamedColor = (input: string): Color | null => {
+  const named = CSS_NAMED_COLORS[input.toUpperCase()];
+  return typeof named === 'number' ? named : null;
 };
 
 const parseRgbColor = (input: string): Color | null => {
@@ -165,18 +193,4 @@ const parseHue = (input: string): number => {
     return parseFloat(input) * 360;
   }
   return parseFloat(input);
-};
-
-const clamp01 = (value: number): number => {
-  if (!Number.isFinite(value)) {
-    return 0;
-  }
-  return Math.min(1, Math.max(0, value));
-};
-
-const toByte = (value: number): number => {
-  if (!Number.isFinite(value)) {
-    return 0;
-  }
-  return Math.min(255, Math.max(0, Math.round(value)));
 };

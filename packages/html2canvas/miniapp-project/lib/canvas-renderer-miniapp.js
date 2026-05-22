@@ -1,99 +1,4 @@
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
-
-var extendStatics = function(d, b) {
-  extendStatics = Object.setPrototypeOf ||
-      ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-      function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-  return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-  if (typeof b !== "function" && b !== null)
-      throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-  extendStatics(d, b);
-  function __() { this.constructor = d; }
-  d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-var __assign = function() {
-  __assign = Object.assign || function __assign(t) {
-      for (var s, i = 1, n = arguments.length; i < n; i++) {
-          s = arguments[i];
-          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-      }
-      return t;
-  };
-  return __assign.apply(this, arguments);
-};
-
-function __awaiter(thisArg, _arguments, P, generator) {
-  function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-  return new (P || (P = Promise))(function (resolve, reject) {
-      function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-      function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-      function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-      step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-}
-
-function __generator(thisArg, body) {
-  var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
-  return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-  function verb(n) { return function (v) { return step([n, v]); }; }
-  function step(op) {
-      if (f) throw new TypeError("Generator is already executing.");
-      while (g && (g = 0, op[0] && (_ = 0)), _) try {
-          if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-          if (y = 0, t) op = [op[0] & 2, t.value];
-          switch (op[0]) {
-              case 0: case 1: t = op; break;
-              case 4: _.label++; return { value: op[1], done: false };
-              case 5: _.label++; y = op[1]; op = [0]; continue;
-              case 7: op = _.ops.pop(); _.trys.pop(); continue;
-              default:
-                  if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                  if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                  if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                  if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                  if (t[2]) _.ops.pop();
-                  _.trys.pop(); continue;
-          }
-          op = body.call(thisArg, _);
-      } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-      if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-  }
-}
-
-function __spreadArray(to, from, pack) {
-  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-      if (ar || !(i in from)) {
-          if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-          ar[i] = from[i];
-      }
-  }
-  return to.concat(ar || Array.prototype.slice.call(from));
-}
-
-typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-  var e = new Error(message);
-  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-};
-
-var contains = function (bit, value) { return (bit & value) !== 0; };
+const contains = (bit, value) => (bit & value) !== 0;
 
 /*
  * css-line-break 2.1.0 <https://github.com/niklasvh/css-line-break#readme>
@@ -344,39 +249,35 @@ var base64$1 = 'KwAAAAAAAAAACA4AUD0AADAgAAACAAAAAAAIABAAGABAAEgAUABYAGAAaABgAGgA
 createTrieFromBase64$1(base64$1);
 
 // https://www.w3.org/TR/css-syntax-3
-var FLAG_INTEGER = 1 << 2;
+const FLAG_INTEGER = 1 << 2;
 
-var isDimensionToken = function (token) { return token.type === 15 /* DIMENSION_TOKEN */; };
-var isIdentToken = function (token) { return token.type === 20 /* IDENT_TOKEN */; };
+const isDimensionToken = (token) => token.type === 15 /* TokenType.DIMENSION_TOKEN */;
+const isIdentToken = (token) => token.type === 20 /* TokenType.IDENT_TOKEN */;
 
-var isLength = function (token) {
-    return token.type === 17 /* NUMBER_TOKEN */ || token.type === 15 /* DIMENSION_TOKEN */;
-};
+const isLength = (token) => token.type === 17 /* TokenType.NUMBER_TOKEN */ || token.type === 15 /* TokenType.DIMENSION_TOKEN */;
 
-var isLengthPercentage = function (token) {
-    return token.type === 16 /* PERCENTAGE_TOKEN */ || isLength(token);
-};
-var ZERO_LENGTH = {
-    type: 17 /* NUMBER_TOKEN */,
+const isLengthPercentage = (token) => token.type === 16 /* TokenType.PERCENTAGE_TOKEN */ || isLength(token);
+const ZERO_LENGTH = {
+    type: 17 /* TokenType.NUMBER_TOKEN */,
     number: 0,
     flags: FLAG_INTEGER
 };
-var FIFTY_PERCENT = {
-    type: 16 /* PERCENTAGE_TOKEN */,
+const FIFTY_PERCENT = {
+    type: 16 /* TokenType.PERCENTAGE_TOKEN */,
     number: 50,
     flags: FLAG_INTEGER
 };
-var HUNDRED_PERCENT = {
-    type: 16 /* PERCENTAGE_TOKEN */,
+const HUNDRED_PERCENT = {
+    type: 16 /* TokenType.PERCENTAGE_TOKEN */,
     number: 100,
     flags: FLAG_INTEGER
 };
-var getAbsoluteValueForTuple = function (tuple, width, height) {
-    var x = tuple[0], y = tuple[1];
+const getAbsoluteValueForTuple = (tuple, width, height) => {
+    const [x, y] = tuple;
     return [getAbsoluteValue(x, width), getAbsoluteValue(typeof y !== 'undefined' ? y : x, height)];
 };
-var getAbsoluteValue = function (token, parent) {
-    if (token.type === 16 /* PERCENTAGE_TOKEN */) {
+const getAbsoluteValue = (token, parent) => {
+    if (token.type === 16 /* TokenType.PERCENTAGE_TOKEN */) {
         return (token.number / 100) * parent;
     }
     if (isDimensionToken(token)) {
@@ -392,62 +293,92 @@ var getAbsoluteValue = function (token, parent) {
     return token.number;
 };
 
-var Vector = /** @class */ (function () {
-    function Vector(x, y) {
-        this.type = 0 /* VECTOR */;
+class Vector {
+    type;
+    x;
+    y;
+    constructor(x, y) {
+        this.type = 0 /* PathType.VECTOR */;
         this.x = x;
         this.y = y;
     }
-    Vector.prototype.add = function (deltaX, deltaY) {
+    add(deltaX, deltaY) {
         return new Vector(this.x + deltaX, this.y + deltaY);
-    };
-    return Vector;
-}());
+    }
+}
 
-var lerp = function (a, b, t) {
+const lerp = (a, b, t) => {
     return new Vector(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t);
 };
-var BezierCurve = /** @class */ (function () {
-    function BezierCurve(start, startControl, endControl, end) {
-        this.type = 1 /* BEZIER_CURVE */;
+class BezierCurve {
+    type;
+    start;
+    startControl;
+    endControl;
+    end;
+    constructor(start, startControl, endControl, end) {
+        this.type = 1 /* PathType.BEZIER_CURVE */;
         this.start = start;
         this.startControl = startControl;
         this.endControl = endControl;
         this.end = end;
     }
-    BezierCurve.prototype.subdivide = function (t, firstHalf) {
-        var ab = lerp(this.start, this.startControl, t);
-        var bc = lerp(this.startControl, this.endControl, t);
-        var cd = lerp(this.endControl, this.end, t);
-        var abbc = lerp(ab, bc, t);
-        var bccd = lerp(bc, cd, t);
-        var dest = lerp(abbc, bccd, t);
+    subdivide(t, firstHalf) {
+        const ab = lerp(this.start, this.startControl, t);
+        const bc = lerp(this.startControl, this.endControl, t);
+        const cd = lerp(this.endControl, this.end, t);
+        const abbc = lerp(ab, bc, t);
+        const bccd = lerp(bc, cd, t);
+        const dest = lerp(abbc, bccd, t);
         return firstHalf ? new BezierCurve(this.start, ab, abbc, dest) : new BezierCurve(dest, bccd, cd, this.end);
-    };
-    BezierCurve.prototype.add = function (deltaX, deltaY) {
+    }
+    add(deltaX, deltaY) {
         return new BezierCurve(this.start.add(deltaX, deltaY), this.startControl.add(deltaX, deltaY), this.endControl.add(deltaX, deltaY), this.end.add(deltaX, deltaY));
-    };
-    BezierCurve.prototype.reverse = function () {
+    }
+    reverse() {
         return new BezierCurve(this.end, this.endControl, this.startControl, this.start);
-    };
-    return BezierCurve;
-}());
-var isBezierCurve = function (path) { return path.type === 1 /* BEZIER_CURVE */; };
+    }
+}
+const isBezierCurve = (path) => path.type === 1 /* PathType.BEZIER_CURVE */;
 
-var BoundCurves = /** @class */ (function () {
-    function BoundCurves(element) {
-        var styles = element.styles;
-        var bounds = element.bounds;
-        var _a = getAbsoluteValueForTuple(styles.borderTopLeftRadius, bounds.width, bounds.height), tlh = _a[0], tlv = _a[1];
-        var _b = getAbsoluteValueForTuple(styles.borderTopRightRadius, bounds.width, bounds.height), trh = _b[0], trv = _b[1];
-        var _c = getAbsoluteValueForTuple(styles.borderBottomRightRadius, bounds.width, bounds.height), brh = _c[0], brv = _c[1];
-        var _d = getAbsoluteValueForTuple(styles.borderBottomLeftRadius, bounds.width, bounds.height), blh = _d[0], blv = _d[1];
-        var factors = [];
+class BoundCurves {
+    topLeftBorderDoubleOuterBox;
+    topRightBorderDoubleOuterBox;
+    bottomRightBorderDoubleOuterBox;
+    bottomLeftBorderDoubleOuterBox;
+    topLeftBorderDoubleInnerBox;
+    topRightBorderDoubleInnerBox;
+    bottomRightBorderDoubleInnerBox;
+    bottomLeftBorderDoubleInnerBox;
+    topLeftBorderStroke;
+    topRightBorderStroke;
+    bottomRightBorderStroke;
+    bottomLeftBorderStroke;
+    topLeftBorderBox;
+    topRightBorderBox;
+    bottomRightBorderBox;
+    bottomLeftBorderBox;
+    topLeftPaddingBox;
+    topRightPaddingBox;
+    bottomRightPaddingBox;
+    bottomLeftPaddingBox;
+    topLeftContentBox;
+    topRightContentBox;
+    bottomRightContentBox;
+    bottomLeftContentBox;
+    constructor(element) {
+        const styles = element.styles;
+        const bounds = element.bounds;
+        let [tlh, tlv] = getAbsoluteValueForTuple(styles.borderTopLeftRadius, bounds.width, bounds.height);
+        let [trh, trv] = getAbsoluteValueForTuple(styles.borderTopRightRadius, bounds.width, bounds.height);
+        let [brh, brv] = getAbsoluteValueForTuple(styles.borderBottomRightRadius, bounds.width, bounds.height);
+        let [blh, blv] = getAbsoluteValueForTuple(styles.borderBottomLeftRadius, bounds.width, bounds.height);
+        const factors = [];
         factors.push((tlh + trh) / bounds.width);
         factors.push((blh + brh) / bounds.width);
         factors.push((tlv + blv) / bounds.height);
         factors.push((trv + brv) / bounds.height);
-        var maxFactor = Math.max.apply(Math, factors);
+        const maxFactor = Math.max(...factors);
         if (maxFactor > 1) {
             tlh /= maxFactor;
             tlv /= maxFactor;
@@ -458,18 +389,18 @@ var BoundCurves = /** @class */ (function () {
             blh /= maxFactor;
             blv /= maxFactor;
         }
-        var topWidth = bounds.width - trh;
-        var rightHeight = bounds.height - brv;
-        var bottomWidth = bounds.width - brh;
-        var leftHeight = bounds.height - blv;
-        var borderTopWidth = styles.borderTopWidth;
-        var borderRightWidth = styles.borderRightWidth;
-        var borderBottomWidth = styles.borderBottomWidth;
-        var borderLeftWidth = styles.borderLeftWidth;
-        var paddingTop = getAbsoluteValue(styles.paddingTop, element.bounds.width);
-        var paddingRight = getAbsoluteValue(styles.paddingRight, element.bounds.width);
-        var paddingBottom = getAbsoluteValue(styles.paddingBottom, element.bounds.width);
-        var paddingLeft = getAbsoluteValue(styles.paddingLeft, element.bounds.width);
+        const topWidth = bounds.width - trh;
+        const rightHeight = bounds.height - brv;
+        const bottomWidth = bounds.width - brh;
+        const leftHeight = bounds.height - blv;
+        const borderTopWidth = styles.borderTopWidth;
+        const borderRightWidth = styles.borderRightWidth;
+        const borderBottomWidth = styles.borderBottomWidth;
+        const borderLeftWidth = styles.borderLeftWidth;
+        const paddingTop = getAbsoluteValue(styles.paddingTop, element.bounds.width);
+        const paddingRight = getAbsoluteValue(styles.paddingRight, element.bounds.width);
+        const paddingBottom = getAbsoluteValue(styles.paddingBottom, element.bounds.width);
+        const paddingLeft = getAbsoluteValue(styles.paddingLeft, element.bounds.width);
         this.topLeftBorderDoubleOuterBox =
             tlh > 0 || tlv > 0
                 ? getCurvePoints(bounds.left + borderLeftWidth / 3, bounds.top + borderTopWidth / 3, tlh - borderLeftWidth / 3, tlv - borderTopWidth / 3, CORNER.TOP_LEFT)
@@ -556,9 +487,7 @@ var BoundCurves = /** @class */ (function () {
                 : new Vector(bounds.left + borderLeftWidth + paddingLeft, bounds.top + borderTopWidth + paddingTop);
         this.topRightContentBox =
             trh > 0 || trv > 0
-                ? getCurvePoints(bounds.left + Math.min(topWidth, bounds.width + borderLeftWidth + paddingLeft), bounds.top + borderTopWidth + paddingTop, topWidth > bounds.width + borderLeftWidth + paddingLeft
-                    ? 0
-                    : trh - borderLeftWidth + paddingLeft, trv - (borderTopWidth + paddingTop), CORNER.TOP_RIGHT)
+                ? getCurvePoints(bounds.left + Math.min(topWidth, bounds.width + borderLeftWidth + paddingLeft), bounds.top + borderTopWidth + paddingTop, topWidth > bounds.width + borderLeftWidth + paddingLeft ? 0 : trh - borderLeftWidth + paddingLeft, trv - (borderTopWidth + paddingTop), CORNER.TOP_RIGHT)
                 : new Vector(bounds.left + bounds.width - (borderRightWidth + paddingRight), bounds.top + borderTopWidth + paddingTop);
         this.bottomRightContentBox =
             brh > 0 || brv > 0
@@ -569,8 +498,7 @@ var BoundCurves = /** @class */ (function () {
                 ? getCurvePoints(bounds.left + borderLeftWidth + paddingLeft, bounds.top + leftHeight, Math.max(0, blh - (borderLeftWidth + paddingLeft)), blv - (borderBottomWidth + paddingBottom), CORNER.BOTTOM_LEFT)
                 : new Vector(bounds.left + borderLeftWidth + paddingLeft, bounds.top + bounds.height - (borderBottomWidth + paddingBottom));
     }
-    return BoundCurves;
-}());
+}
 var CORNER;
 (function (CORNER) {
     CORNER[CORNER["TOP_LEFT"] = 0] = "TOP_LEFT";
@@ -578,12 +506,12 @@ var CORNER;
     CORNER[CORNER["BOTTOM_RIGHT"] = 2] = "BOTTOM_RIGHT";
     CORNER[CORNER["BOTTOM_LEFT"] = 3] = "BOTTOM_LEFT";
 })(CORNER || (CORNER = {}));
-var getCurvePoints = function (x, y, r1, r2, position) {
-    var kappa = 4 * ((Math.sqrt(2) - 1) / 3);
-    var ox = r1 * kappa; // control point offset horizontal
-    var oy = r2 * kappa; // control point offset vertical
-    var xm = x + r1; // x-middle
-    var ym = y + r2; // y-middle
+const getCurvePoints = (x, y, r1, r2, position) => {
+    const kappa = 4 * ((Math.sqrt(2) - 1) / 3);
+    const ox = r1 * kappa; // control point offset horizontal
+    const oy = r2 * kappa; // control point offset vertical
+    const xm = x + r1; // x-middle
+    const ym = y + r2; // y-middle
     switch (position) {
         case CORNER.TOP_LEFT:
             return new BezierCurve(new Vector(x, ym), new Vector(x, ym - oy), new Vector(xm - ox, y), new Vector(xm, y));
@@ -596,10 +524,10 @@ var getCurvePoints = function (x, y, r1, r2, position) {
             return new BezierCurve(new Vector(xm, ym), new Vector(xm - ox, ym), new Vector(x, y + oy), new Vector(x, y));
     }
 };
-var calculateBorderBoxPath = function (curves) {
+const calculateBorderBoxPath = (curves) => {
     return [curves.topLeftBorderBox, curves.topRightBorderBox, curves.bottomRightBorderBox, curves.bottomLeftBorderBox];
 };
-var calculateContentBoxPath = function (curves) {
+const calculateContentBoxPath = (curves) => {
     return [
         curves.topLeftContentBox,
         curves.topRightContentBox,
@@ -607,7 +535,7 @@ var calculateContentBoxPath = function (curves) {
         curves.bottomLeftContentBox
     ];
 };
-var calculatePaddingBoxPath = function (curves) {
+const calculatePaddingBoxPath = (curves) => {
     return [
         curves.topLeftPaddingBox,
         curves.topRightPaddingBox,
@@ -616,46 +544,47 @@ var calculatePaddingBoxPath = function (curves) {
     ];
 };
 
-var TransformEffect = /** @class */ (function () {
-    function TransformEffect(offsetX, offsetY, matrix) {
+class TransformEffect {
+    offsetX;
+    offsetY;
+    matrix;
+    type = 0 /* EffectType.TRANSFORM */;
+    target = 2 /* EffectTarget.BACKGROUND_BORDERS */ | 4 /* EffectTarget.CONTENT */;
+    constructor(offsetX, offsetY, matrix) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.matrix = matrix;
-        this.type = 0 /* TRANSFORM */;
-        this.target = 2 /* BACKGROUND_BORDERS */ | 4 /* CONTENT */;
     }
-    return TransformEffect;
-}());
-var ClipEffect = /** @class */ (function () {
-    function ClipEffect(path, target) {
+}
+class ClipEffect {
+    path;
+    target;
+    type = 1 /* EffectType.CLIP */;
+    constructor(path, target) {
         this.path = path;
         this.target = target;
-        this.type = 1 /* CLIP */;
     }
-    return ClipEffect;
-}());
-var OpacityEffect = /** @class */ (function () {
-    function OpacityEffect(opacity) {
+}
+class OpacityEffect {
+    opacity;
+    type = 2 /* EffectType.OPACITY */;
+    target = 2 /* EffectTarget.BACKGROUND_BORDERS */ | 4 /* EffectTarget.CONTENT */;
+    constructor(opacity) {
         this.opacity = opacity;
-        this.type = 2 /* OPACITY */;
-        this.target = 2 /* BACKGROUND_BORDERS */ | 4 /* CONTENT */;
     }
-    return OpacityEffect;
-}());
-var isTransformEffect = function (effect) {
-    return effect.type === 0 /* TRANSFORM */;
-};
-var isClipEffect = function (effect) { return effect.type === 1 /* CLIP */; };
-var isOpacityEffect = function (effect) { return effect.type === 2 /* OPACITY */; };
+}
+const isTransformEffect = (effect) => effect.type === 0 /* EffectType.TRANSFORM */;
+const isClipEffect = (effect) => effect.type === 1 /* EffectType.CLIP */;
+const isOpacityEffect = (effect) => effect.type === 2 /* EffectType.OPACITY */;
 
-var equalPath = function (a, b) {
+const equalPath = (a, b) => {
     if (a.length === b.length) {
-        return a.some(function (v, i) { return v === b[i]; });
+        return a.some((v, i) => v === b[i]);
     }
     return false;
 };
-var transformPath = function (path, deltaX, deltaY, deltaW, deltaH) {
-    return path.map(function (point, index) {
+const transformPath = (path, deltaX, deltaY, deltaW, deltaH) => {
+    return path.map((point, index) => {
         switch (index) {
             case 0:
                 return point.add(deltaX, deltaY);
@@ -670,14 +599,14 @@ var transformPath = function (path, deltaX, deltaY, deltaW, deltaH) {
     });
 };
 
-var ROMAN_UPPER = {
+const ROMAN_UPPER = {
     integers: [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1],
     values: ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I']
 };
-var ARMENIAN = {
+const ARMENIAN = {
     integers: [
-        9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90, 80, 70,
-        60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+        9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90, 80, 70, 60,
+        50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
     ],
     values: [
         'Ք',
@@ -718,10 +647,10 @@ var ARMENIAN = {
         'Ա'
     ]
 };
-var HEBREW = {
+const HEBREW = {
     integers: [
-        10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 400, 300, 200, 100, 90, 80, 70, 60, 50, 40, 30, 20,
-        19, 18, 17, 16, 15, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+        10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 400, 300, 200, 100, 90, 80, 70, 60, 50, 40, 30, 20, 19,
+        18, 17, 16, 15, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
     ],
     values: [
         'י׳',
@@ -763,10 +692,10 @@ var HEBREW = {
         'א'
     ]
 };
-var GEORGIAN = {
+const GEORGIAN = {
     integers: [
-        10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90,
-        80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+        10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 900, 800, 700, 600, 500, 400, 300, 200, 100, 90, 80,
+        70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
     ],
     values: [
         'ჵ',
@@ -808,11 +737,11 @@ var GEORGIAN = {
         'ა'
     ]
 };
-var createAdditiveCounter = function (value, min, max, symbols, fallback, suffix) {
+const createAdditiveCounter = (value, min, max, symbols, fallback, suffix) => {
     if (value < min || value > max) {
         return createCounterText(value, fallback, suffix.length > 0);
     }
-    return (symbols.integers.reduce(function (string, integer, index) {
+    return (symbols.integers.reduce((string, integer, index) => {
         while (value >= integer) {
             value -= integer;
             string += symbols.values[index];
@@ -820,8 +749,8 @@ var createAdditiveCounter = function (value, min, max, symbols, fallback, suffix
         return string;
     }, '') + suffix);
 };
-var createCounterStyleWithSymbolResolver = function (value, codePointRangeLength, isNumeric, resolver) {
-    var string = '';
+const createCounterStyleWithSymbolResolver = (value, codePointRangeLength, isNumeric, resolver) => {
+    let string = '';
     do {
         if (!isNumeric) {
             value--;
@@ -831,34 +760,31 @@ var createCounterStyleWithSymbolResolver = function (value, codePointRangeLength
     } while (value * codePointRangeLength >= codePointRangeLength);
     return string;
 };
-var createCounterStyleFromRange = function (value, codePointRangeStart, codePointRangeEnd, isNumeric, suffix) {
-    var codePointRangeLength = codePointRangeEnd - codePointRangeStart + 1;
+const createCounterStyleFromRange = (value, codePointRangeStart, codePointRangeEnd, isNumeric, suffix) => {
+    const codePointRangeLength = codePointRangeEnd - codePointRangeStart + 1;
     return ((value < 0 ? '-' : '') +
-        (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, isNumeric, function (codePoint) {
-            return fromCodePoint$1(Math.floor(codePoint % codePointRangeLength) + codePointRangeStart);
-        }) +
+        (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, isNumeric, (codePoint) => fromCodePoint$1(Math.floor(codePoint % codePointRangeLength) + codePointRangeStart)) +
             suffix));
 };
-var createCounterStyleFromSymbols = function (value, symbols, suffix) {
-    if (suffix === void 0) { suffix = '. '; }
-    var codePointRangeLength = symbols.length;
-    return (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, false, function (codePoint) { return symbols[Math.floor(codePoint % codePointRangeLength)]; }) + suffix);
+const createCounterStyleFromSymbols = (value, symbols, suffix = '. ') => {
+    const codePointRangeLength = symbols.length;
+    return (createCounterStyleWithSymbolResolver(Math.abs(value), codePointRangeLength, false, (codePoint) => symbols[Math.floor(codePoint % codePointRangeLength)]) + suffix);
 };
-var CJK_ZEROS = 1 << 0;
-var CJK_TEN_COEFFICIENTS = 1 << 1;
-var CJK_TEN_HIGH_COEFFICIENTS = 1 << 2;
-var CJK_HUNDRED_COEFFICIENTS = 1 << 3;
-var createCJKCounter = function (value, numbers, multipliers, negativeSign, suffix, flags) {
+const CJK_ZEROS = 1 << 0;
+const CJK_TEN_COEFFICIENTS = 1 << 1;
+const CJK_TEN_HIGH_COEFFICIENTS = 1 << 2;
+const CJK_HUNDRED_COEFFICIENTS = 1 << 3;
+const createCJKCounter = (value, numbers, multipliers, negativeSign, suffix, flags) => {
     if (value < -9999 || value > 9999) {
-        return createCounterText(value, 4 /* CJK_DECIMAL */, suffix.length > 0);
+        return createCounterText(value, 4 /* LIST_STYLE_TYPE.CJK_DECIMAL */, suffix.length > 0);
     }
-    var tmp = Math.abs(value);
-    var string = suffix;
+    let tmp = Math.abs(value);
+    let string = suffix;
     if (tmp === 0) {
         return numbers[0] + string;
     }
-    for (var digit = 0; tmp > 0 && digit <= 4; digit++) {
-        var coefficient = tmp % 10;
+    for (let digit = 0; tmp > 0 && digit <= 4; digit++) {
+        const coefficient = tmp % 10;
         if (coefficient === 0 && contains(flags, CJK_ZEROS) && string !== '') {
             string = numbers[coefficient] + string;
         }
@@ -876,118 +802,126 @@ var createCJKCounter = function (value, numbers, multipliers, negativeSign, suff
     }
     return (value < 0 ? negativeSign : '') + string;
 };
-var CHINESE_INFORMAL_MULTIPLIERS = '十百千萬';
-var CHINESE_FORMAL_MULTIPLIERS = '拾佰仟萬';
-var JAPANESE_NEGATIVE = 'マイナス';
-var KOREAN_NEGATIVE = '마이너스';
-var createCounterText = function (value, type, appendSuffix) {
-    var defaultSuffix = appendSuffix ? '. ' : '';
-    var cjkSuffix = appendSuffix ? '、' : '';
-    var koreanSuffix = appendSuffix ? ', ' : '';
-    var spaceSuffix = appendSuffix ? ' ' : '';
+const CHINESE_INFORMAL_MULTIPLIERS = '十百千萬';
+const CHINESE_FORMAL_MULTIPLIERS = '拾佰仟萬';
+const JAPANESE_NEGATIVE = 'マイナス';
+const KOREAN_NEGATIVE = '마이너스';
+const createCounterText = (value, type, appendSuffix) => {
+    const defaultSuffix = appendSuffix ? '. ' : '';
+    const cjkSuffix = appendSuffix ? '、' : '';
+    const koreanSuffix = appendSuffix ? ', ' : '';
+    const spaceSuffix = appendSuffix ? ' ' : '';
     switch (type) {
-        case 0 /* DISC */:
+        case 0 /* LIST_STYLE_TYPE.DISC */:
             return '•' + spaceSuffix;
-        case 1 /* CIRCLE */:
+        case 1 /* LIST_STYLE_TYPE.CIRCLE */:
             return '◦' + spaceSuffix;
-        case 2 /* SQUARE */:
+        case 2 /* LIST_STYLE_TYPE.SQUARE */:
             return '◾' + spaceSuffix;
-        case 5 /* DECIMAL_LEADING_ZERO */:
-            var string = createCounterStyleFromRange(value, 48, 57, true, defaultSuffix);
-            return string.length < 4 ? "0" + string : string;
-        case 4 /* CJK_DECIMAL */:
+        case 5 /* LIST_STYLE_TYPE.DECIMAL_LEADING_ZERO */:
+            const string = createCounterStyleFromRange(value, 48, 57, true, defaultSuffix);
+            return string.length < 4 ? `0${string}` : string;
+        case 4 /* LIST_STYLE_TYPE.CJK_DECIMAL */:
             return createCounterStyleFromSymbols(value, '〇一二三四五六七八九', cjkSuffix);
-        case 6 /* LOWER_ROMAN */:
-            return createAdditiveCounter(value, 1, 3999, ROMAN_UPPER, 3 /* DECIMAL */, defaultSuffix).toLowerCase();
-        case 7 /* UPPER_ROMAN */:
-            return createAdditiveCounter(value, 1, 3999, ROMAN_UPPER, 3 /* DECIMAL */, defaultSuffix);
-        case 8 /* LOWER_GREEK */:
+        case 6 /* LIST_STYLE_TYPE.LOWER_ROMAN */:
+            return createAdditiveCounter(value, 1, 3999, ROMAN_UPPER, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix).toLowerCase();
+        case 7 /* LIST_STYLE_TYPE.UPPER_ROMAN */:
+            return createAdditiveCounter(value, 1, 3999, ROMAN_UPPER, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix);
+        case 8 /* LIST_STYLE_TYPE.LOWER_GREEK */:
             return createCounterStyleFromRange(value, 945, 969, false, defaultSuffix);
-        case 9 /* LOWER_ALPHA */:
+        case 9 /* LIST_STYLE_TYPE.LOWER_ALPHA */:
             return createCounterStyleFromRange(value, 97, 122, false, defaultSuffix);
-        case 10 /* UPPER_ALPHA */:
+        case 10 /* LIST_STYLE_TYPE.UPPER_ALPHA */:
             return createCounterStyleFromRange(value, 65, 90, false, defaultSuffix);
-        case 11 /* ARABIC_INDIC */:
+        case 11 /* LIST_STYLE_TYPE.ARABIC_INDIC */:
             return createCounterStyleFromRange(value, 1632, 1641, true, defaultSuffix);
-        case 12 /* ARMENIAN */:
-        case 49 /* UPPER_ARMENIAN */:
-            return createAdditiveCounter(value, 1, 9999, ARMENIAN, 3 /* DECIMAL */, defaultSuffix);
-        case 35 /* LOWER_ARMENIAN */:
-            return createAdditiveCounter(value, 1, 9999, ARMENIAN, 3 /* DECIMAL */, defaultSuffix).toLowerCase();
-        case 13 /* BENGALI */:
+        case 12 /* LIST_STYLE_TYPE.ARMENIAN */:
+        case 49 /* LIST_STYLE_TYPE.UPPER_ARMENIAN */:
+            return createAdditiveCounter(value, 1, 9999, ARMENIAN, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix);
+        case 35 /* LIST_STYLE_TYPE.LOWER_ARMENIAN */:
+            return createAdditiveCounter(value, 1, 9999, ARMENIAN, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix).toLowerCase();
+        case 13 /* LIST_STYLE_TYPE.BENGALI */:
             return createCounterStyleFromRange(value, 2534, 2543, true, defaultSuffix);
-        case 14 /* CAMBODIAN */:
-        case 30 /* KHMER */:
+        case 14 /* LIST_STYLE_TYPE.CAMBODIAN */:
+        case 30 /* LIST_STYLE_TYPE.KHMER */:
             return createCounterStyleFromRange(value, 6112, 6121, true, defaultSuffix);
-        case 15 /* CJK_EARTHLY_BRANCH */:
+        case 15 /* LIST_STYLE_TYPE.CJK_EARTHLY_BRANCH */:
             return createCounterStyleFromSymbols(value, '子丑寅卯辰巳午未申酉戌亥', cjkSuffix);
-        case 16 /* CJK_HEAVENLY_STEM */:
+        case 16 /* LIST_STYLE_TYPE.CJK_HEAVENLY_STEM */:
             return createCounterStyleFromSymbols(value, '甲乙丙丁戊己庚辛壬癸', cjkSuffix);
-        case 17 /* CJK_IDEOGRAPHIC */:
-        case 48 /* TRAD_CHINESE_INFORMAL */:
+        case 17 /* LIST_STYLE_TYPE.CJK_IDEOGRAPHIC */:
+        case 48 /* LIST_STYLE_TYPE.TRAD_CHINESE_INFORMAL */:
             return createCJKCounter(value, '零一二三四五六七八九', CHINESE_INFORMAL_MULTIPLIERS, '負', cjkSuffix, CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS | CJK_HUNDRED_COEFFICIENTS);
-        case 47 /* TRAD_CHINESE_FORMAL */:
+        case 47 /* LIST_STYLE_TYPE.TRAD_CHINESE_FORMAL */:
             return createCJKCounter(value, '零壹貳參肆伍陸柒捌玖', CHINESE_FORMAL_MULTIPLIERS, '負', cjkSuffix, CJK_ZEROS | CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS | CJK_HUNDRED_COEFFICIENTS);
-        case 42 /* SIMP_CHINESE_INFORMAL */:
+        case 42 /* LIST_STYLE_TYPE.SIMP_CHINESE_INFORMAL */:
             return createCJKCounter(value, '零一二三四五六七八九', CHINESE_INFORMAL_MULTIPLIERS, '负', cjkSuffix, CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS | CJK_HUNDRED_COEFFICIENTS);
-        case 41 /* SIMP_CHINESE_FORMAL */:
+        case 41 /* LIST_STYLE_TYPE.SIMP_CHINESE_FORMAL */:
             return createCJKCounter(value, '零壹贰叁肆伍陆柒捌玖', CHINESE_FORMAL_MULTIPLIERS, '负', cjkSuffix, CJK_ZEROS | CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS | CJK_HUNDRED_COEFFICIENTS);
-        case 26 /* JAPANESE_INFORMAL */:
+        case 26 /* LIST_STYLE_TYPE.JAPANESE_INFORMAL */:
             return createCJKCounter(value, '〇一二三四五六七八九', '十百千万', JAPANESE_NEGATIVE, cjkSuffix, 0);
-        case 25 /* JAPANESE_FORMAL */:
+        case 25 /* LIST_STYLE_TYPE.JAPANESE_FORMAL */:
             return createCJKCounter(value, '零壱弐参四伍六七八九', '拾百千万', JAPANESE_NEGATIVE, cjkSuffix, CJK_ZEROS | CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS);
-        case 31 /* KOREAN_HANGUL_FORMAL */:
+        case 31 /* LIST_STYLE_TYPE.KOREAN_HANGUL_FORMAL */:
             return createCJKCounter(value, '영일이삼사오육칠팔구', '십백천만', KOREAN_NEGATIVE, koreanSuffix, CJK_ZEROS | CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS);
-        case 33 /* KOREAN_HANJA_INFORMAL */:
+        case 33 /* LIST_STYLE_TYPE.KOREAN_HANJA_INFORMAL */:
             return createCJKCounter(value, '零一二三四五六七八九', '十百千萬', KOREAN_NEGATIVE, koreanSuffix, 0);
-        case 32 /* KOREAN_HANJA_FORMAL */:
+        case 32 /* LIST_STYLE_TYPE.KOREAN_HANJA_FORMAL */:
             return createCJKCounter(value, '零壹貳參四五六七八九', '拾百千', KOREAN_NEGATIVE, koreanSuffix, CJK_ZEROS | CJK_TEN_COEFFICIENTS | CJK_TEN_HIGH_COEFFICIENTS);
-        case 18 /* DEVANAGARI */:
+        case 18 /* LIST_STYLE_TYPE.DEVANAGARI */:
             return createCounterStyleFromRange(value, 0x966, 0x96f, true, defaultSuffix);
-        case 20 /* GEORGIAN */:
-            return createAdditiveCounter(value, 1, 19999, GEORGIAN, 3 /* DECIMAL */, defaultSuffix);
-        case 21 /* GUJARATI */:
+        case 20 /* LIST_STYLE_TYPE.GEORGIAN */:
+            return createAdditiveCounter(value, 1, 19999, GEORGIAN, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix);
+        case 21 /* LIST_STYLE_TYPE.GUJARATI */:
             return createCounterStyleFromRange(value, 0xae6, 0xaef, true, defaultSuffix);
-        case 22 /* GURMUKHI */:
+        case 22 /* LIST_STYLE_TYPE.GURMUKHI */:
             return createCounterStyleFromRange(value, 0xa66, 0xa6f, true, defaultSuffix);
-        case 22 /* HEBREW */:
-            return createAdditiveCounter(value, 1, 10999, HEBREW, 3 /* DECIMAL */, defaultSuffix);
-        case 23 /* HIRAGANA */:
+        case 22 /* LIST_STYLE_TYPE.HEBREW */:
+            return createAdditiveCounter(value, 1, 10999, HEBREW, 3 /* LIST_STYLE_TYPE.DECIMAL */, defaultSuffix);
+        case 23 /* LIST_STYLE_TYPE.HIRAGANA */:
             return createCounterStyleFromSymbols(value, 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわゐゑをん');
-        case 24 /* HIRAGANA_IROHA */:
+        case 24 /* LIST_STYLE_TYPE.HIRAGANA_IROHA */:
             return createCounterStyleFromSymbols(value, 'いろはにほへとちりぬるをわかよたれそつねならむうゐのおくやまけふこえてあさきゆめみしゑひもせす');
-        case 27 /* KANNADA */:
+        case 27 /* LIST_STYLE_TYPE.KANNADA */:
             return createCounterStyleFromRange(value, 0xce6, 0xcef, true, defaultSuffix);
-        case 28 /* KATAKANA */:
+        case 28 /* LIST_STYLE_TYPE.KATAKANA */:
             return createCounterStyleFromSymbols(value, 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヰヱヲン', cjkSuffix);
-        case 29 /* KATAKANA_IROHA */:
+        case 29 /* LIST_STYLE_TYPE.KATAKANA_IROHA */:
             return createCounterStyleFromSymbols(value, 'イロハニホヘトチリヌルヲワカヨタレソツネナラムウヰノオクヤマケフコエテアサキユメミシヱヒモセス', cjkSuffix);
-        case 34 /* LAO */:
+        case 34 /* LIST_STYLE_TYPE.LAO */:
             return createCounterStyleFromRange(value, 0xed0, 0xed9, true, defaultSuffix);
-        case 37 /* MONGOLIAN */:
+        case 37 /* LIST_STYLE_TYPE.MONGOLIAN */:
             return createCounterStyleFromRange(value, 0x1810, 0x1819, true, defaultSuffix);
-        case 38 /* MYANMAR */:
+        case 38 /* LIST_STYLE_TYPE.MYANMAR */:
             return createCounterStyleFromRange(value, 0x1040, 0x1049, true, defaultSuffix);
-        case 39 /* ORIYA */:
+        case 39 /* LIST_STYLE_TYPE.ORIYA */:
             return createCounterStyleFromRange(value, 0xb66, 0xb6f, true, defaultSuffix);
-        case 40 /* PERSIAN */:
+        case 40 /* LIST_STYLE_TYPE.PERSIAN */:
             return createCounterStyleFromRange(value, 0x6f0, 0x6f9, true, defaultSuffix);
-        case 43 /* TAMIL */:
+        case 43 /* LIST_STYLE_TYPE.TAMIL */:
             return createCounterStyleFromRange(value, 0xbe6, 0xbef, true, defaultSuffix);
-        case 44 /* TELUGU */:
+        case 44 /* LIST_STYLE_TYPE.TELUGU */:
             return createCounterStyleFromRange(value, 0xc66, 0xc6f, true, defaultSuffix);
-        case 45 /* THAI */:
+        case 45 /* LIST_STYLE_TYPE.THAI */:
             return createCounterStyleFromRange(value, 0xe50, 0xe59, true, defaultSuffix);
-        case 46 /* TIBETAN */:
+        case 46 /* LIST_STYLE_TYPE.TIBETAN */:
             return createCounterStyleFromRange(value, 0xf20, 0xf29, true, defaultSuffix);
-        case 3 /* DECIMAL */:
+        case 3 /* LIST_STYLE_TYPE.DECIMAL */:
         default:
             return createCounterStyleFromRange(value, 48, 57, true, defaultSuffix);
     }
 };
 
-var StackingContext = /** @class */ (function () {
-    function StackingContext(container) {
+class StackingContext {
+    element;
+    negativeZIndex;
+    zeroOrAutoZIndexOrTransformedOrOpacity;
+    positiveZIndex;
+    nonPositionedFloats;
+    nonPositionedInlineLevel;
+    inlineLevel;
+    nonInlineLevel;
+    constructor(container) {
         this.element = container;
         this.inlineLevel = [];
         this.nonInlineLevel = [];
@@ -997,102 +931,104 @@ var StackingContext = /** @class */ (function () {
         this.nonPositionedFloats = [];
         this.nonPositionedInlineLevel = [];
     }
-    return StackingContext;
-}());
-var ElementPaint = /** @class */ (function () {
-    function ElementPaint(container, parent) {
+}
+class ElementPaint {
+    container;
+    parent;
+    effects = [];
+    curves;
+    listValue;
+    constructor(container, parent) {
         this.container = container;
         this.parent = parent;
-        this.effects = [];
         this.curves = new BoundCurves(this.container);
         if (this.container.styles.opacity < 1) {
             this.effects.push(new OpacityEffect(this.container.styles.opacity));
         }
         if (this.container.styles.transform !== null) {
-            var offsetX = this.container.bounds.left + this.container.styles.transformOrigin[0].number;
-            var offsetY = this.container.bounds.top + this.container.styles.transformOrigin[1].number;
-            var matrix = this.container.styles.transform;
+            const offsetX = this.container.bounds.left + this.container.styles.transformOrigin[0].number;
+            const offsetY = this.container.bounds.top + this.container.styles.transformOrigin[1].number;
+            const matrix = this.container.styles.transform;
             this.effects.push(new TransformEffect(offsetX, offsetY, matrix));
         }
-        if (this.container.styles.overflowX !== 0 /* VISIBLE */) {
-            var borderBox = calculateBorderBoxPath(this.curves);
-            var paddingBox = calculatePaddingBoxPath(this.curves);
+        if (this.container.styles.overflowX !== 0 /* OVERFLOW.VISIBLE */) {
+            const borderBox = calculateBorderBoxPath(this.curves);
+            const paddingBox = calculatePaddingBoxPath(this.curves);
             if (equalPath(borderBox, paddingBox)) {
-                this.effects.push(new ClipEffect(borderBox, 2 /* BACKGROUND_BORDERS */ | 4 /* CONTENT */));
+                this.effects.push(new ClipEffect(borderBox, 2 /* EffectTarget.BACKGROUND_BORDERS */ | 4 /* EffectTarget.CONTENT */));
             }
             else {
-                this.effects.push(new ClipEffect(borderBox, 2 /* BACKGROUND_BORDERS */));
-                this.effects.push(new ClipEffect(paddingBox, 4 /* CONTENT */));
+                this.effects.push(new ClipEffect(borderBox, 2 /* EffectTarget.BACKGROUND_BORDERS */));
+                this.effects.push(new ClipEffect(paddingBox, 4 /* EffectTarget.CONTENT */));
             }
         }
     }
-    ElementPaint.prototype.getEffects = function (target) {
-        var inFlow = [2 /* ABSOLUTE */, 3 /* FIXED */].indexOf(this.container.styles.position) === -1;
-        var parent = this.parent;
-        var effects = this.effects.slice(0);
+    getEffects(target) {
+        let inFlow = [2 /* POSITION.ABSOLUTE */, 3 /* POSITION.FIXED */].indexOf(this.container.styles.position) === -1;
+        let parent = this.parent;
+        const effects = this.effects.slice(0);
         while (parent) {
-            var croplessEffects = parent.effects.filter(function (effect) { return !isClipEffect(effect); });
-            if (inFlow || parent.container.styles.position !== 0 /* STATIC */ || !parent.parent) {
-                effects.unshift.apply(effects, croplessEffects);
-                inFlow = [2 /* ABSOLUTE */, 3 /* FIXED */].indexOf(parent.container.styles.position) === -1;
-                if (parent.container.styles.overflowX !== 0 /* VISIBLE */) {
-                    var borderBox = calculateBorderBoxPath(parent.curves);
-                    var paddingBox = calculatePaddingBoxPath(parent.curves);
+            const croplessEffects = parent.effects.filter((effect) => !isClipEffect(effect));
+            if (inFlow || parent.container.styles.position !== 0 /* POSITION.STATIC */ || !parent.parent) {
+                effects.unshift(...croplessEffects);
+                inFlow = [2 /* POSITION.ABSOLUTE */, 3 /* POSITION.FIXED */].indexOf(parent.container.styles.position) === -1;
+                if (parent.container.styles.overflowX !== 0 /* OVERFLOW.VISIBLE */) {
+                    const borderBox = calculateBorderBoxPath(parent.curves);
+                    const paddingBox = calculatePaddingBoxPath(parent.curves);
                     if (!equalPath(borderBox, paddingBox)) {
-                        effects.unshift(new ClipEffect(paddingBox, 2 /* BACKGROUND_BORDERS */ | 4 /* CONTENT */));
+                        effects.unshift(new ClipEffect(paddingBox, 2 /* EffectTarget.BACKGROUND_BORDERS */ | 4 /* EffectTarget.CONTENT */));
                     }
                 }
             }
             else {
-                effects.unshift.apply(effects, croplessEffects);
+                effects.unshift(...croplessEffects);
             }
             parent = parent.parent;
         }
-        return effects.filter(function (effect) { return contains(effect.target, target); });
-    };
-    return ElementPaint;
-}());
-var parseStackTree = function (parent, stackingContext, realStackingContext, listItems) {
-    parent.container.elements.forEach(function (child) {
-        var treatAsRealStackingContext = contains(child.flags, 4 /* CREATES_REAL_STACKING_CONTEXT */);
-        var createsStackingContext = contains(child.flags, 2 /* CREATES_STACKING_CONTEXT */);
-        var paintContainer = new ElementPaint(child, parent);
-        if (contains(child.styles.display, 2048 /* LIST_ITEM */)) {
+        return effects.filter((effect) => contains(effect.target, target));
+    }
+}
+const parseStackTree = (parent, stackingContext, realStackingContext, listItems) => {
+    parent.container.elements.forEach((child) => {
+        const treatAsRealStackingContext = contains(child.flags, 4 /* FLAGS.CREATES_REAL_STACKING_CONTEXT */);
+        const createsStackingContext = contains(child.flags, 2 /* FLAGS.CREATES_STACKING_CONTEXT */);
+        const paintContainer = new ElementPaint(child, parent);
+        if (contains(child.styles.display, 2048 /* DISPLAY.LIST_ITEM */)) {
             listItems.push(paintContainer);
         }
-        var listOwnerItems = contains(child.flags, 8 /* IS_LIST_OWNER */) ? [] : listItems;
+        const listOwnerItems = contains(child.flags, 8 /* FLAGS.IS_LIST_OWNER */) ? [] : listItems;
         if (treatAsRealStackingContext || createsStackingContext) {
-            var parentStack = treatAsRealStackingContext || child.styles.isPositioned() ? realStackingContext : stackingContext;
-            var stack = new StackingContext(paintContainer);
+            const parentStack = treatAsRealStackingContext || child.styles.isPositioned() ? realStackingContext : stackingContext;
+            const stack = new StackingContext(paintContainer);
             if (child.styles.isPositioned() || child.styles.opacity < 1 || child.styles.isTransformed()) {
-                var order_1 = child.styles.zIndex.order;
-                if (order_1 < 0) {
-                    var index_1 = 0;
-                    parentStack.negativeZIndex.some(function (current, i) {
-                        if (order_1 > current.element.container.styles.zIndex.order) {
-                            index_1 = i;
+                const order = child.styles.zIndex.order;
+                if (order < 0) {
+                    let index = 0;
+                    parentStack.negativeZIndex.some((current, i) => {
+                        if (order > current.element.container.styles.zIndex.order) {
+                            index = i;
                             return false;
                         }
-                        else if (index_1 > 0) {
+                        else if (index > 0) {
                             return true;
                         }
                         return false;
                     });
-                    parentStack.negativeZIndex.splice(index_1, 0, stack);
+                    parentStack.negativeZIndex.splice(index, 0, stack);
                 }
-                else if (order_1 > 0) {
-                    var index_2 = 0;
-                    parentStack.positiveZIndex.some(function (current, i) {
-                        if (order_1 >= current.element.container.styles.zIndex.order) {
-                            index_2 = i + 1;
+                else if (order > 0) {
+                    let index = 0;
+                    parentStack.positiveZIndex.some((current, i) => {
+                        if (order >= current.element.container.styles.zIndex.order) {
+                            index = i + 1;
                             return false;
                         }
-                        else if (index_2 > 0) {
+                        else if (index > 0) {
                             return true;
                         }
                         return false;
                     });
-                    parentStack.positiveZIndex.splice(index_2, 0, stack);
+                    parentStack.positiveZIndex.splice(index, 0, stack);
                 }
                 else {
                     parentStack.zeroOrAutoZIndexOrTransformedOrOpacity.push(stack);
@@ -1117,64 +1053,58 @@ var parseStackTree = function (parent, stackingContext, realStackingContext, lis
             }
             parseStackTree(paintContainer, stackingContext, realStackingContext, listOwnerItems);
         }
-        if (contains(child.flags, 8 /* IS_LIST_OWNER */)) {
+        if (contains(child.flags, 8 /* FLAGS.IS_LIST_OWNER */)) {
             processListItems(child, listOwnerItems);
         }
     });
 };
-var processListItems = function (owner, elements) {
-    var numbering = isOrderedListContainer(owner) ? owner.start : 1;
-    var reversed = isOrderedListContainer(owner) ? owner.reversed : false;
-    for (var i = 0; i < elements.length; i++) {
-        var item = elements[i];
-        if (isListItemContainer(item.container) &&
-            typeof item.container.value === 'number' &&
-            item.container.value !== 0) {
+const processListItems = (owner, elements) => {
+    let numbering = isOrderedListContainer(owner) ? owner.start : 1;
+    const reversed = isOrderedListContainer(owner) ? owner.reversed : false;
+    for (let i = 0; i < elements.length; i++) {
+        const item = elements[i];
+        if (isListItemContainer(item.container) && typeof item.container.value === 'number' && item.container.value !== 0) {
             numbering = item.container.value;
         }
         item.listValue = createCounterText(numbering, item.container.styles.listStyleType, true);
         numbering += reversed ? -1 : 1;
     }
 };
-var parseStackingContexts = function (container) {
-    var paintContainer = new ElementPaint(container, null);
-    var root = new StackingContext(paintContainer);
-    var listItems = [];
+const parseStackingContexts = (container) => {
+    const paintContainer = new ElementPaint(container, null);
+    const root = new StackingContext(paintContainer);
+    const listItems = [];
     parseStackTree(paintContainer, root, root, listItems);
     processListItems(paintContainer.container, listItems);
     return root;
 };
-var isOrderedListContainer = function (container) {
-    return container.containerType === 'ol';
-};
-var isListItemContainer = function (container) {
-    return container.containerType === 'li';
+const isOrderedListContainer = (container) => container.containerType === 'ol';
+const isListItemContainer = (container) => container.containerType === 'li';
+
+const isTransparent = (color) => (0xff & color) === 0;
+const asString = (color) => {
+    const alpha = 0xff & color;
+    const blue = 0xff & (color >> 8);
+    const green = 0xff & (color >> 16);
+    const red = 0xff & (color >> 24);
+    return alpha < 255 ? `rgba(${red},${green},${blue},${alpha / 255})` : `rgb(${red},${green},${blue})`;
 };
 
-var isTransparent = function (color) { return (0xff & color) === 0; };
-var asString = function (color) {
-    var alpha = 0xff & color;
-    var blue = 0xff & (color >> 8);
-    var green = 0xff & (color >> 16);
-    var red = 0xff & (color >> 24);
-    return alpha < 255 ? "rgba(" + red + "," + green + "," + blue + "," + alpha / 255 + ")" : "rgb(" + red + "," + green + "," + blue + ")";
-};
-
-var processColorStops = function (stops, lineLength) {
-    var first = stops[0];
-    var last = stops[stops.length - 1];
+const processColorStops = (stops, lineLength) => {
+    const first = stops[0];
+    const last = stops[stops.length - 1];
     if (first.stop === null) {
         first.stop = ZERO_LENGTH;
     }
     if (last.stop === null) {
         last.stop = HUNDRED_PERCENT;
     }
-    var processStops = [];
-    var previous = 0;
-    for (var i = 0; i < stops.length; i++) {
-        var stop_1 = stops[i].stop;
-        if (stop_1 !== null) {
-            var absoluteValue = getAbsoluteValue(stop_1, lineLength);
+    const processStops = [];
+    let previous = 0;
+    for (let i = 0; i < stops.length; i++) {
+        const stop = stops[i].stop;
+        if (stop !== null) {
+            const absoluteValue = getAbsoluteValue(stop, lineLength);
             if (absoluteValue > previous) {
                 processStops.push(absoluteValue);
             }
@@ -1187,57 +1117,56 @@ var processColorStops = function (stops, lineLength) {
             processStops.push(null);
         }
     }
-    var gapBegin = null;
-    for (var i = 0; i < processStops.length; i++) {
-        var stop_2 = processStops[i];
-        if (stop_2 === null) {
+    let gapBegin = null;
+    for (let i = 0; i < processStops.length; i++) {
+        const stop = processStops[i];
+        if (stop === null) {
             if (gapBegin === null) {
                 gapBegin = i;
             }
         }
         else if (gapBegin !== null) {
-            var gapLength = i - gapBegin;
-            var beforeGap = processStops[gapBegin - 1];
-            var gapValue = (stop_2 - beforeGap) / (gapLength + 1);
-            for (var g = 1; g <= gapLength; g++) {
+            const gapLength = i - gapBegin;
+            const beforeGap = processStops[gapBegin - 1];
+            const gapValue = (stop - beforeGap) / (gapLength + 1);
+            for (let g = 1; g <= gapLength; g++) {
                 processStops[gapBegin + g - 1] = gapValue * g;
             }
             gapBegin = null;
         }
     }
-    return stops.map(function (_a, i) {
-        var color = _a.color;
-        return { color: color, stop: Math.max(Math.min(1, processStops[i] / lineLength), 0) };
+    return stops.map(({ color }, i) => {
+        return { color, stop: Math.max(Math.min(1, processStops[i] / lineLength), 0) };
     });
 };
-var getAngleFromCorner = function (corner, width, height) {
-    var centerX = width / 2;
-    var centerY = height / 2;
-    var x = getAbsoluteValue(corner[0], width) - centerX;
-    var y = centerY - getAbsoluteValue(corner[1], height);
+const getAngleFromCorner = (corner, width, height) => {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const x = getAbsoluteValue(corner[0], width) - centerX;
+    const y = centerY - getAbsoluteValue(corner[1], height);
     return (Math.atan2(y, x) + Math.PI * 2) % (Math.PI * 2);
 };
-var calculateGradientDirection = function (angle, width, height) {
-    var radian = typeof angle === 'number' ? angle : getAngleFromCorner(angle, width, height);
-    var lineLength = Math.abs(width * Math.sin(radian)) + Math.abs(height * Math.cos(radian));
-    var halfWidth = width / 2;
-    var halfHeight = height / 2;
-    var halfLineLength = lineLength / 2;
-    var yDiff = Math.sin(radian - Math.PI / 2) * halfLineLength;
-    var xDiff = Math.cos(radian - Math.PI / 2) * halfLineLength;
+const calculateGradientDirection = (angle, width, height) => {
+    const radian = typeof angle === 'number' ? angle : getAngleFromCorner(angle, width, height);
+    const lineLength = Math.abs(width * Math.sin(radian)) + Math.abs(height * Math.cos(radian));
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
+    const halfLineLength = lineLength / 2;
+    const yDiff = Math.sin(radian - Math.PI / 2) * halfLineLength;
+    const xDiff = Math.cos(radian - Math.PI / 2) * halfLineLength;
     return [lineLength, halfWidth - xDiff, halfWidth + xDiff, halfHeight - yDiff, halfHeight + yDiff];
 };
-var distance = function (a, b) { return Math.sqrt(a * a + b * b); };
-var findCorner = function (width, height, x, y, closest) {
-    var corners = [
+const distance = (a, b) => Math.sqrt(a * a + b * b);
+const findCorner = (width, height, x, y, closest) => {
+    const corners = [
         [0, 0],
         [0, height],
         [width, 0],
         [width, height]
     ];
-    return corners.reduce(function (stat, corner) {
-        var cx = corner[0], cy = corner[1];
-        var d = distance(x - cx, y - cy);
+    return corners.reduce((stat, corner) => {
+        const [cx, cy] = corner;
+        const d = distance(x - cx, y - cy);
         if (closest ? d < stat.optimumDistance : d > stat.optimumDistance) {
             return {
                 optimumCorner: corner,
@@ -1250,55 +1179,55 @@ var findCorner = function (width, height, x, y, closest) {
         optimumCorner: null
     }).optimumCorner;
 };
-var calculateRadius = function (gradient, x, y, width, height) {
-    var rx = 0;
-    var ry = 0;
+const calculateRadius = (gradient, x, y, width, height) => {
+    let rx = 0;
+    let ry = 0;
     switch (gradient.size) {
-        case 0 /* CLOSEST_SIDE */:
+        case 0 /* CSSRadialExtent.CLOSEST_SIDE */:
             // The ending shape is sized so that that it exactly meets the side of the gradient box closest to the gradient’s center.
             // If the shape is an ellipse, it exactly meets the closest side in each dimension.
-            if (gradient.shape === 0 /* CIRCLE */) {
+            if (gradient.shape === 0 /* CSSRadialShape.CIRCLE */) {
                 rx = ry = Math.min(Math.abs(x), Math.abs(x - width), Math.abs(y), Math.abs(y - height));
             }
-            else if (gradient.shape === 1 /* ELLIPSE */) {
+            else if (gradient.shape === 1 /* CSSRadialShape.ELLIPSE */) {
                 rx = Math.min(Math.abs(x), Math.abs(x - width));
                 ry = Math.min(Math.abs(y), Math.abs(y - height));
             }
             break;
-        case 2 /* CLOSEST_CORNER */:
+        case 2 /* CSSRadialExtent.CLOSEST_CORNER */:
             // The ending shape is sized so that that it passes through the corner of the gradient box closest to the gradient’s center.
             // If the shape is an ellipse, the ending shape is given the same aspect-ratio it would have if closest-side were specified.
-            if (gradient.shape === 0 /* CIRCLE */) {
+            if (gradient.shape === 0 /* CSSRadialShape.CIRCLE */) {
                 rx = ry = Math.min(distance(x, y), distance(x, y - height), distance(x - width, y), distance(x - width, y - height));
             }
-            else if (gradient.shape === 1 /* ELLIPSE */) {
+            else if (gradient.shape === 1 /* CSSRadialShape.ELLIPSE */) {
                 // Compute the ratio ry/rx (which is to be the same as for "closest-side")
-                var c = Math.min(Math.abs(y), Math.abs(y - height)) / Math.min(Math.abs(x), Math.abs(x - width));
-                var _a = findCorner(width, height, x, y, true), cx = _a[0], cy = _a[1];
+                const c = Math.min(Math.abs(y), Math.abs(y - height)) / Math.min(Math.abs(x), Math.abs(x - width));
+                const [cx, cy] = findCorner(width, height, x, y, true);
                 rx = distance(cx - x, (cy - y) / c);
                 ry = c * rx;
             }
             break;
-        case 1 /* FARTHEST_SIDE */:
+        case 1 /* CSSRadialExtent.FARTHEST_SIDE */:
             // Same as closest-side, except the ending shape is sized based on the farthest side(s)
-            if (gradient.shape === 0 /* CIRCLE */) {
+            if (gradient.shape === 0 /* CSSRadialShape.CIRCLE */) {
                 rx = ry = Math.max(Math.abs(x), Math.abs(x - width), Math.abs(y), Math.abs(y - height));
             }
-            else if (gradient.shape === 1 /* ELLIPSE */) {
+            else if (gradient.shape === 1 /* CSSRadialShape.ELLIPSE */) {
                 rx = Math.max(Math.abs(x), Math.abs(x - width));
                 ry = Math.max(Math.abs(y), Math.abs(y - height));
             }
             break;
-        case 3 /* FARTHEST_CORNER */:
+        case 3 /* CSSRadialExtent.FARTHEST_CORNER */:
             // Same as closest-corner, except the ending shape is sized based on the farthest corner.
             // If the shape is an ellipse, the ending shape is given the same aspect ratio it would have if farthest-side were specified.
-            if (gradient.shape === 0 /* CIRCLE */) {
+            if (gradient.shape === 0 /* CSSRadialShape.CIRCLE */) {
                 rx = ry = Math.max(distance(x, y), distance(x, y - height), distance(x - width, y), distance(x - width, y - height));
             }
-            else if (gradient.shape === 1 /* ELLIPSE */) {
+            else if (gradient.shape === 1 /* CSSRadialShape.ELLIPSE */) {
                 // Compute the ratio ry/rx (which is to be the same as for "farthest-side")
-                var c = Math.max(Math.abs(y), Math.abs(y - height)) / Math.max(Math.abs(x), Math.abs(x - width));
-                var _b = findCorner(width, height, x, y, false), cx = _b[0], cy = _b[1];
+                const c = Math.max(Math.abs(y), Math.abs(y - height)) / Math.max(Math.abs(x), Math.abs(x - width));
+                const [cx, cy] = findCorner(width, height, x, y, false);
                 rx = distance(cx - x, (cy - y) / c);
                 ry = c * rx;
             }
@@ -1311,14 +1240,14 @@ var calculateRadius = function (gradient, x, y, width, height) {
     return [rx, ry];
 };
 
-var isLinearGradient = function (background) {
-    return background.type === 1 /* LINEAR_GRADIENT */;
+const isLinearGradient = (background) => {
+    return background.type === 1 /* CSSImageType.LINEAR_GRADIENT */;
 };
-var isRadialGradient = function (background) {
-    return background.type === 2 /* RADIAL_GRADIENT */;
+const isRadialGradient = (background) => {
+    return background.type === 2 /* CSSImageType.RADIAL_GRADIENT */;
 };
 
-var parsePathForBorder = function (curves, borderSide) {
+const parsePathForBorder = (curves, borderSide) => {
     switch (borderSide) {
         case 0:
             return createPathFromCurves(curves.topLeftBorderBox, curves.topLeftPaddingBox, curves.topRightBorderBox, curves.topRightPaddingBox);
@@ -1331,7 +1260,7 @@ var parsePathForBorder = function (curves, borderSide) {
             return createPathFromCurves(curves.bottomLeftBorderBox, curves.bottomLeftPaddingBox, curves.topLeftBorderBox, curves.topLeftPaddingBox);
     }
 };
-var parsePathForBorderDoubleOuter = function (curves, borderSide) {
+const parsePathForBorderDoubleOuter = (curves, borderSide) => {
     switch (borderSide) {
         case 0:
             return createPathFromCurves(curves.topLeftBorderBox, curves.topLeftBorderDoubleOuterBox, curves.topRightBorderBox, curves.topRightBorderDoubleOuterBox);
@@ -1344,7 +1273,7 @@ var parsePathForBorderDoubleOuter = function (curves, borderSide) {
             return createPathFromCurves(curves.bottomLeftBorderBox, curves.bottomLeftBorderDoubleOuterBox, curves.topLeftBorderBox, curves.topLeftBorderDoubleOuterBox);
     }
 };
-var parsePathForBorderDoubleInner = function (curves, borderSide) {
+const parsePathForBorderDoubleInner = (curves, borderSide) => {
     switch (borderSide) {
         case 0:
             return createPathFromCurves(curves.topLeftBorderDoubleInnerBox, curves.topLeftPaddingBox, curves.topRightBorderDoubleInnerBox, curves.topRightPaddingBox);
@@ -1357,7 +1286,7 @@ var parsePathForBorderDoubleInner = function (curves, borderSide) {
             return createPathFromCurves(curves.bottomLeftBorderDoubleInnerBox, curves.bottomLeftPaddingBox, curves.topLeftBorderDoubleInnerBox, curves.topLeftPaddingBox);
     }
 };
-var parsePathForBorderStroke = function (curves, borderSide) {
+const parsePathForBorderStroke = (curves, borderSide) => {
     switch (borderSide) {
         case 0:
             return createStrokePathFromCurves(curves.topLeftBorderStroke, curves.topRightBorderStroke);
@@ -1370,8 +1299,8 @@ var parsePathForBorderStroke = function (curves, borderSide) {
             return createStrokePathFromCurves(curves.bottomLeftBorderStroke, curves.topLeftBorderStroke);
     }
 };
-var createStrokePathFromCurves = function (outer1, outer2) {
-    var path = [];
+const createStrokePathFromCurves = (outer1, outer2) => {
+    const path = [];
     if (isBezierCurve(outer1)) {
         path.push(outer1.subdivide(0.5, false));
     }
@@ -1386,8 +1315,8 @@ var createStrokePathFromCurves = function (outer1, outer2) {
     }
     return path;
 };
-var createPathFromCurves = function (outer1, inner1, outer2, inner2) {
-    var path = [];
+const createPathFromCurves = (outer1, inner1, outer2, inner2) => {
+    const path = [];
     if (isBezierCurve(outer1)) {
         path.push(outer1.subdivide(0.5, false));
     }
@@ -1422,74 +1351,73 @@ var BACKGROUND_SIZE;
     BACKGROUND_SIZE["COVER"] = "cover";
 })(BACKGROUND_SIZE || (BACKGROUND_SIZE = {}));
 
-var paddingBox = function (element) {
-    var bounds = element.bounds;
-    var styles = element.styles;
+const paddingBox = (element) => {
+    const bounds = element.bounds;
+    const styles = element.styles;
     return bounds.add(styles.borderLeftWidth, styles.borderTopWidth, -(styles.borderRightWidth + styles.borderLeftWidth), -(styles.borderTopWidth + styles.borderBottomWidth));
 };
-var contentBox = function (element) {
-    var styles = element.styles;
-    var bounds = element.bounds;
-    var paddingLeft = getAbsoluteValue(styles.paddingLeft, bounds.width);
-    var paddingRight = getAbsoluteValue(styles.paddingRight, bounds.width);
-    var paddingTop = getAbsoluteValue(styles.paddingTop, bounds.width);
-    var paddingBottom = getAbsoluteValue(styles.paddingBottom, bounds.width);
+const contentBox = (element) => {
+    const styles = element.styles;
+    const bounds = element.bounds;
+    const paddingLeft = getAbsoluteValue(styles.paddingLeft, bounds.width);
+    const paddingRight = getAbsoluteValue(styles.paddingRight, bounds.width);
+    const paddingTop = getAbsoluteValue(styles.paddingTop, bounds.width);
+    const paddingBottom = getAbsoluteValue(styles.paddingBottom, bounds.width);
     return bounds.add(paddingLeft + styles.borderLeftWidth, paddingTop + styles.borderTopWidth, -(styles.borderRightWidth + styles.borderLeftWidth + paddingLeft + paddingRight), -(styles.borderTopWidth + styles.borderBottomWidth + paddingTop + paddingBottom));
 };
 
-var calculateBackgroundPositioningArea = function (backgroundOrigin, element) {
-    if (backgroundOrigin === 0 /* BORDER_BOX */) {
+const calculateBackgroundPositioningArea = (backgroundOrigin, element) => {
+    if (backgroundOrigin === 0 /* BACKGROUND_ORIGIN.BORDER_BOX */) {
         return element.bounds;
     }
-    if (backgroundOrigin === 2 /* CONTENT_BOX */) {
+    if (backgroundOrigin === 2 /* BACKGROUND_ORIGIN.CONTENT_BOX */) {
         return contentBox(element);
     }
     return paddingBox(element);
 };
-var calculateBackgroundPaintingArea = function (backgroundClip, element) {
-    if (backgroundClip === 0 /* BORDER_BOX */) {
+const calculateBackgroundPaintingArea = (backgroundClip, element) => {
+    if (backgroundClip === 0 /* BACKGROUND_CLIP.BORDER_BOX */) {
         return element.bounds;
     }
-    if (backgroundClip === 2 /* CONTENT_BOX */) {
+    if (backgroundClip === 2 /* BACKGROUND_CLIP.CONTENT_BOX */) {
         return contentBox(element);
     }
     return paddingBox(element);
 };
-var calculateBackgroundRendering = function (container, index, intrinsicSize) {
-    var backgroundPositioningArea = calculateBackgroundPositioningArea(getBackgroundValueForIndex(container.styles.backgroundOrigin, index), container);
-    var backgroundPaintingArea = calculateBackgroundPaintingArea(getBackgroundValueForIndex(container.styles.backgroundClip, index), container);
-    var backgroundImageSize = calculateBackgroundSize(getBackgroundValueForIndex(container.styles.backgroundSize, index), intrinsicSize, backgroundPositioningArea);
-    var sizeWidth = backgroundImageSize[0], sizeHeight = backgroundImageSize[1];
-    var position = getAbsoluteValueForTuple(getBackgroundValueForIndex(container.styles.backgroundPosition, index), backgroundPositioningArea.width - sizeWidth, backgroundPositioningArea.height - sizeHeight);
-    var path = calculateBackgroundRepeatPath(getBackgroundValueForIndex(container.styles.backgroundRepeat, index), position, backgroundImageSize, backgroundPositioningArea, backgroundPaintingArea);
-    var offsetX = Math.round(backgroundPositioningArea.left + position[0]);
-    var offsetY = Math.round(backgroundPositioningArea.top + position[1]);
+const calculateBackgroundRendering = (container, index, intrinsicSize) => {
+    const backgroundPositioningArea = calculateBackgroundPositioningArea(getBackgroundValueForIndex(container.styles.backgroundOrigin, index), container);
+    const backgroundPaintingArea = calculateBackgroundPaintingArea(getBackgroundValueForIndex(container.styles.backgroundClip, index), container);
+    const backgroundImageSize = calculateBackgroundSize(getBackgroundValueForIndex(container.styles.backgroundSize, index), intrinsicSize, backgroundPositioningArea);
+    const [sizeWidth, sizeHeight] = backgroundImageSize;
+    const position = getAbsoluteValueForTuple(getBackgroundValueForIndex(container.styles.backgroundPosition, index), backgroundPositioningArea.width - sizeWidth, backgroundPositioningArea.height - sizeHeight);
+    const path = calculateBackgroundRepeatPath(getBackgroundValueForIndex(container.styles.backgroundRepeat, index), position, backgroundImageSize, backgroundPositioningArea, backgroundPaintingArea);
+    const offsetX = Math.round(backgroundPositioningArea.left + position[0]);
+    const offsetY = Math.round(backgroundPositioningArea.top + position[1]);
     return [path, offsetX, offsetY, sizeWidth, sizeHeight];
 };
-var isAuto = function (token) { return isIdentToken(token) && token.value === BACKGROUND_SIZE.AUTO; };
-var hasIntrinsicValue = function (value) { return typeof value === 'number'; };
-var calculateBackgroundSize = function (size, _a, bounds) {
-    var intrinsicWidth = _a[0], intrinsicHeight = _a[1], intrinsicProportion = _a[2];
-    var first = size[0], second = size[1];
+const isAuto = (token) => isIdentToken(token) && token.value === BACKGROUND_SIZE.AUTO;
+const hasIntrinsicValue = (value) => typeof value === 'number';
+const calculateBackgroundSize = (size, [intrinsicWidth, intrinsicHeight, intrinsicProportion], bounds) => {
+    const [first, second] = size;
     if (!first) {
         return [0, 0];
     }
     if (isLengthPercentage(first) && second && isLengthPercentage(second)) {
         return [getAbsoluteValue(first, bounds.width), getAbsoluteValue(second, bounds.height)];
     }
-    var hasIntrinsicProportion = hasIntrinsicValue(intrinsicProportion);
+    const hasIntrinsicProportion = hasIntrinsicValue(intrinsicProportion);
     if (isIdentToken(first) && (first.value === BACKGROUND_SIZE.CONTAIN || first.value === BACKGROUND_SIZE.COVER)) {
         if (hasIntrinsicValue(intrinsicProportion)) {
-            var targetRatio = bounds.width / bounds.height;
+            const targetRatio = bounds.width / bounds.height;
             return targetRatio < intrinsicProportion !== (first.value === BACKGROUND_SIZE.COVER)
                 ? [bounds.width, bounds.width / intrinsicProportion]
                 : [bounds.height * intrinsicProportion, bounds.height];
         }
         return [bounds.width, bounds.height];
     }
-    var hasIntrinsicWidth = hasIntrinsicValue(intrinsicWidth);
-    var hasIntrinsicHeight = hasIntrinsicValue(intrinsicHeight);
-    var hasIntrinsicDimensions = hasIntrinsicWidth || hasIntrinsicHeight;
+    const hasIntrinsicWidth = hasIntrinsicValue(intrinsicWidth);
+    const hasIntrinsicHeight = hasIntrinsicValue(intrinsicHeight);
+    const hasIntrinsicDimensions = hasIntrinsicWidth || hasIntrinsicHeight;
     // If the background-size is auto or auto auto:
     if (isAuto(first) && (!second || isAuto(second))) {
         // If the image has both horizontal and vertical intrinsic dimensions, it's rendered at that size.
@@ -1505,45 +1433,45 @@ var calculateBackgroundSize = function (size, _a, bounds) {
         // If the image has only one intrinsic dimension and has intrinsic proportions, it's rendered at the size corresponding to that one dimension.
         // The other dimension is computed using the specified dimension and the intrinsic proportions.
         if (hasIntrinsicDimensions && hasIntrinsicProportion) {
-            var width_1 = hasIntrinsicWidth
+            const width = hasIntrinsicWidth
                 ? intrinsicWidth
                 : intrinsicHeight * intrinsicProportion;
-            var height_1 = hasIntrinsicHeight
+            const height = hasIntrinsicHeight
                 ? intrinsicHeight
                 : intrinsicWidth / intrinsicProportion;
-            return [width_1, height_1];
+            return [width, height];
         }
         // If the image has only one intrinsic dimension but has no intrinsic proportions,
         // it's rendered using the specified dimension and the other dimension of the background positioning area.
-        var width_2 = hasIntrinsicWidth ? intrinsicWidth : bounds.width;
-        var height_2 = hasIntrinsicHeight ? intrinsicHeight : bounds.height;
-        return [width_2, height_2];
+        const width = hasIntrinsicWidth ? intrinsicWidth : bounds.width;
+        const height = hasIntrinsicHeight ? intrinsicHeight : bounds.height;
+        return [width, height];
     }
     // If the image has intrinsic proportions, it's stretched to the specified dimension.
     // The unspecified dimension is computed using the specified dimension and the intrinsic proportions.
     if (hasIntrinsicProportion) {
-        var width_3 = 0;
-        var height_3 = 0;
+        let width = 0;
+        let height = 0;
         if (isLengthPercentage(first)) {
-            width_3 = getAbsoluteValue(first, bounds.width);
+            width = getAbsoluteValue(first, bounds.width);
         }
         else if (isLengthPercentage(second)) {
-            height_3 = getAbsoluteValue(second, bounds.height);
+            height = getAbsoluteValue(second, bounds.height);
         }
         if (isAuto(first)) {
-            width_3 = height_3 * intrinsicProportion;
+            width = height * intrinsicProportion;
         }
         else if (!second || isAuto(second)) {
-            height_3 = width_3 / intrinsicProportion;
+            height = width / intrinsicProportion;
         }
-        return [width_3, height_3];
+        return [width, height];
     }
     // If the image has no intrinsic proportions, it's stretched to the specified dimension.
     // The unspecified dimension is computed using the image's corresponding intrinsic dimension,
     // if there is one. If there is no such intrinsic dimension,
     // it becomes the corresponding dimension of the background positioning area.
-    var width = null;
-    var height = null;
+    let width = null;
+    let height = null;
     if (isLengthPercentage(first)) {
         width = getAbsoluteValue(first, bounds.width);
     }
@@ -1565,34 +1493,32 @@ var calculateBackgroundSize = function (size, _a, bounds) {
     if (width !== null && height !== null) {
         return [width, height];
     }
-    throw new Error("Unable to calculate background-size for element");
+    throw new Error(`Unable to calculate background-size for element`);
 };
-var getBackgroundValueForIndex = function (values, index) {
-    var value = values[index];
+const getBackgroundValueForIndex = (values, index) => {
+    const value = values[index];
     if (typeof value === 'undefined') {
         return values[0];
     }
     return value;
 };
-var calculateBackgroundRepeatPath = function (repeat, _a, _b, backgroundPositioningArea, backgroundPaintingArea) {
-    var x = _a[0], y = _a[1];
-    var width = _b[0], height = _b[1];
+const calculateBackgroundRepeatPath = (repeat, [x, y], [width, height], backgroundPositioningArea, backgroundPaintingArea) => {
     switch (repeat) {
-        case 2 /* REPEAT_X */:
+        case 2 /* BACKGROUND_REPEAT.REPEAT_X */:
             return [
                 new Vector(Math.round(backgroundPositioningArea.left), Math.round(backgroundPositioningArea.top + y)),
                 new Vector(Math.round(backgroundPositioningArea.left + backgroundPositioningArea.width), Math.round(backgroundPositioningArea.top + y)),
                 new Vector(Math.round(backgroundPositioningArea.left + backgroundPositioningArea.width), Math.round(height + backgroundPositioningArea.top + y)),
                 new Vector(Math.round(backgroundPositioningArea.left), Math.round(height + backgroundPositioningArea.top + y))
             ];
-        case 3 /* REPEAT_Y */:
+        case 3 /* BACKGROUND_REPEAT.REPEAT_Y */:
             return [
                 new Vector(Math.round(backgroundPositioningArea.left + x), Math.round(backgroundPositioningArea.top)),
                 new Vector(Math.round(backgroundPositioningArea.left + x + width), Math.round(backgroundPositioningArea.top)),
                 new Vector(Math.round(backgroundPositioningArea.left + x + width), Math.round(backgroundPositioningArea.height + backgroundPositioningArea.top)),
                 new Vector(Math.round(backgroundPositioningArea.left + x), Math.round(backgroundPositioningArea.height + backgroundPositioningArea.top))
             ];
-        case 1 /* NO_REPEAT */:
+        case 1 /* BACKGROUND_REPEAT.NO_REPEAT */:
             return [
                 new Vector(Math.round(backgroundPositioningArea.left + x), Math.round(backgroundPositioningArea.top + y)),
                 new Vector(Math.round(backgroundPositioningArea.left + x + width), Math.round(backgroundPositioningArea.top + y)),
@@ -1609,42 +1535,46 @@ var calculateBackgroundRepeatPath = function (repeat, _a, _b, backgroundPosition
     }
 };
 
-var TextBounds = /** @class */ (function () {
-    function TextBounds(text, bounds) {
+class TextBounds {
+    text;
+    bounds;
+    constructor(text, bounds) {
         this.text = text;
         this.bounds = bounds;
     }
-    return TextBounds;
-}());
+}
 
-var Bounds = /** @class */ (function () {
-    function Bounds(left, top, width, height) {
+class Bounds {
+    left;
+    top;
+    width;
+    height;
+    constructor(left, top, width, height) {
         this.left = left;
         this.top = top;
         this.width = width;
         this.height = height;
     }
-    Bounds.prototype.add = function (x, y, w, h) {
+    add(x, y, w, h) {
         return new Bounds(this.left + x, this.top + y, this.width + w, this.height + h);
-    };
-    Bounds.fromClientRect = function (context, clientRect) {
+    }
+    static fromClientRect(context, clientRect) {
         return new Bounds(clientRect.left + context.windowBounds.left, clientRect.top + context.windowBounds.top, clientRect.width, clientRect.height);
-    };
-    Bounds.fromDOMRectList = function (context, domRectList) {
-        var domRect = Array.from(domRectList).find(function (rect) { return rect.width !== 0; });
+    }
+    static fromDOMRectList(context, domRectList) {
+        const domRect = Array.from(domRectList).find((rect) => rect.width !== 0);
         return domRect
             ? new Bounds(domRect.left + context.windowBounds.left, domRect.top + context.windowBounds.top, domRect.width, domRect.height)
             : Bounds.EMPTY;
-    };
-    Bounds.EMPTY = new Bounds(0, 0, 0, 0);
-    return Bounds;
-}());
+    }
+    static EMPTY = new Bounds(0, 0, 0, 0);
+}
 
-var computeLineHeight = function (token, fontSize) {
+const computeLineHeight = (token, fontSize) => {
     if (isIdentToken(token) && token.value === 'normal') {
         return 1.2 * fontSize;
     }
-    else if (token.type === 17 /* NUMBER_TOKEN */) {
+    else if (token.type === 17 /* TokenType.NUMBER_TOKEN */) {
         return fontSize * token.number;
     }
     else if (isLengthPercentage(token)) {
@@ -1653,17 +1583,18 @@ var computeLineHeight = function (token, fontSize) {
     return fontSize;
 };
 
-var CHECKBOX = 'checkbox';
-var RADIO = 'radio';
-var INPUT_COLOR = 0x2a2a2aff;
+const CHECKBOX = 'checkbox';
+const RADIO = 'radio';
+const INPUT_COLOR = 0x2a2a2aff;
 
-var Renderer = /** @class */ (function () {
-    function Renderer(context, options) {
+class Renderer {
+    context;
+    options;
+    constructor(context, options) {
         this.context = context;
         this.options = options;
     }
-    return Renderer;
-}());
+}
 
 /*
  * text-segmentation 1.0.3 <https://github.com/niklasvh/text-segmentation>
@@ -2047,56 +1978,56 @@ var splitGraphemes = function (str) {
     return graphemes;
 };
 
-var supportsNativeTextSegmentation = function () {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return !!(typeof Intl !== 'undefined' && Intl.Segmenter);
-};
-var segmentGraphemes = function (value) {
+const supportsNativeTextSegmentation = () => 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+!!(typeof Intl !== 'undefined' && Intl.Segmenter);
+const segmentGraphemes = (value) => {
     if (supportsNativeTextSegmentation()) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        var segmenter = new Intl.Segmenter(void 0, { granularity: 'grapheme' });
+        const segmenter = new Intl.Segmenter(void 0, { granularity: 'grapheme' });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return Array.from(segmenter.segment(value)).map(function (segment) { return segment.segment; });
+        return Array.from(segmenter.segment(value)).map((segment) => segment.segment);
     }
     return splitGraphemes(value);
 };
 
-var MASK_OFFSET$1 = 10000;
-var ExtractedCanvasRenderer = /** @class */ (function (_super) {
-    __extends(ExtractedCanvasRenderer, _super);
-    function ExtractedCanvasRenderer(context, options, environment) {
-        var _this = _super.call(this, context, options) || this;
-        _this._activeEffects = [];
-        _this.environment = environment;
-        _this.canvas = options.canvas ? options.canvas : _this.createCanvasElement();
-        _this.ctx = _this.canvas.getContext('2d');
+const MASK_OFFSET$1 = 10000;
+class ExtractedCanvasRenderer extends Renderer {
+    canvas;
+    ctx;
+    _activeEffects = [];
+    fontMetrics;
+    environment;
+    constructor(context, options, environment) {
+        super(context, options);
+        this.environment = environment;
+        this.canvas = options.canvas ? options.canvas : this.createCanvasElement();
+        this.ctx = this.canvas.getContext('2d');
         if (!options.canvas) {
-            _this.canvas.width = Math.floor(options.width * options.scale);
-            _this.canvas.height = Math.floor(options.height * options.scale);
-            if (hasCanvasStyle(_this.canvas)) {
-                _this.canvas.style.width = options.width + "px";
-                _this.canvas.style.height = options.height + "px";
+            this.canvas.width = Math.floor(options.width * options.scale);
+            this.canvas.height = Math.floor(options.height * options.scale);
+            if (hasCanvasStyle(this.canvas)) {
+                this.canvas.style.width = `${options.width}px`;
+                this.canvas.style.height = `${options.height}px`;
             }
         }
-        _this.fontMetrics = environment.fontMetrics;
-        _this.ctx.scale(_this.options.scale, _this.options.scale);
-        _this.ctx.translate(-options.x, -options.y);
-        _this.ctx.textBaseline = 'bottom';
-        _this._activeEffects = [];
-        _this.context.logger.debug("Canvas renderer initialized (" + options.width + "x" + options.height + ") with scale " + options.scale);
-        return _this;
+        this.fontMetrics = environment.fontMetrics;
+        this.ctx.scale(this.options.scale, this.options.scale);
+        this.ctx.translate(-options.x, -options.y);
+        this.ctx.textBaseline = 'bottom';
+        this._activeEffects = [];
+        this.context.logger.debug(`Canvas renderer initialized (${options.width}x${options.height}) with scale ${options.scale}`);
     }
-    ExtractedCanvasRenderer.prototype.createCanvasElement = function (ownerDocument) {
+    createCanvasElement(ownerDocument) {
         return this.environment.createCanvas(ownerDocument);
-    };
-    ExtractedCanvasRenderer.prototype.applyEffects = function (effects) {
-        var _this = this;
+    }
+    applyEffects(effects) {
         while (this._activeEffects.length) {
             this.popEffect();
         }
-        effects.forEach(function (effect) { return _this.applyEffect(effect); });
-    };
-    ExtractedCanvasRenderer.prototype.applyEffect = function (effect) {
+        effects.forEach((effect) => this.applyEffect(effect));
+    }
+    applyEffect(effect) {
         this.ctx.save();
         if (isOpacityEffect(effect)) {
             this.ctx.globalAlpha = effect.opacity;
@@ -2111,413 +2042,282 @@ var ExtractedCanvasRenderer = /** @class */ (function (_super) {
             this.ctx.clip();
         }
         this._activeEffects.push(effect);
-    };
-    ExtractedCanvasRenderer.prototype.popEffect = function () {
+    }
+    popEffect() {
         this._activeEffects.pop();
         this.ctx.restore();
-    };
-    ExtractedCanvasRenderer.prototype.renderStack = function (stack) {
-        return __awaiter(this, void 0, void 0, function () {
-            var styles;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        styles = stack.element.container.styles;
-                        if (!styles.isVisible()) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.renderStackContent(stack)];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderNode = function (paint) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (contains(paint.container.flags, 16 /* DEBUG_RENDER */)) {
-                            debugger;
-                        }
-                        if (!paint.container.styles.isVisible()) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.renderNodeBackgroundAndBorders(paint)];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.renderNodeContent(paint)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderTextWithLetterSpacing = function (text, letterSpacing, baseline) {
-        var _this = this;
+    }
+    async renderStack(stack) {
+        const styles = stack.element.container.styles;
+        if (styles.isVisible()) {
+            await this.renderStackContent(stack);
+        }
+    }
+    async renderNode(paint) {
+        if (contains(paint.container.flags, 16 /* FLAGS.DEBUG_RENDER */)) {
+            debugger;
+        }
+        if (paint.container.styles.isVisible()) {
+            await this.renderNodeBackgroundAndBorders(paint);
+            await this.renderNodeContent(paint);
+        }
+    }
+    renderTextWithLetterSpacing(text, letterSpacing, baseline) {
         if (letterSpacing === 0) {
             this.ctx.fillText(text.text, text.bounds.left, text.bounds.top + baseline);
         }
         else {
-            var letters = segmentGraphemes(text.text);
-            letters.reduce(function (left, letter) {
-                _this.ctx.fillText(letter, left, text.bounds.top + baseline);
-                return left + _this.ctx.measureText(letter).width;
+            const letters = segmentGraphemes(text.text);
+            letters.reduce((left, letter) => {
+                this.ctx.fillText(letter, left, text.bounds.top + baseline);
+                return left + this.ctx.measureText(letter).width;
             }, text.bounds.left);
         }
-    };
-    ExtractedCanvasRenderer.prototype.createFontStyle = function (styles) {
-        var fontVariant = styles.fontVariant
-            .filter(function (variant) { return variant === 'normal' || variant === 'small-caps'; })
+    }
+    createFontStyle(styles) {
+        const fontVariant = styles.fontVariant
+            .filter((variant) => variant === 'normal' || variant === 'small-caps')
             .join('');
-        var fontFamily = fixIOSSystemFonts(styles.fontFamily, this.environment.userAgent).join(', ');
-        var fontSize = isDimensionToken(styles.fontSize)
-            ? "" + styles.fontSize.number + styles.fontSize.unit
-            : styles.fontSize.number + "px";
-        return [
-            [styles.fontStyle, fontVariant, styles.fontWeight, fontSize, fontFamily].join(' '),
-            fontFamily,
-            fontSize
-        ];
-    };
-    ExtractedCanvasRenderer.prototype.renderTextNode = function (text, styles) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, font, fontFamily, fontSize, _b, baseline, middle, paintOrder;
-            var _this = this;
-            return __generator(this, function (_c) {
-                _a = this.createFontStyle(styles), font = _a[0], fontFamily = _a[1], fontSize = _a[2];
-                this.ctx.font = font;
-                this.ctx.direction = styles.direction === 1 /* RTL */ ? 'rtl' : 'ltr';
-                this.ctx.textAlign = 'left';
-                this.ctx.textBaseline = 'alphabetic';
-                _b = this.fontMetrics.getMetrics(fontFamily, fontSize), baseline = _b.baseline, middle = _b.middle;
-                paintOrder = styles.paintOrder;
-                text.textBounds.forEach(function (text) {
-                    paintOrder.forEach(function (paintOrderLayer) {
-                        switch (paintOrderLayer) {
-                            case 0 /* FILL */:
-                                _this.ctx.fillStyle = asString(styles.color);
-                                _this.renderTextWithLetterSpacing(text, styles.letterSpacing, baseline);
-                                var textShadows = styles.textShadow;
-                                if (textShadows.length && text.text.trim().length) {
-                                    textShadows
-                                        .slice(0)
-                                        .reverse()
-                                        .forEach(function (textShadow) {
-                                        _this.ctx.shadowColor = asString(textShadow.color);
-                                        _this.ctx.shadowOffsetX = textShadow.offsetX.number * _this.options.scale;
-                                        _this.ctx.shadowOffsetY = textShadow.offsetY.number * _this.options.scale;
-                                        _this.ctx.shadowBlur = textShadow.blur.number;
-                                        _this.renderTextWithLetterSpacing(text, styles.letterSpacing, baseline);
-                                    });
-                                    _this.ctx.shadowColor = '';
-                                    _this.ctx.shadowOffsetX = 0;
-                                    _this.ctx.shadowOffsetY = 0;
-                                    _this.ctx.shadowBlur = 0;
-                                }
-                                if (styles.textDecorationLine.length) {
-                                    _this.ctx.fillStyle = asString(styles.textDecorationColor || styles.color);
-                                    styles.textDecorationLine.forEach(function (textDecorationLine) {
-                                        switch (textDecorationLine) {
-                                            case 1 /* UNDERLINE */:
-                                                // Draws a line at the baseline of the font
-                                                // TODO As some browsers display the line as more than 1px if the font-size is big,
-                                                // need to take that into account both in position and size
-                                                _this.ctx.fillRect(text.bounds.left, Math.round(text.bounds.top + baseline), text.bounds.width, 1);
-                                                break;
-                                            case 2 /* OVERLINE */:
-                                                _this.ctx.fillRect(text.bounds.left, Math.round(text.bounds.top), text.bounds.width, 1);
-                                                break;
-                                            case 3 /* LINE_THROUGH */:
-                                                // TODO try and find exact position for line-through
-                                                _this.ctx.fillRect(text.bounds.left, Math.ceil(text.bounds.top + middle), text.bounds.width, 1);
-                                                break;
-                                        }
-                                    });
-                                }
-                                break;
-                            case 1 /* STROKE */:
-                                if (styles.webkitTextStrokeWidth && text.text.trim().length) {
-                                    _this.ctx.strokeStyle = asString(styles.webkitTextStrokeColor);
-                                    _this.ctx.lineWidth = styles.webkitTextStrokeWidth;
-                                    _this.ctx.lineJoin = _this.environment.useMiterTextStroke ? 'miter' : 'round';
-                                    _this.ctx.strokeText(text.text, text.bounds.left, text.bounds.top + baseline);
-                                }
-                                _this.ctx.strokeStyle = '';
-                                _this.ctx.lineWidth = 0;
-                                _this.ctx.lineJoin = 'miter';
-                                break;
+        const fontFamily = fixIOSSystemFonts(styles.fontFamily, this.environment.userAgent).join(', ');
+        const fontSize = isDimensionToken(styles.fontSize)
+            ? `${styles.fontSize.number}${styles.fontSize.unit}`
+            : `${styles.fontSize.number}px`;
+        return [[styles.fontStyle, fontVariant, styles.fontWeight, fontSize, fontFamily].join(' '), fontFamily, fontSize];
+    }
+    async renderTextNode(text, styles) {
+        const [font, fontFamily, fontSize] = this.createFontStyle(styles);
+        this.ctx.font = font;
+        this.ctx.direction = styles.direction === 1 /* DIRECTION.RTL */ ? 'rtl' : 'ltr';
+        this.ctx.textAlign = 'left';
+        this.ctx.textBaseline = 'alphabetic';
+        const { baseline, middle } = this.fontMetrics.getMetrics(fontFamily, fontSize);
+        const paintOrder = styles.paintOrder;
+        text.textBounds.forEach((text) => {
+            paintOrder.forEach((paintOrderLayer) => {
+                switch (paintOrderLayer) {
+                    case 0 /* PAINT_ORDER_LAYER.FILL */:
+                        this.ctx.fillStyle = asString(styles.color);
+                        this.renderTextWithLetterSpacing(text, styles.letterSpacing, baseline);
+                        const textShadows = styles.textShadow;
+                        if (textShadows.length && text.text.trim().length) {
+                            textShadows
+                                .slice(0)
+                                .reverse()
+                                .forEach((textShadow) => {
+                                this.ctx.shadowColor = asString(textShadow.color);
+                                this.ctx.shadowOffsetX = textShadow.offsetX.number * this.options.scale;
+                                this.ctx.shadowOffsetY = textShadow.offsetY.number * this.options.scale;
+                                this.ctx.shadowBlur = textShadow.blur.number;
+                                this.renderTextWithLetterSpacing(text, styles.letterSpacing, baseline);
+                            });
+                            this.ctx.shadowColor = '';
+                            this.ctx.shadowOffsetX = 0;
+                            this.ctx.shadowOffsetY = 0;
+                            this.ctx.shadowBlur = 0;
                         }
-                    });
-                });
-                return [2 /*return*/];
+                        if (styles.textDecorationLine.length) {
+                            this.ctx.fillStyle = asString(styles.textDecorationColor || styles.color);
+                            styles.textDecorationLine.forEach((textDecorationLine) => {
+                                switch (textDecorationLine) {
+                                    case 1 /* TEXT_DECORATION_LINE.UNDERLINE */:
+                                        // Draws a line at the baseline of the font
+                                        // TODO As some browsers display the line as more than 1px if the font-size is big,
+                                        // need to take that into account both in position and size
+                                        this.ctx.fillRect(text.bounds.left, Math.round(text.bounds.top + baseline), text.bounds.width, 1);
+                                        break;
+                                    case 2 /* TEXT_DECORATION_LINE.OVERLINE */:
+                                        this.ctx.fillRect(text.bounds.left, Math.round(text.bounds.top), text.bounds.width, 1);
+                                        break;
+                                    case 3 /* TEXT_DECORATION_LINE.LINE_THROUGH */:
+                                        // TODO try and find exact position for line-through
+                                        this.ctx.fillRect(text.bounds.left, Math.ceil(text.bounds.top + middle), text.bounds.width, 1);
+                                        break;
+                                }
+                            });
+                        }
+                        break;
+                    case 1 /* PAINT_ORDER_LAYER.STROKE */:
+                        if (styles.webkitTextStrokeWidth && text.text.trim().length) {
+                            this.ctx.strokeStyle = asString(styles.webkitTextStrokeColor);
+                            this.ctx.lineWidth = styles.webkitTextStrokeWidth;
+                            this.ctx.lineJoin = this.environment.useMiterTextStroke ? 'miter' : 'round';
+                            this.ctx.strokeText(text.text, text.bounds.left, text.bounds.top + baseline);
+                        }
+                        this.ctx.strokeStyle = '';
+                        this.ctx.lineWidth = 0;
+                        this.ctx.lineJoin = 'miter';
+                        break;
+                }
             });
         });
-    };
-    ExtractedCanvasRenderer.prototype.renderReplacedElement = function (container, curves, image) {
+    }
+    renderReplacedElement(container, curves, image) {
         if (image && container.intrinsicWidth > 0 && container.intrinsicHeight > 0) {
-            var box = contentBox(container);
-            var path = calculatePaddingBoxPath(curves);
+            const box = contentBox(container);
+            const path = calculatePaddingBoxPath(curves);
             this.path(path);
             this.ctx.save();
             this.ctx.clip();
             this.ctx.drawImage(image, 0, 0, container.intrinsicWidth, container.intrinsicHeight, box.left, box.top, box.width, box.height);
             this.ctx.restore();
         }
-    };
-    ExtractedCanvasRenderer.prototype.renderNodeContent = function (paint) {
-        return __awaiter(this, void 0, void 0, function () {
-            var container, curves, styles, _i, _a, child, image, size, _b, fontFamily, fontSize, baseline, bounds, x, textBounds, img, image, url, fontFamily, bounds;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        this.applyEffects(paint.getEffects(4 /* CONTENT */));
-                        container = paint.container;
-                        curves = paint.curves;
-                        styles = container.styles;
-                        _i = 0, _a = container.textNodes;
-                        _c.label = 1;
-                    case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        child = _a[_i];
-                        return [4 /*yield*/, this.renderTextNode(child, styles)];
-                    case 2:
-                        _c.sent();
-                        _c.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4:
-                        if (!isImageContainer(container)) return [3 /*break*/, 8];
-                        _c.label = 5;
-                    case 5:
-                        _c.trys.push([5, 7, , 8]);
-                        return [4 /*yield*/, this.context.cache.match(container.src)];
-                    case 6:
-                        image = _c.sent();
-                        this.renderReplacedElement(container, curves, image);
-                        return [3 /*break*/, 8];
-                    case 7:
-                        _c.sent();
-                        this.context.logger.error("Error loading image " + container.src);
-                        return [3 /*break*/, 8];
-                    case 8:
-                        if (isInputContainer(container)) {
-                            size = Math.min(container.bounds.width, container.bounds.height);
-                            if (container.type === CHECKBOX) {
-                                if (container.checked) {
-                                    this.ctx.save();
-                                    this.path([
-                                        new Vector(container.bounds.left + size * 0.39363, container.bounds.top + size * 0.79),
-                                        new Vector(container.bounds.left + size * 0.16, container.bounds.top + size * 0.5549),
-                                        new Vector(container.bounds.left + size * 0.27347, container.bounds.top + size * 0.44071),
-                                        new Vector(container.bounds.left + size * 0.39694, container.bounds.top + size * 0.5649),
-                                        new Vector(container.bounds.left + size * 0.72983, container.bounds.top + size * 0.23),
-                                        new Vector(container.bounds.left + size * 0.84, container.bounds.top + size * 0.34085),
-                                        new Vector(container.bounds.left + size * 0.39363, container.bounds.top + size * 0.79)
-                                    ]);
-                                    this.ctx.fillStyle = asString(INPUT_COLOR);
-                                    this.ctx.fill();
-                                    this.ctx.restore();
-                                }
-                            }
-                            else if (container.type === RADIO) {
-                                if (container.checked) {
-                                    this.ctx.save();
-                                    this.ctx.beginPath();
-                                    this.ctx.arc(container.bounds.left + size / 2, container.bounds.top + size / 2, size / 4, 0, Math.PI * 2, true);
-                                    this.ctx.fillStyle = asString(INPUT_COLOR);
-                                    this.ctx.fill();
-                                    this.ctx.restore();
-                                }
-                            }
-                        }
-                        if (isTextInputElement(container) && container.value.length) {
-                            _b = this.createFontStyle(styles), fontFamily = _b[0], fontSize = _b[1];
-                            baseline = this.fontMetrics.getMetrics(fontFamily, fontSize).baseline;
-                            this.ctx.font = fontFamily;
-                            this.ctx.fillStyle = asString(styles.color);
-                            this.ctx.textBaseline = 'alphabetic';
-                            this.ctx.textAlign = canvasTextAlign(container.styles.textAlign);
-                            bounds = contentBox(container);
-                            x = 0;
-                            switch (container.styles.textAlign) {
-                                case 1 /* CENTER */:
-                                    x += bounds.width / 2;
-                                    break;
-                                case 2 /* RIGHT */:
-                                    x += bounds.width;
-                                    break;
-                            }
-                            textBounds = bounds.add(x, 0, 0, -bounds.height / 2 + 1);
-                            this.ctx.save();
-                            this.path([
-                                new Vector(bounds.left, bounds.top),
-                                new Vector(bounds.left + bounds.width, bounds.top),
-                                new Vector(bounds.left + bounds.width, bounds.top + bounds.height),
-                                new Vector(bounds.left, bounds.top + bounds.height)
-                            ]);
-                            this.ctx.clip();
-                            this.renderTextWithLetterSpacing(new TextBounds(container.value, textBounds), styles.letterSpacing, baseline);
-                            this.ctx.restore();
-                            this.ctx.textBaseline = 'alphabetic';
-                            this.ctx.textAlign = 'left';
-                        }
-                        if (!contains(container.styles.display, 2048 /* LIST_ITEM */)) return [3 /*break*/, 14];
-                        if (!(container.styles.listStyleImage !== null)) return [3 /*break*/, 13];
-                        img = container.styles.listStyleImage;
-                        if (!(img.type === 0 /* URL */)) return [3 /*break*/, 12];
-                        image = void 0;
-                        url = img.url;
-                        _c.label = 9;
-                    case 9:
-                        _c.trys.push([9, 11, , 12]);
-                        return [4 /*yield*/, this.context.cache.match(url)];
-                    case 10:
-                        image = _c.sent();
+    }
+    async renderNodeContent(paint) {
+        this.applyEffects(paint.getEffects(4 /* EffectTarget.CONTENT */));
+        const container = paint.container;
+        const curves = paint.curves;
+        const styles = container.styles;
+        for (const child of container.textNodes) {
+            await this.renderTextNode(child, styles);
+        }
+        if (isImageContainer(container)) {
+            try {
+                const image = await this.context.cache.match(container.src);
+                this.renderReplacedElement(container, curves, image);
+            }
+            catch (e) {
+                this.context.logger.error(`Error loading image ${container.src}`);
+            }
+        }
+        if (isInputContainer(container)) {
+            const size = Math.min(container.bounds.width, container.bounds.height);
+            if (container.type === CHECKBOX) {
+                if (container.checked) {
+                    this.ctx.save();
+                    this.path([
+                        new Vector(container.bounds.left + size * 0.39363, container.bounds.top + size * 0.79),
+                        new Vector(container.bounds.left + size * 0.16, container.bounds.top + size * 0.5549),
+                        new Vector(container.bounds.left + size * 0.27347, container.bounds.top + size * 0.44071),
+                        new Vector(container.bounds.left + size * 0.39694, container.bounds.top + size * 0.5649),
+                        new Vector(container.bounds.left + size * 0.72983, container.bounds.top + size * 0.23),
+                        new Vector(container.bounds.left + size * 0.84, container.bounds.top + size * 0.34085),
+                        new Vector(container.bounds.left + size * 0.39363, container.bounds.top + size * 0.79)
+                    ]);
+                    this.ctx.fillStyle = asString(INPUT_COLOR);
+                    this.ctx.fill();
+                    this.ctx.restore();
+                }
+            }
+            else if (container.type === RADIO) {
+                if (container.checked) {
+                    this.ctx.save();
+                    this.ctx.beginPath();
+                    this.ctx.arc(container.bounds.left + size / 2, container.bounds.top + size / 2, size / 4, 0, Math.PI * 2, true);
+                    this.ctx.fillStyle = asString(INPUT_COLOR);
+                    this.ctx.fill();
+                    this.ctx.restore();
+                }
+            }
+        }
+        if (isTextInputElement(container) && container.value.length) {
+            const [fontFamily, fontSize] = this.createFontStyle(styles);
+            const { baseline } = this.fontMetrics.getMetrics(fontFamily, fontSize);
+            this.ctx.font = fontFamily;
+            this.ctx.fillStyle = asString(styles.color);
+            this.ctx.textBaseline = 'alphabetic';
+            this.ctx.textAlign = canvasTextAlign(container.styles.textAlign);
+            const bounds = contentBox(container);
+            let x = 0;
+            switch (container.styles.textAlign) {
+                case 1 /* TEXT_ALIGN.CENTER */:
+                    x += bounds.width / 2;
+                    break;
+                case 2 /* TEXT_ALIGN.RIGHT */:
+                    x += bounds.width;
+                    break;
+            }
+            const textBounds = bounds.add(x, 0, 0, -bounds.height / 2 + 1);
+            this.ctx.save();
+            this.path([
+                new Vector(bounds.left, bounds.top),
+                new Vector(bounds.left + bounds.width, bounds.top),
+                new Vector(bounds.left + bounds.width, bounds.top + bounds.height),
+                new Vector(bounds.left, bounds.top + bounds.height)
+            ]);
+            this.ctx.clip();
+            this.renderTextWithLetterSpacing(new TextBounds(container.value, textBounds), styles.letterSpacing, baseline);
+            this.ctx.restore();
+            this.ctx.textBaseline = 'alphabetic';
+            this.ctx.textAlign = 'left';
+        }
+        if (contains(container.styles.display, 2048 /* DISPLAY.LIST_ITEM */)) {
+            if (container.styles.listStyleImage !== null) {
+                const img = container.styles.listStyleImage;
+                if (img.type === 0 /* CSSImageType.URL */) {
+                    let image;
+                    const url = img.url;
+                    try {
+                        image = await this.context.cache.match(url);
                         this.ctx.drawImage(image, container.bounds.left - (image.width + 10), container.bounds.top);
-                        return [3 /*break*/, 12];
-                    case 11:
-                        _c.sent();
-                        this.context.logger.error("Error loading list-style-image " + url);
-                        return [3 /*break*/, 12];
-                    case 12: return [3 /*break*/, 14];
-                    case 13:
-                        if (paint.listValue && container.styles.listStyleType !== -1 /* NONE */) {
-                            fontFamily = this.createFontStyle(styles)[0];
-                            this.ctx.font = fontFamily;
-                            this.ctx.fillStyle = asString(styles.color);
-                            this.ctx.textBaseline = 'middle';
-                            this.ctx.textAlign = 'right';
-                            bounds = new Bounds(container.bounds.left, container.bounds.top + getAbsoluteValue(container.styles.paddingTop, container.bounds.width), container.bounds.width, computeLineHeight(styles.lineHeight, styles.fontSize.number) / 2 + 1);
-                            this.renderTextWithLetterSpacing(new TextBounds(paint.listValue, bounds), styles.letterSpacing, computeLineHeight(styles.lineHeight, styles.fontSize.number) / 2 + 2);
-                            this.ctx.textBaseline = 'bottom';
-                            this.ctx.textAlign = 'left';
-                        }
-                        _c.label = 14;
-                    case 14: return [2 /*return*/];
+                    }
+                    catch (e) {
+                        this.context.logger.error(`Error loading list-style-image ${url}`);
+                    }
                 }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderStackContent = function (stack) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _i, _a, child, _b, _c, child, _d, _e, child, _f, _g, child, _h, _j, child, _k, _l, child, _m, _o, child;
-            return __generator(this, function (_p) {
-                switch (_p.label) {
-                    case 0:
-                        if (contains(stack.element.container.flags, 16 /* DEBUG_RENDER */)) {
-                            debugger;
-                        }
-                        // https://www.w3.org/TR/css-position-3/#painting-order
-                        // 1. the background and borders of the element forming the stacking context.
-                        return [4 /*yield*/, this.renderNodeBackgroundAndBorders(stack.element)];
-                    case 1:
-                        // https://www.w3.org/TR/css-position-3/#painting-order
-                        // 1. the background and borders of the element forming the stacking context.
-                        _p.sent();
-                        _i = 0, _a = stack.negativeZIndex;
-                        _p.label = 2;
-                    case 2:
-                        if (!(_i < _a.length)) return [3 /*break*/, 5];
-                        child = _a[_i];
-                        return [4 /*yield*/, this.renderStack(child)];
-                    case 3:
-                        _p.sent();
-                        _p.label = 4;
-                    case 4:
-                        _i++;
-                        return [3 /*break*/, 2];
-                    case 5: 
-                    // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
-                    return [4 /*yield*/, this.renderNodeContent(stack.element)];
-                    case 6:
-                        // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
-                        _p.sent();
-                        _b = 0, _c = stack.nonInlineLevel;
-                        _p.label = 7;
-                    case 7:
-                        if (!(_b < _c.length)) return [3 /*break*/, 10];
-                        child = _c[_b];
-                        return [4 /*yield*/, this.renderNode(child)];
-                    case 8:
-                        _p.sent();
-                        _p.label = 9;
-                    case 9:
-                        _b++;
-                        return [3 /*break*/, 7];
-                    case 10:
-                        _d = 0, _e = stack.nonPositionedFloats;
-                        _p.label = 11;
-                    case 11:
-                        if (!(_d < _e.length)) return [3 /*break*/, 14];
-                        child = _e[_d];
-                        return [4 /*yield*/, this.renderStack(child)];
-                    case 12:
-                        _p.sent();
-                        _p.label = 13;
-                    case 13:
-                        _d++;
-                        return [3 /*break*/, 11];
-                    case 14:
-                        _f = 0, _g = stack.nonPositionedInlineLevel;
-                        _p.label = 15;
-                    case 15:
-                        if (!(_f < _g.length)) return [3 /*break*/, 18];
-                        child = _g[_f];
-                        return [4 /*yield*/, this.renderStack(child)];
-                    case 16:
-                        _p.sent();
-                        _p.label = 17;
-                    case 17:
-                        _f++;
-                        return [3 /*break*/, 15];
-                    case 18:
-                        _h = 0, _j = stack.inlineLevel;
-                        _p.label = 19;
-                    case 19:
-                        if (!(_h < _j.length)) return [3 /*break*/, 22];
-                        child = _j[_h];
-                        return [4 /*yield*/, this.renderNode(child)];
-                    case 20:
-                        _p.sent();
-                        _p.label = 21;
-                    case 21:
-                        _h++;
-                        return [3 /*break*/, 19];
-                    case 22:
-                        _k = 0, _l = stack.zeroOrAutoZIndexOrTransformedOrOpacity;
-                        _p.label = 23;
-                    case 23:
-                        if (!(_k < _l.length)) return [3 /*break*/, 26];
-                        child = _l[_k];
-                        return [4 /*yield*/, this.renderStack(child)];
-                    case 24:
-                        _p.sent();
-                        _p.label = 25;
-                    case 25:
-                        _k++;
-                        return [3 /*break*/, 23];
-                    case 26:
-                        _m = 0, _o = stack.positiveZIndex;
-                        _p.label = 27;
-                    case 27:
-                        if (!(_m < _o.length)) return [3 /*break*/, 30];
-                        child = _o[_m];
-                        return [4 /*yield*/, this.renderStack(child)];
-                    case 28:
-                        _p.sent();
-                        _p.label = 29;
-                    case 29:
-                        _m++;
-                        return [3 /*break*/, 27];
-                    case 30: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.mask = function (paths) {
+            }
+            else if (paint.listValue && container.styles.listStyleType !== -1 /* LIST_STYLE_TYPE.NONE */) {
+                const [fontFamily] = this.createFontStyle(styles);
+                this.ctx.font = fontFamily;
+                this.ctx.fillStyle = asString(styles.color);
+                this.ctx.textBaseline = 'middle';
+                this.ctx.textAlign = 'right';
+                const bounds = new Bounds(container.bounds.left, container.bounds.top + getAbsoluteValue(container.styles.paddingTop, container.bounds.width), container.bounds.width, computeLineHeight(styles.lineHeight, styles.fontSize.number) / 2 + 1);
+                this.renderTextWithLetterSpacing(new TextBounds(paint.listValue, bounds), styles.letterSpacing, computeLineHeight(styles.lineHeight, styles.fontSize.number) / 2 + 2);
+                this.ctx.textBaseline = 'bottom';
+                this.ctx.textAlign = 'left';
+            }
+        }
+    }
+    async renderStackContent(stack) {
+        if (contains(stack.element.container.flags, 16 /* FLAGS.DEBUG_RENDER */)) {
+            debugger;
+        }
+        // https://www.w3.org/TR/css-position-3/#painting-order
+        // 1. the background and borders of the element forming the stacking context.
+        await this.renderNodeBackgroundAndBorders(stack.element);
+        // 2. the child stacking contexts with negative stack levels (most negative first).
+        for (const child of stack.negativeZIndex) {
+            await this.renderStack(child);
+        }
+        // 3. For all its in-flow, non-positioned, block-level descendants in tree order:
+        await this.renderNodeContent(stack.element);
+        for (const child of stack.nonInlineLevel) {
+            await this.renderNode(child);
+        }
+        // 4. All non-positioned floating descendants, in tree order. For each one of these,
+        // treat the element as if it created a new stacking context, but any positioned descendants and descendants
+        // which actually create a new stacking context should be considered part of the parent stacking context,
+        // not this new one.
+        for (const child of stack.nonPositionedFloats) {
+            await this.renderStack(child);
+        }
+        // 5. the in-flow, inline-level, non-positioned descendants, including inline tables and inline blocks.
+        for (const child of stack.nonPositionedInlineLevel) {
+            await this.renderStack(child);
+        }
+        for (const child of stack.inlineLevel) {
+            await this.renderNode(child);
+        }
+        // 6. All positioned, opacity or transform descendants, in tree order that fall into the following categories:
+        //  All positioned descendants with 'z-index: auto' or 'z-index: 0', in tree order.
+        //  For those with 'z-index: auto', treat the element as if it created a new stacking context,
+        //  but any positioned descendants and descendants which actually create a new stacking context should be
+        //  considered part of the parent stacking context, not this new one. For those with 'z-index: 0',
+        //  treat the stacking context generated atomically.
+        //
+        //  All opacity descendants with opacity less than 1
+        //
+        //  All transform descendants with transform other than none
+        for (const child of stack.zeroOrAutoZIndexOrTransformedOrOpacity) {
+            await this.renderStack(child);
+        }
+        // 7. Stacking contexts formed by positioned descendants with z-indices greater than or equal to 1 in z-index
+        // order (smallest first) then tree order.
+        for (const child of stack.positiveZIndex) {
+            await this.renderStack(child);
+        }
+    }
+    mask(paths) {
         this.ctx.beginPath();
         this.ctx.moveTo(0, 0);
         this.ctx.lineTo(this.canvas.width, 0);
@@ -2526,417 +2326,309 @@ var ExtractedCanvasRenderer = /** @class */ (function (_super) {
         this.ctx.lineTo(0, 0);
         this.formatPath(paths.slice(0).reverse());
         this.ctx.closePath();
-    };
-    ExtractedCanvasRenderer.prototype.path = function (paths) {
+    }
+    path(paths) {
         this.ctx.beginPath();
         this.formatPath(paths);
         this.ctx.closePath();
-    };
-    ExtractedCanvasRenderer.prototype.formatPath = function (paths) {
-        var _this = this;
-        paths.forEach(function (point, index) {
-            var start = isBezierCurve(point) ? point.start : point;
+    }
+    formatPath(paths) {
+        paths.forEach((point, index) => {
+            const start = isBezierCurve(point) ? point.start : point;
             if (index === 0) {
-                _this.ctx.moveTo(start.x, start.y);
+                this.ctx.moveTo(start.x, start.y);
             }
             else {
-                _this.ctx.lineTo(start.x, start.y);
+                this.ctx.lineTo(start.x, start.y);
             }
             if (isBezierCurve(point)) {
-                _this.ctx.bezierCurveTo(point.startControl.x, point.startControl.y, point.endControl.x, point.endControl.y, point.end.x, point.end.y);
+                this.ctx.bezierCurveTo(point.startControl.x, point.startControl.y, point.endControl.x, point.endControl.y, point.end.x, point.end.y);
             }
         });
-    };
-    ExtractedCanvasRenderer.prototype.renderRepeat = function (path, pattern, offsetX, offsetY) {
+    }
+    renderRepeat(path, pattern, offsetX, offsetY) {
         this.path(path);
         this.ctx.fillStyle = pattern;
         this.ctx.translate(offsetX, offsetY);
         this.ctx.fill();
         this.ctx.translate(-offsetX, -offsetY);
-    };
-    ExtractedCanvasRenderer.prototype.resizeImage = function (image, width, height) {
+    }
+    resizeImage(image, width, height) {
         if (image.width === width && image.height === height) {
             return image;
         }
-        var canvas = this.createCanvasElement(this.canvas.ownerDocument);
+        const canvas = this.createCanvasElement(this.canvas.ownerDocument);
         canvas.width = Math.max(1, width);
         canvas.height = Math.max(1, height);
-        var ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
         ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, width, height);
         return canvas;
-    };
-    ExtractedCanvasRenderer.prototype.renderBackgroundImage = function (container) {
-        return __awaiter(this, void 0, void 0, function () {
-            var index, _loop_1, this_1, _i, _a, backgroundImage;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        index = container.styles.backgroundImage.length - 1;
-                        _loop_1 = function (backgroundImage) {
-                            var image, url, _c, path, x, y, width, height, pattern, _d, path, x, y, width, height, _e, lineLength, x0, x1, y0, y1, canvas, ctx, gradient_1, pattern, _f, path, left, top_1, width, height, position, x, y, _g, rx, ry, radialGradient_1, midX, midY, f, invF;
-                            return __generator(this, function (_h) {
-                                switch (_h.label) {
-                                    case 0:
-                                        if (!(backgroundImage.type === 0 /* URL */)) return [3 /*break*/, 5];
-                                        image = void 0;
-                                        url = backgroundImage.url;
-                                        _h.label = 1;
-                                    case 1:
-                                        _h.trys.push([1, 3, , 4]);
-                                        return [4 /*yield*/, this_1.context.cache.match(url)];
-                                    case 2:
-                                        image = _h.sent();
-                                        return [3 /*break*/, 4];
-                                    case 3:
-                                        _h.sent();
-                                        this_1.context.logger.error("Error loading background-image " + url);
-                                        return [3 /*break*/, 4];
-                                    case 4:
-                                        if (image) {
-                                            _c = calculateBackgroundRendering(container, index, [
-                                                image.width,
-                                                image.height,
-                                                image.width / image.height
-                                            ]), path = _c[0], x = _c[1], y = _c[2], width = _c[3], height = _c[4];
-                                            pattern = this_1.ctx.createPattern(this_1.resizeImage(image, width, height), 'repeat');
-                                            this_1.renderRepeat(path, pattern, x, y);
-                                        }
-                                        return [3 /*break*/, 6];
-                                    case 5:
-                                        if (isLinearGradient(backgroundImage)) {
-                                            _d = calculateBackgroundRendering(container, index, [null, null, null]), path = _d[0], x = _d[1], y = _d[2], width = _d[3], height = _d[4];
-                                            _e = calculateGradientDirection(backgroundImage.angle, width, height), lineLength = _e[0], x0 = _e[1], x1 = _e[2], y0 = _e[3], y1 = _e[4];
-                                            canvas = this_1.createCanvasElement();
-                                            canvas.width = width;
-                                            canvas.height = height;
-                                            ctx = canvas.getContext('2d');
-                                            gradient_1 = ctx.createLinearGradient(x0, y0, x1, y1);
-                                            processColorStops(backgroundImage.stops, lineLength).forEach(function (colorStop) {
-                                                return gradient_1.addColorStop(colorStop.stop, asString(colorStop.color));
-                                            });
-                                            ctx.fillStyle = gradient_1;
-                                            ctx.fillRect(0, 0, width, height);
-                                            if (width > 0 && height > 0) {
-                                                pattern = this_1.ctx.createPattern(canvas, 'repeat');
-                                                this_1.renderRepeat(path, pattern, x, y);
-                                            }
-                                        }
-                                        else if (isRadialGradient(backgroundImage)) {
-                                            _f = calculateBackgroundRendering(container, index, [
-                                                null,
-                                                null,
-                                                null
-                                            ]), path = _f[0], left = _f[1], top_1 = _f[2], width = _f[3], height = _f[4];
-                                            position = backgroundImage.position.length === 0 ? [FIFTY_PERCENT] : backgroundImage.position;
-                                            x = getAbsoluteValue(position[0], width);
-                                            y = getAbsoluteValue(position[position.length - 1], height);
-                                            _g = calculateRadius(backgroundImage, x, y, width, height), rx = _g[0], ry = _g[1];
-                                            if (rx > 0 && ry > 0) {
-                                                radialGradient_1 = this_1.ctx.createRadialGradient(left + x, top_1 + y, 0, left + x, top_1 + y, rx);
-                                                processColorStops(backgroundImage.stops, rx * 2).forEach(function (colorStop) {
-                                                    return radialGradient_1.addColorStop(colorStop.stop, asString(colorStop.color));
-                                                });
-                                                this_1.path(path);
-                                                this_1.ctx.fillStyle = radialGradient_1;
-                                                if (rx !== ry) {
-                                                    midX = container.bounds.left + 0.5 * container.bounds.width;
-                                                    midY = container.bounds.top + 0.5 * container.bounds.height;
-                                                    f = ry / rx;
-                                                    invF = 1 / f;
-                                                    this_1.ctx.save();
-                                                    this_1.ctx.translate(midX, midY);
-                                                    this_1.ctx.transform(1, 0, 0, f, 0, 0);
-                                                    this_1.ctx.translate(-midX, -midY);
-                                                    this_1.ctx.fillRect(left, invF * (top_1 - midY) + midY, width, height * invF);
-                                                    this_1.ctx.restore();
-                                                }
-                                                else {
-                                                    this_1.ctx.fill();
-                                                }
-                                            }
-                                        }
-                                        _h.label = 6;
-                                    case 6:
-                                        index--;
-                                        return [2 /*return*/];
-                                }
-                            });
-                        };
-                        this_1 = this;
-                        _i = 0, _a = container.styles.backgroundImage.slice(0).reverse();
-                        _b.label = 1;
-                    case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        backgroundImage = _a[_i];
-                        return [5 /*yield**/, _loop_1(backgroundImage)];
-                    case 2:
-                        _b.sent();
-                        _b.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/];
+    }
+    async renderBackgroundImage(container) {
+        let index = container.styles.backgroundImage.length - 1;
+        for (const backgroundImage of container.styles.backgroundImage.slice(0).reverse()) {
+            if (backgroundImage.type === 0 /* CSSImageType.URL */) {
+                let image;
+                const url = backgroundImage.url;
+                try {
+                    image = await this.context.cache.match(url);
                 }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderSolidBorder = function (color, side, curvePoints) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                this.path(parsePathForBorder(curvePoints, side));
-                this.ctx.fillStyle = asString(color);
-                this.ctx.fill();
-                return [2 /*return*/];
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderDoubleBorder = function (color, width, side, curvePoints) {
-        return __awaiter(this, void 0, void 0, function () {
-            var outerPaths, innerPaths;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(width < 3)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.renderSolidBorder(color, side, curvePoints)];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                    case 2:
-                        outerPaths = parsePathForBorderDoubleOuter(curvePoints, side);
-                        this.path(outerPaths);
-                        this.ctx.fillStyle = asString(color);
-                        this.ctx.fill();
-                        innerPaths = parsePathForBorderDoubleInner(curvePoints, side);
-                        this.path(innerPaths);
-                        this.ctx.fill();
-                        return [2 /*return*/];
+                catch (e) {
+                    this.context.logger.error(`Error loading background-image ${url}`);
                 }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderNodeBackgroundAndBorders = function (paint) {
-        return __awaiter(this, void 0, void 0, function () {
-            var styles, hasBackground, borders, backgroundPaintingArea, side, _i, borders_1, border;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.applyEffects(paint.getEffects(2 /* BACKGROUND_BORDERS */));
-                        styles = paint.container.styles;
-                        hasBackground = !isTransparent(styles.backgroundColor) || styles.backgroundImage.length;
-                        borders = [
-                            { style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth },
-                            { style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth },
-                            { style: styles.borderBottomStyle, color: styles.borderBottomColor, width: styles.borderBottomWidth },
-                            { style: styles.borderLeftStyle, color: styles.borderLeftColor, width: styles.borderLeftWidth }
-                        ];
-                        backgroundPaintingArea = calculateBackgroundCurvedPaintingArea$1(getBackgroundValueForIndex(styles.backgroundClip, 0), paint.curves);
-                        if (!(hasBackground || styles.boxShadow.length)) return [3 /*break*/, 2];
+                if (image) {
+                    const [path, x, y, width, height] = calculateBackgroundRendering(container, index, [
+                        image.width,
+                        image.height,
+                        image.width / image.height
+                    ]);
+                    const pattern = this.ctx.createPattern(this.resizeImage(image, width, height), 'repeat');
+                    this.renderRepeat(path, pattern, x, y);
+                }
+            }
+            else if (isLinearGradient(backgroundImage)) {
+                const [path, x, y, width, height] = calculateBackgroundRendering(container, index, [null, null, null]);
+                const [lineLength, x0, x1, y0, y1] = calculateGradientDirection(backgroundImage.angle, width, height);
+                const canvas = this.createCanvasElement();
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+                processColorStops(backgroundImage.stops, lineLength).forEach((colorStop) => gradient.addColorStop(colorStop.stop, asString(colorStop.color)));
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width, height);
+                if (width > 0 && height > 0) {
+                    const pattern = this.ctx.createPattern(canvas, 'repeat');
+                    this.renderRepeat(path, pattern, x, y);
+                }
+            }
+            else if (isRadialGradient(backgroundImage)) {
+                const [path, left, top, width, height] = calculateBackgroundRendering(container, index, [null, null, null]);
+                const position = backgroundImage.position.length === 0 ? [FIFTY_PERCENT] : backgroundImage.position;
+                const x = getAbsoluteValue(position[0], width);
+                const y = getAbsoluteValue(position[position.length - 1], height);
+                const [rx, ry] = calculateRadius(backgroundImage, x, y, width, height);
+                if (rx > 0 && ry > 0) {
+                    const radialGradient = this.ctx.createRadialGradient(left + x, top + y, 0, left + x, top + y, rx);
+                    processColorStops(backgroundImage.stops, rx * 2).forEach((colorStop) => radialGradient.addColorStop(colorStop.stop, asString(colorStop.color)));
+                    this.path(path);
+                    this.ctx.fillStyle = radialGradient;
+                    if (rx !== ry) {
+                        // transforms for elliptical radial gradient
+                        const midX = container.bounds.left + 0.5 * container.bounds.width;
+                        const midY = container.bounds.top + 0.5 * container.bounds.height;
+                        const f = ry / rx;
+                        const invF = 1 / f;
                         this.ctx.save();
-                        this.path(backgroundPaintingArea);
-                        this.ctx.clip();
-                        if (!isTransparent(styles.backgroundColor)) {
-                            this.ctx.fillStyle = asString(styles.backgroundColor);
-                            this.ctx.fill();
-                        }
-                        return [4 /*yield*/, this.renderBackgroundImage(paint.container)];
-                    case 1:
-                        _a.sent();
+                        this.ctx.translate(midX, midY);
+                        this.ctx.transform(1, 0, 0, f, 0, 0);
+                        this.ctx.translate(-midX, -midY);
+                        this.ctx.fillRect(left, invF * (top - midY) + midY, width, height * invF);
                         this.ctx.restore();
-                        styles.boxShadow
-                            .slice(0)
-                            .reverse()
-                            .forEach(function (shadow) {
-                            _this.ctx.save();
-                            var borderBoxArea = calculateBorderBoxPath(paint.curves);
-                            var maskOffset = shadow.inset ? 0 : MASK_OFFSET$1;
-                            var shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
-                            if (shadow.inset) {
-                                _this.path(borderBoxArea);
-                                _this.ctx.clip();
-                                _this.mask(shadowPaintingArea);
-                            }
-                            else {
-                                _this.mask(borderBoxArea);
-                                _this.ctx.clip();
-                                _this.path(shadowPaintingArea);
-                            }
-                            _this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
-                            _this.ctx.shadowOffsetY = shadow.offsetY.number;
-                            _this.ctx.shadowColor = asString(shadow.color);
-                            _this.ctx.shadowBlur = shadow.blur.number;
-                            _this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
-                            _this.ctx.fill();
-                            _this.ctx.restore();
-                        });
-                        _a.label = 2;
-                    case 2:
-                        side = 0;
-                        _i = 0, borders_1 = borders;
-                        _a.label = 3;
-                    case 3:
-                        if (!(_i < borders_1.length)) return [3 /*break*/, 13];
-                        border = borders_1[_i];
-                        if (!(border.style !== 0 /* NONE */ && !isTransparent(border.color) && border.width > 0)) return [3 /*break*/, 11];
-                        if (!(border.style === 2 /* DASHED */)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.renderDashedDottedBorder(border.color, border.width, side, paint.curves, 2 /* DASHED */)];
-                    case 4:
-                        _a.sent();
-                        return [3 /*break*/, 11];
-                    case 5:
-                        if (!(border.style === 3 /* DOTTED */)) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.renderDashedDottedBorder(border.color, border.width, side, paint.curves, 3 /* DOTTED */)];
-                    case 6:
-                        _a.sent();
-                        return [3 /*break*/, 11];
-                    case 7:
-                        if (!(border.style === 4 /* DOUBLE */)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.renderDoubleBorder(border.color, border.width, side, paint.curves)];
-                    case 8:
-                        _a.sent();
-                        return [3 /*break*/, 11];
-                    case 9: return [4 /*yield*/, this.renderSolidBorder(border.color, side, paint.curves)];
-                    case 10:
-                        _a.sent();
-                        _a.label = 11;
-                    case 11:
-                        side++;
-                        _a.label = 12;
-                    case 12:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 13: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.renderDashedDottedBorder = function (color, width, side, curvePoints, style) {
-        return __awaiter(this, void 0, void 0, function () {
-            var strokePaths, boxPaths, startX, startY, endX, endY, length, dashLength, spaceLength, useLineDash, multiplier, numberOfDashes, minSpace, maxSpace, path1, path2, path1, path2;
-            return __generator(this, function (_a) {
-                this.ctx.save();
-                strokePaths = parsePathForBorderStroke(curvePoints, side);
-                boxPaths = parsePathForBorder(curvePoints, side);
-                if (style === 2 /* DASHED */) {
-                    this.path(boxPaths);
-                    this.ctx.clip();
-                }
-                if (isBezierCurve(boxPaths[0])) {
-                    startX = boxPaths[0].start.x;
-                    startY = boxPaths[0].start.y;
-                }
-                else {
-                    startX = boxPaths[0].x;
-                    startY = boxPaths[0].y;
-                }
-                if (isBezierCurve(boxPaths[1])) {
-                    endX = boxPaths[1].end.x;
-                    endY = boxPaths[1].end.y;
-                }
-                else {
-                    endX = boxPaths[1].x;
-                    endY = boxPaths[1].y;
-                }
-                if (side === 0 || side === 2) {
-                    length = Math.abs(startX - endX);
-                }
-                else {
-                    length = Math.abs(startY - endY);
-                }
-                this.ctx.beginPath();
-                if (style === 3 /* DOTTED */) {
-                    this.formatPath(strokePaths);
-                }
-                else {
-                    this.formatPath(boxPaths.slice(0, 2));
-                }
-                dashLength = width < 3 ? width * 3 : width * 2;
-                spaceLength = width < 3 ? width * 2 : width;
-                if (style === 3 /* DOTTED */) {
-                    dashLength = width;
-                    spaceLength = width;
-                }
-                useLineDash = true;
-                if (length <= dashLength * 2) {
-                    useLineDash = false;
-                }
-                else if (length <= dashLength * 2 + spaceLength) {
-                    multiplier = length / (2 * dashLength + spaceLength);
-                    dashLength *= multiplier;
-                    spaceLength *= multiplier;
-                }
-                else {
-                    numberOfDashes = Math.floor((length + spaceLength) / (dashLength + spaceLength));
-                    minSpace = (length - numberOfDashes * dashLength) / (numberOfDashes - 1);
-                    maxSpace = (length - (numberOfDashes + 1) * dashLength) / numberOfDashes;
-                    spaceLength =
-                        maxSpace <= 0 || Math.abs(spaceLength - minSpace) < Math.abs(spaceLength - maxSpace)
-                            ? minSpace
-                            : maxSpace;
-                }
-                if (useLineDash) {
-                    if (style === 3 /* DOTTED */) {
-                        this.ctx.setLineDash([0, dashLength + spaceLength]);
                     }
                     else {
-                        this.ctx.setLineDash([dashLength, spaceLength]);
+                        this.ctx.fill();
                     }
                 }
-                if (style === 3 /* DOTTED */) {
-                    this.ctx.lineCap = 'round';
-                    this.ctx.lineWidth = width;
+            }
+            index--;
+        }
+    }
+    async renderSolidBorder(color, side, curvePoints) {
+        this.path(parsePathForBorder(curvePoints, side));
+        this.ctx.fillStyle = asString(color);
+        this.ctx.fill();
+    }
+    async renderDoubleBorder(color, width, side, curvePoints) {
+        if (width < 3) {
+            await this.renderSolidBorder(color, side, curvePoints);
+            return;
+        }
+        const outerPaths = parsePathForBorderDoubleOuter(curvePoints, side);
+        this.path(outerPaths);
+        this.ctx.fillStyle = asString(color);
+        this.ctx.fill();
+        const innerPaths = parsePathForBorderDoubleInner(curvePoints, side);
+        this.path(innerPaths);
+        this.ctx.fill();
+    }
+    async renderNodeBackgroundAndBorders(paint) {
+        this.applyEffects(paint.getEffects(2 /* EffectTarget.BACKGROUND_BORDERS */));
+        const styles = paint.container.styles;
+        const hasBackground = !isTransparent(styles.backgroundColor) || styles.backgroundImage.length;
+        const borders = [
+            { style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth },
+            { style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth },
+            { style: styles.borderBottomStyle, color: styles.borderBottomColor, width: styles.borderBottomWidth },
+            { style: styles.borderLeftStyle, color: styles.borderLeftColor, width: styles.borderLeftWidth }
+        ];
+        const backgroundPaintingArea = calculateBackgroundCurvedPaintingArea$1(getBackgroundValueForIndex(styles.backgroundClip, 0), paint.curves);
+        if (hasBackground || styles.boxShadow.length) {
+            this.ctx.save();
+            this.path(backgroundPaintingArea);
+            this.ctx.clip();
+            if (!isTransparent(styles.backgroundColor)) {
+                this.ctx.fillStyle = asString(styles.backgroundColor);
+                this.ctx.fill();
+            }
+            await this.renderBackgroundImage(paint.container);
+            this.ctx.restore();
+            styles.boxShadow
+                .slice(0)
+                .reverse()
+                .forEach((shadow) => {
+                this.ctx.save();
+                const borderBoxArea = calculateBorderBoxPath(paint.curves);
+                const maskOffset = shadow.inset ? 0 : MASK_OFFSET$1;
+                const shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
+                if (shadow.inset) {
+                    this.path(borderBoxArea);
+                    this.ctx.clip();
+                    this.mask(shadowPaintingArea);
                 }
                 else {
-                    this.ctx.lineWidth = width * 2 + 1.1;
+                    this.mask(borderBoxArea);
+                    this.ctx.clip();
+                    this.path(shadowPaintingArea);
                 }
-                this.ctx.strokeStyle = asString(color);
-                this.ctx.stroke();
-                this.ctx.setLineDash([]);
-                // dashed round edge gap
-                if (style === 2 /* DASHED */) {
-                    if (isBezierCurve(boxPaths[0])) {
-                        path1 = boxPaths[3];
-                        path2 = boxPaths[0];
-                        this.ctx.beginPath();
-                        this.formatPath([new Vector(path1.end.x, path1.end.y), new Vector(path2.start.x, path2.start.y)]);
-                        this.ctx.stroke();
-                    }
-                    if (isBezierCurve(boxPaths[1])) {
-                        path1 = boxPaths[1];
-                        path2 = boxPaths[2];
-                        this.ctx.beginPath();
-                        this.formatPath([new Vector(path1.end.x, path1.end.y), new Vector(path2.start.x, path2.start.y)]);
-                        this.ctx.stroke();
-                    }
-                }
+                this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
+                this.ctx.shadowOffsetY = shadow.offsetY.number;
+                this.ctx.shadowColor = asString(shadow.color);
+                this.ctx.shadowBlur = shadow.blur.number;
+                this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
+                this.ctx.fill();
                 this.ctx.restore();
-                return [2 /*return*/];
             });
-        });
-    };
-    ExtractedCanvasRenderer.prototype.render = function (element) {
-        return __awaiter(this, void 0, void 0, function () {
-            var stack;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (this.options.backgroundColor) {
-                            this.ctx.fillStyle = asString(this.options.backgroundColor);
-                            this.ctx.fillRect(this.options.x, this.options.y, this.options.width, this.options.height);
-                        }
-                        stack = parseStackingContexts(element);
-                        return [4 /*yield*/, this.renderStack(stack)];
-                    case 1:
-                        _a.sent();
-                        this.applyEffects([]);
-                        return [2 /*return*/, this.canvas];
+        }
+        let side = 0;
+        for (const border of borders) {
+            if (border.style !== 0 /* BORDER_STYLE.NONE */ && !isTransparent(border.color) && border.width > 0) {
+                if (border.style === 2 /* BORDER_STYLE.DASHED */) {
+                    await this.renderDashedDottedBorder(border.color, border.width, side, paint.curves, 2 /* BORDER_STYLE.DASHED */);
                 }
-            });
-        });
-    };
-    return ExtractedCanvasRenderer;
-}(Renderer));
-var isTextInputElement = function (container) {
+                else if (border.style === 3 /* BORDER_STYLE.DOTTED */) {
+                    await this.renderDashedDottedBorder(border.color, border.width, side, paint.curves, 3 /* BORDER_STYLE.DOTTED */);
+                }
+                else if (border.style === 4 /* BORDER_STYLE.DOUBLE */) {
+                    await this.renderDoubleBorder(border.color, border.width, side, paint.curves);
+                }
+                else {
+                    await this.renderSolidBorder(border.color, side, paint.curves);
+                }
+            }
+            side++;
+        }
+    }
+    async renderDashedDottedBorder(color, width, side, curvePoints, style) {
+        this.ctx.save();
+        const strokePaths = parsePathForBorderStroke(curvePoints, side);
+        const boxPaths = parsePathForBorder(curvePoints, side);
+        if (style === 2 /* BORDER_STYLE.DASHED */) {
+            this.path(boxPaths);
+            this.ctx.clip();
+        }
+        let startX, startY, endX, endY;
+        if (isBezierCurve(boxPaths[0])) {
+            startX = boxPaths[0].start.x;
+            startY = boxPaths[0].start.y;
+        }
+        else {
+            startX = boxPaths[0].x;
+            startY = boxPaths[0].y;
+        }
+        if (isBezierCurve(boxPaths[1])) {
+            endX = boxPaths[1].end.x;
+            endY = boxPaths[1].end.y;
+        }
+        else {
+            endX = boxPaths[1].x;
+            endY = boxPaths[1].y;
+        }
+        let length;
+        if (side === 0 || side === 2) {
+            length = Math.abs(startX - endX);
+        }
+        else {
+            length = Math.abs(startY - endY);
+        }
+        this.ctx.beginPath();
+        if (style === 3 /* BORDER_STYLE.DOTTED */) {
+            this.formatPath(strokePaths);
+        }
+        else {
+            this.formatPath(boxPaths.slice(0, 2));
+        }
+        let dashLength = width < 3 ? width * 3 : width * 2;
+        let spaceLength = width < 3 ? width * 2 : width;
+        if (style === 3 /* BORDER_STYLE.DOTTED */) {
+            dashLength = width;
+            spaceLength = width;
+        }
+        let useLineDash = true;
+        if (length <= dashLength * 2) {
+            useLineDash = false;
+        }
+        else if (length <= dashLength * 2 + spaceLength) {
+            const multiplier = length / (2 * dashLength + spaceLength);
+            dashLength *= multiplier;
+            spaceLength *= multiplier;
+        }
+        else {
+            const numberOfDashes = Math.floor((length + spaceLength) / (dashLength + spaceLength));
+            const minSpace = (length - numberOfDashes * dashLength) / (numberOfDashes - 1);
+            const maxSpace = (length - (numberOfDashes + 1) * dashLength) / numberOfDashes;
+            spaceLength =
+                maxSpace <= 0 || Math.abs(spaceLength - minSpace) < Math.abs(spaceLength - maxSpace) ? minSpace : maxSpace;
+        }
+        if (useLineDash) {
+            if (style === 3 /* BORDER_STYLE.DOTTED */) {
+                this.ctx.setLineDash([0, dashLength + spaceLength]);
+            }
+            else {
+                this.ctx.setLineDash([dashLength, spaceLength]);
+            }
+        }
+        if (style === 3 /* BORDER_STYLE.DOTTED */) {
+            this.ctx.lineCap = 'round';
+            this.ctx.lineWidth = width;
+        }
+        else {
+            this.ctx.lineWidth = width * 2 + 1.1;
+        }
+        this.ctx.strokeStyle = asString(color);
+        this.ctx.stroke();
+        this.ctx.setLineDash([]);
+        // dashed round edge gap
+        if (style === 2 /* BORDER_STYLE.DASHED */) {
+            if (isBezierCurve(boxPaths[0])) {
+                const path1 = boxPaths[3];
+                const path2 = boxPaths[0];
+                this.ctx.beginPath();
+                this.formatPath([new Vector(path1.end.x, path1.end.y), new Vector(path2.start.x, path2.start.y)]);
+                this.ctx.stroke();
+            }
+            if (isBezierCurve(boxPaths[1])) {
+                const path1 = boxPaths[1];
+                const path2 = boxPaths[2];
+                this.ctx.beginPath();
+                this.formatPath([new Vector(path1.end.x, path1.end.y), new Vector(path2.start.x, path2.start.y)]);
+                this.ctx.stroke();
+            }
+        }
+        this.ctx.restore();
+    }
+    async render(element) {
+        if (this.options.backgroundColor) {
+            this.ctx.fillStyle = asString(this.options.backgroundColor);
+            this.ctx.fillRect(this.options.x, this.options.y, this.options.width, this.options.height);
+        }
+        const stack = parseStackingContexts(element);
+        await this.renderStack(stack);
+        this.applyEffects([]);
+        return this.canvas;
+    }
+}
+const isTextInputElement = (container) => {
     if (container.containerType === 'textarea') {
         return true;
     }
@@ -2948,188 +2640,199 @@ var isTextInputElement = function (container) {
     }
     return false;
 };
-var isImageContainer = function (container) { return container.containerType === 'image'; };
-var isInputContainer = function (container) { return container.containerType === 'input'; };
-var isInputTextContainer = function (container) {
-    return isInputContainer(container) && container.type !== RADIO && container.type !== CHECKBOX;
+const isImageContainer = (container) => container.containerType === 'image';
+const isInputContainer = (container) => container.containerType === 'input';
+const isInputTextContainer = (container) => {
+    if (container.containerType !== 'input') {
+        return false;
+    }
+    const input = container;
+    return input.type !== RADIO && input.type !== CHECKBOX;
 };
-var calculateBackgroundCurvedPaintingArea$1 = function (clip, curves) {
+const calculateBackgroundCurvedPaintingArea$1 = (clip, curves) => {
     switch (clip) {
-        case 0 /* BORDER_BOX */:
+        case 0 /* BACKGROUND_CLIP.BORDER_BOX */:
             return calculateBorderBoxPath(curves);
-        case 2 /* CONTENT_BOX */:
+        case 2 /* BACKGROUND_CLIP.CONTENT_BOX */:
             return calculateContentBoxPath(curves);
-        case 1 /* PADDING_BOX */:
+        case 1 /* BACKGROUND_CLIP.PADDING_BOX */:
         default:
             return calculatePaddingBoxPath(curves);
     }
 };
-var canvasTextAlign = function (textAlign) {
+const canvasTextAlign = (textAlign) => {
     switch (textAlign) {
-        case 1 /* CENTER */:
+        case 1 /* TEXT_ALIGN.CENTER */:
             return 'center';
-        case 2 /* RIGHT */:
+        case 2 /* TEXT_ALIGN.RIGHT */:
             return 'right';
-        case 0 /* LEFT */:
+        case 0 /* TEXT_ALIGN.LEFT */:
         default:
             return 'left';
     }
 };
 // see https://github.com/niklasvh/html2canvas/pull/2645
-var iOSBrokenFonts = ['-apple-system', 'system-ui'];
-var fixIOSSystemFonts = function (fontFamilies, userAgent) {
+const iOSBrokenFonts = ['-apple-system', 'system-ui'];
+const fixIOSSystemFonts = (fontFamilies, userAgent) => {
     return /iPhone OS 15_(0|1)/.test(userAgent)
-        ? fontFamilies.filter(function (fontFamily) { return iOSBrokenFonts.indexOf(fontFamily) === -1; })
+        ? fontFamilies.filter((fontFamily) => iOSBrokenFonts.indexOf(fontFamily) === -1)
         : fontFamilies;
 };
-var hasCanvasStyle = function (canvas) {
-    return typeof canvas.style !== 'undefined';
-};
+const hasCanvasStyle = (canvas) => typeof canvas.style !== 'undefined';
 
-var Logger = /** @class */ (function () {
-    function Logger(_a) {
-        var id = _a.id, enabled = _a.enabled;
+class Logger {
+    static instances = {};
+    id;
+    enabled;
+    start;
+    constructor({ id, enabled }) {
         this.id = id;
         this.enabled = enabled;
         this.start = Date.now();
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Logger.prototype.debug = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    debug(...args) {
         if (this.enabled) {
             // eslint-disable-next-line no-console
             if (typeof console !== 'undefined' && typeof console.debug === 'function') {
                 // eslint-disable-next-line no-console
-                console.debug.apply(console, __spreadArray([this.id, this.getTime() + "ms"], args));
+                console.debug(this.id, `${this.getTime()}ms`, ...args);
             }
             else {
-                this.info.apply(this, args);
+                this.info(...args);
             }
         }
-    };
-    Logger.prototype.getTime = function () {
+    }
+    getTime() {
         return Date.now() - this.start;
-    };
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Logger.prototype.info = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    info(...args) {
         if (this.enabled) {
             // eslint-disable-next-line no-console
             if (typeof console !== 'undefined' && typeof console.info === 'function') {
                 // eslint-disable-next-line no-console
-                console.info.apply(console, __spreadArray([this.id, this.getTime() + "ms"], args));
+                console.info(this.id, `${this.getTime()}ms`, ...args);
             }
         }
-    };
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Logger.prototype.warn = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    warn(...args) {
         if (this.enabled) {
             // eslint-disable-next-line no-console
             if (typeof console !== 'undefined' && typeof console.warn === 'function') {
                 // eslint-disable-next-line no-console
-                console.warn.apply(console, __spreadArray([this.id, this.getTime() + "ms"], args));
+                console.warn(this.id, `${this.getTime()}ms`, ...args);
             }
             else {
-                this.info.apply(this, args);
+                this.info(...args);
             }
         }
-    };
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Logger.prototype.error = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
+    error(...args) {
         if (this.enabled) {
             // eslint-disable-next-line no-console
             if (typeof console !== 'undefined' && typeof console.error === 'function') {
                 // eslint-disable-next-line no-console
-                console.error.apply(console, __spreadArray([this.id, this.getTime() + "ms"], args));
+                console.error(this.id, `${this.getTime()}ms`, ...args);
             }
             else {
-                this.info.apply(this, args);
+                this.info(...args);
             }
         }
-    };
-    Logger.instances = {};
-    return Logger;
-}());
-
-var MASK_OFFSET = 10000;
-var NATIVE_MINIAPP_TEXT_BASELINE_OFFSET = 3.25;
-var DEFAULT_MINIAPP_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
-var DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE = true;
-var FONT_METRICS_SAMPLE_TEXT = 'Hidden Text';
-var MiniAppCache = /** @class */ (function () {
-    function MiniAppCache(loadImage) {
-        this.loadImage = loadImage;
-        this.images = {};
     }
-    MiniAppCache.prototype.addImage = function (src) {
+}
+
+const serializeMiniAppRenderInput = (input) => input;
+
+const MASK_OFFSET = 10000;
+const NATIVE_MINIAPP_TEXT_BASELINE_OFFSET = 3.25;
+const DEFAULT_MINIAPP_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
+const DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE = true;
+const FONT_METRICS_SAMPLE_TEXT = 'Hidden Text';
+class MiniAppCache {
+    loadImage;
+    images = {};
+    constructor(loadImage) {
+        this.loadImage = loadImage;
+    }
+    addImage(src) {
         if (!this.loadImage || typeof this.images[src] !== 'undefined') {
             return Promise.resolve();
         }
         this.images[src] = this.loadImage(src);
         return Promise.resolve();
-    };
-    MiniAppCache.prototype.match = function (src) {
-        var cached = this.images[src];
+    }
+    match(src) {
+        const cached = this.images[src];
         if (typeof cached !== 'undefined') {
             return cached;
         }
         if (this.loadImage) {
-            var promise = this.loadImage(src);
+            const promise = this.loadImage(src);
             this.images[src] = promise;
             return promise;
         }
         return Promise.resolve(undefined);
-    };
-    return MiniAppCache;
-}());
-var attachStyleHelpers = function (styles) { return (__assign(__assign({}, styles), { isVisible: function () {
-        return this.display > 0 && this.opacity > 0 && this.visibility === 0 /* VISIBLE */;
-    }, isTransformed: function () {
+    }
+}
+const attachStyleHelpers = (styles) => ({
+    ...styles,
+    isVisible() {
+        return this.display > 0 && this.opacity > 0 && this.visibility === 0 /* VISIBILITY.VISIBLE */;
+    },
+    isTransformed() {
         return this.transform !== null;
-    }, isPositioned: function () {
-        return this.position !== 0 /* STATIC */;
-    }, isFloating: function () {
-        return this.float !== 0 /* NONE */;
-    }, isInlineLevel: function () {
-        return (contains(this.display, 4 /* INLINE */) ||
-            contains(this.display, 536870912 /* INLINE_GRID */) ||
-            contains(this.display, 268435456 /* INLINE_FLEX */) ||
-            contains(this.display, 134217728 /* INLINE_TABLE */) ||
-            contains(this.display, 67108864 /* INLINE_LIST_ITEM */) ||
-            contains(this.display, 33554432 /* INLINE_BLOCK */));
-    } })); };
-var reviveTextNode = function (textNode) { return ({
+    },
+    isPositioned() {
+        return this.position !== 0 /* POSITION.STATIC */;
+    },
+    isFloating() {
+        return this.float !== 0 /* FLOAT.NONE */;
+    },
+    isInlineLevel() {
+        return (contains(this.display, 4 /* DISPLAY.INLINE */) ||
+            contains(this.display, 536870912 /* DISPLAY.INLINE_GRID */) ||
+            contains(this.display, 268435456 /* DISPLAY.INLINE_FLEX */) ||
+            contains(this.display, 134217728 /* DISPLAY.INLINE_TABLE */) ||
+            contains(this.display, 67108864 /* DISPLAY.INLINE_LIST_ITEM */) ||
+            contains(this.display, 33554432 /* DISPLAY.INLINE_BLOCK */));
+    }
+});
+const reviveTextNode = (textNode) => ({
     text: textNode.text,
-    textBounds: textNode.textBounds.map(function (item) { return ({
+    textBounds: textNode.textBounds.map((item) => ({
         text: item.text,
         bounds: new Bounds(item.bounds.left, item.bounds.top, item.bounds.width, item.bounds.height)
-    }); })
-}); };
-var reviveBaseContainer = function (container) { return ({
+    }))
+});
+const reviveBaseContainer = (container) => ({
     flags: typeof container.flags === 'number' ? container.flags : 0,
     bounds: new Bounds(container.bounds.left, container.bounds.top, container.bounds.width, container.bounds.height),
     styles: attachStyleHelpers(container.styles),
     textNodes: container.textNodes.map(reviveTextNode),
     elements: container.elements.map(reviveContainer)
-}); };
-var reviveImageContainer = function (container) { return (__assign({ containerType: 'image', src: container.src, intrinsicWidth: container.intrinsicWidth, intrinsicHeight: container.intrinsicHeight }, reviveBaseContainer(container))); };
-var reviveListItemContainer = function (container) { return (__assign({ containerType: 'li', value: typeof container.value === 'number' ? container.value : 0 }, reviveBaseContainer(container))); };
-var reviveOrderedListContainer = function (container) { return (__assign({ containerType: 'ol', start: container.start, reversed: container.reversed }, reviveBaseContainer(container))); };
-var reviveContainer = function (container) {
+});
+const reviveImageContainer = (container) => ({
+    containerType: 'image',
+    src: container.src,
+    intrinsicWidth: container.intrinsicWidth,
+    intrinsicHeight: container.intrinsicHeight,
+    ...reviveBaseContainer(container)
+});
+const reviveListItemContainer = (container) => ({
+    containerType: 'li',
+    value: typeof container.value === 'number' ? container.value : 0,
+    ...reviveBaseContainer(container)
+});
+const reviveOrderedListContainer = (container) => ({
+    containerType: 'ol',
+    start: container.start,
+    reversed: container.reversed,
+    ...reviveBaseContainer(container)
+});
+const reviveContainer = (container) => {
     switch (container.containerType) {
         case 'image':
             return reviveImageContainer(container);
@@ -3139,208 +2842,159 @@ var reviveContainer = function (container) {
             return reviveOrderedListContainer(container);
         case 'element':
         default:
-            return __assign({ containerType: 'element' }, reviveBaseContainer(container));
+            return {
+                containerType: 'element',
+                ...reviveBaseContainer(container)
+            };
     }
 };
-var createEnvironment = function (input, options, fontMetrics) {
-    var _a, _b, _c, _d;
-    return ({
-        createCanvas: function () {
-            return options.createCanvas();
-        },
-        fontMetrics: fontMetrics,
-        userAgent: (_b = (_a = options.userAgent) !== null && _a !== void 0 ? _a : input.environment.userAgent) !== null && _b !== void 0 ? _b : DEFAULT_MINIAPP_USER_AGENT,
-        useMiterTextStroke: (_d = (_c = options.useMiterTextStroke) !== null && _c !== void 0 ? _c : input.environment.useMiterTextStroke) !== null && _d !== void 0 ? _d : DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE
-    });
-};
-var MiniAppCanvasRenderer = /** @class */ (function (_super) {
-    __extends(MiniAppCanvasRenderer, _super);
-    function MiniAppCanvasRenderer(context, options, environment, useNativeBorderRectangles) {
-        var _this = _super.call(this, context, options, environment) || this;
-        _this.useNativeBorderRectangles = useNativeBorderRectangles;
-        return _this;
+const createEnvironment = (input, options, fontMetrics) => ({
+    createCanvas() {
+        return options.createCanvas();
+    },
+    fontMetrics,
+    userAgent: options.userAgent ?? input.environment.userAgent ?? DEFAULT_MINIAPP_USER_AGENT,
+    useMiterTextStroke: options.useMiterTextStroke ?? input.environment.useMiterTextStroke ?? DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE
+});
+class MiniAppCanvasRenderer extends ExtractedCanvasRenderer {
+    useNativeBorderRectangles;
+    constructor(context, options, environment, useNativeBorderRectangles) {
+        super(context, options, environment);
+        this.useNativeBorderRectangles = useNativeBorderRectangles;
     }
-    MiniAppCanvasRenderer.prototype.renderNodeBackgroundAndBorders = function (paint) {
-        return __awaiter(this, void 0, void 0, function () {
-            var styles, hasBackground, borders, backgroundPaintingArea;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.useNativeBorderRectangles ||
-                            !shouldUseRectangularSolidBorderFill(paint.curves, paint.container.styles)) {
-                            return [2 /*return*/, _super.prototype.renderNodeBackgroundAndBorders.call(this, paint)];
-                        }
-                        this.applyEffects(paint.getEffects(2 /* BACKGROUND_BORDERS */));
-                        styles = paint.container.styles;
-                        hasBackground = !isTransparent(styles.backgroundColor) || styles.backgroundImage.length;
-                        borders = [
-                            { style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth },
-                            { style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth },
-                            { style: styles.borderBottomStyle, color: styles.borderBottomColor, width: styles.borderBottomWidth },
-                            { style: styles.borderLeftStyle, color: styles.borderLeftColor, width: styles.borderLeftWidth }
-                        ];
-                        backgroundPaintingArea = calculateBackgroundCurvedPaintingArea(getBackgroundValueForIndex(styles.backgroundClip, 0), paint.curves);
-                        if (!(hasBackground || styles.boxShadow.length)) return [3 /*break*/, 2];
-                        this.ctx.save();
-                        this.path(backgroundPaintingArea);
-                        this.ctx.clip();
-                        if (!isTransparent(styles.backgroundColor)) {
-                            this.ctx.fillStyle = asString(styles.backgroundColor);
-                            this.ctx.fill();
-                        }
-                        return [4 /*yield*/, this.renderBackgroundImage(paint.container)];
-                    case 1:
-                        _a.sent();
-                        this.ctx.restore();
-                        styles.boxShadow
-                            .slice(0)
-                            .reverse()
-                            .forEach(function (shadow) {
-                            _this.ctx.save();
-                            var borderBoxArea = calculateBorderBoxPath(paint.curves);
-                            var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
-                            var shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
-                            if (shadow.inset) {
-                                _this.path(borderBoxArea);
-                                _this.ctx.clip();
-                                _this.mask(shadowPaintingArea);
-                            }
-                            else {
-                                _this.mask(borderBoxArea);
-                                _this.ctx.clip();
-                                _this.path(shadowPaintingArea);
-                            }
-                            _this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
-                            _this.ctx.shadowOffsetY = shadow.offsetY.number;
-                            _this.ctx.shadowColor = asString(shadow.color);
-                            _this.ctx.shadowBlur = shadow.blur.number;
-                            _this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
-                            _this.ctx.fill();
-                            _this.ctx.restore();
-                        });
-                        _a.label = 2;
-                    case 2:
-                        this.renderRectangularSolidBorder(paint.container.bounds, borders[0].color, borders);
-                        return [2 /*return*/];
+    async renderNodeBackgroundAndBorders(paint) {
+        if (!this.useNativeBorderRectangles || !shouldUseRectangularSolidBorderFill(paint.curves, paint.container.styles)) {
+            return super.renderNodeBackgroundAndBorders(paint);
+        }
+        this.applyEffects(paint.getEffects(2 /* EffectTarget.BACKGROUND_BORDERS */));
+        const styles = paint.container.styles;
+        const hasBackground = !isTransparent(styles.backgroundColor) || styles.backgroundImage.length;
+        const borders = [
+            { style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth },
+            { style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth },
+            { style: styles.borderBottomStyle, color: styles.borderBottomColor, width: styles.borderBottomWidth },
+            { style: styles.borderLeftStyle, color: styles.borderLeftColor, width: styles.borderLeftWidth }
+        ];
+        const backgroundPaintingArea = calculateBackgroundCurvedPaintingArea(getBackgroundValueForIndex(styles.backgroundClip, 0), paint.curves);
+        if (hasBackground || styles.boxShadow.length) {
+            this.ctx.save();
+            this.path(backgroundPaintingArea);
+            this.ctx.clip();
+            if (!isTransparent(styles.backgroundColor)) {
+                this.ctx.fillStyle = asString(styles.backgroundColor);
+                this.ctx.fill();
+            }
+            await this.renderBackgroundImage(paint.container);
+            this.ctx.restore();
+            styles.boxShadow
+                .slice(0)
+                .reverse()
+                .forEach((shadow) => {
+                this.ctx.save();
+                const borderBoxArea = calculateBorderBoxPath(paint.curves);
+                const maskOffset = shadow.inset ? 0 : MASK_OFFSET;
+                const shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
+                if (shadow.inset) {
+                    this.path(borderBoxArea);
+                    this.ctx.clip();
+                    this.mask(shadowPaintingArea);
                 }
+                else {
+                    this.mask(borderBoxArea);
+                    this.ctx.clip();
+                    this.path(shadowPaintingArea);
+                }
+                this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
+                this.ctx.shadowOffsetY = shadow.offsetY.number;
+                this.ctx.shadowColor = asString(shadow.color);
+                this.ctx.shadowBlur = shadow.blur.number;
+                this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';
+                this.ctx.fill();
+                this.ctx.restore();
             });
-        });
-    };
-    MiniAppCanvasRenderer.prototype.renderRectangularSolidBorder = function (bounds, color, borders) {
-        var top = borders[0].width;
-        var right = borders[1].width;
-        var bottom = borders[2].width;
-        var left = borders[3].width;
-        var scale = this.options.scale;
-        var outerLeft = bounds.left;
-        var outerTop = bounds.top;
-        var outerRight = bounds.left + bounds.width;
-        var outerBottom = bounds.top + bounds.height;
-        var snappedOuterLeft = Math.ceil(outerLeft * scale) / scale;
-        var snappedOuterRight = Math.ceil(outerRight * scale) / scale;
-        var snappedOuterTop = Math.ceil(outerTop * scale) / scale;
+        }
+        this.renderRectangularSolidBorder(paint.container.bounds, borders[0].color, borders);
+    }
+    renderRectangularSolidBorder(bounds, color, borders) {
+        const top = borders[0].width;
+        const right = borders[1].width;
+        const bottom = borders[2].width;
+        const left = borders[3].width;
+        const scale = this.options.scale;
+        const outerLeft = bounds.left;
+        const outerTop = bounds.top;
+        const outerRight = bounds.left + bounds.width;
+        const outerBottom = bounds.top + bounds.height;
+        const snappedOuterLeft = Math.ceil(outerLeft * scale) / scale;
+        const snappedOuterRight = Math.ceil(outerRight * scale) / scale;
+        const snappedOuterTop = Math.ceil(outerTop * scale) / scale;
         this.ctx.fillStyle = asString(color);
         this.ctx.fillRect(snappedOuterLeft, outerTop, snappedOuterRight - snappedOuterLeft, top);
         this.ctx.fillRect(bounds.left + bounds.width - right, snappedOuterTop, right, outerBottom - bottom - snappedOuterTop);
         this.ctx.fillRect(bounds.left, bounds.top + bounds.height - bottom, bounds.width, bottom);
         this.ctx.fillRect(bounds.left, snappedOuterTop, left, outerBottom - bottom - snappedOuterTop);
+    }
+}
+const createRenderContext = (input, options, cache) => ({
+    logger: new Logger({ id: '#miniapp', enabled: options.logging ?? false }),
+    cache,
+    windowBounds: new Bounds(input.windowBounds.left, input.windowBounds.top, input.windowBounds.width, input.windowBounds.height)
+});
+const renderMiniAppCanvas = async (input, options) => {
+    const cache = new MiniAppCache(options.loadImage);
+    const context = createRenderContext(input, options, cache);
+    const useNativeCanvas = isNativeMiniAppCanvas(options.canvas);
+    const fontMetrics = resolveFontMetrics(options, useNativeCanvas);
+    const root = reviveContainer(input.root);
+    const renderOptions = {
+        backgroundColor: input.renderOptions.backgroundColor,
+        scale: input.renderOptions.scale,
+        x: input.renderOptions.x,
+        y: input.renderOptions.y,
+        width: input.renderOptions.width,
+        height: input.renderOptions.height,
+        canvas: options.canvas
     };
-    return MiniAppCanvasRenderer;
-}(ExtractedCanvasRenderer));
-var createRenderContext = function (input, options, cache) {
-    var _a;
-    return ({
-        logger: new Logger({ id: '#miniapp', enabled: (_a = options.logging) !== null && _a !== void 0 ? _a : false }),
-        cache: cache,
-        windowBounds: new Bounds(input.windowBounds.left, input.windowBounds.top, input.windowBounds.width, input.windowBounds.height)
-    });
+    await preloadImages(root, cache);
+    const renderer = new MiniAppCanvasRenderer(context, renderOptions, createEnvironment(input, options, fontMetrics), useNativeCanvas);
+    await renderer.render(root);
+    return options.canvas;
 };
-var renderMiniAppCanvas = function (input, options) { return __awaiter(void 0, void 0, void 0, function () {
-    var cache, context, useNativeCanvas, fontMetrics, root, renderOptions, renderer;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                cache = new MiniAppCache(options.loadImage);
-                context = createRenderContext(input, options, cache);
-                useNativeCanvas = isNativeMiniAppCanvas(options.canvas);
-                fontMetrics = resolveFontMetrics(options, useNativeCanvas);
-                root = reviveContainer(input.root);
-                renderOptions = {
-                    backgroundColor: input.renderOptions.backgroundColor,
-                    scale: input.renderOptions.scale,
-                    x: input.renderOptions.x,
-                    y: input.renderOptions.y,
-                    width: input.renderOptions.width,
-                    height: input.renderOptions.height,
-                    canvas: options.canvas
-                };
-                return [4 /*yield*/, preloadImages(root, cache)];
-            case 1:
-                _a.sent();
-                renderer = new MiniAppCanvasRenderer(context, renderOptions, createEnvironment(input, options, fontMetrics), useNativeCanvas);
-                return [4 /*yield*/, renderer.render(root)];
-            case 2:
-                _a.sent();
-                return [2 /*return*/, options.canvas];
-        }
-    });
-}); };
-var preloadImages = function (container, cache) { return __awaiter(void 0, void 0, void 0, function () {
-    var _i, _a, child;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                if (!(container.containerType === 'image')) return [3 /*break*/, 2];
-                return [4 /*yield*/, cache.addImage(container.src)];
-            case 1:
-                _b.sent();
-                _b.label = 2;
-            case 2:
-                _i = 0, _a = container.elements;
-                _b.label = 3;
-            case 3:
-                if (!(_i < _a.length)) return [3 /*break*/, 6];
-                child = _a[_i];
-                return [4 /*yield*/, preloadImages(child, cache)];
-            case 4:
-                _b.sent();
-                _b.label = 5;
-            case 5:
-                _i++;
-                return [3 /*break*/, 3];
-            case 6: return [2 /*return*/];
-        }
-    });
-}); };
-var isNativeMiniAppCanvas = function (canvas) { return typeof canvas.ownerDocument === 'undefined'; };
-var resolveFontMetrics = function (options, useNativeCanvas) {
-    var _a, _b;
-    var baseFontMetrics = (_a = options.fontMetrics) !== null && _a !== void 0 ? _a : createMiniAppFontMetricsProvider((_b = options.measureCanvas) !== null && _b !== void 0 ? _b : options.createCanvas());
+const preloadImages = async (container, cache) => {
+    if (container.containerType === 'image') {
+        await cache.addImage(container.src);
+    }
+    for (const child of container.elements) {
+        await preloadImages(child, cache);
+    }
+};
+const isNativeMiniAppCanvas = (canvas) => typeof canvas.ownerDocument === 'undefined';
+const resolveFontMetrics = (options, useNativeCanvas) => {
+    const baseFontMetrics = options.fontMetrics ?? createMiniAppFontMetricsProvider(options.measureCanvas ?? options.createCanvas());
     return useNativeCanvas ? createNativeMiniAppFontMetrics(baseFontMetrics) : baseFontMetrics;
 };
-var parseFontSize = function (fontSize) {
-    var matched = /([0-9.]+)px/.exec(fontSize);
+const parseFontSize = (fontSize) => {
+    const matched = /([0-9.]+)px/.exec(fontSize);
     if (!matched) {
         return 16;
     }
     return Number(matched[1]) || 16;
 };
-var createMiniAppFontMetricsProvider = function (measureCanvas) {
-    var ctx = measureCanvas.getContext('2d');
-    var cache = {};
+const createMiniAppFontMetricsProvider = (measureCanvas) => {
+    const ctx = measureCanvas.getContext('2d');
+    const cache = {};
     return {
-        getMetrics: function (fontFamily, fontSize) {
-            var key = fontFamily + "|" + fontSize;
-            var cached = cache[key];
+        getMetrics(fontFamily, fontSize) {
+            const key = `${fontFamily}|${fontSize}`;
+            const cached = cache[key];
             if (typeof cached !== 'undefined') {
                 return cached;
             }
-            var size = parseFontSize(fontSize);
-            ctx.font = fontSize + " " + fontFamily;
-            var baseline = size * 0.8;
-            var middle = size * 0.5;
-            var metrics = ctx.measureText ? ctx.measureText(FONT_METRICS_SAMPLE_TEXT) : null;
+            const size = parseFontSize(fontSize);
+            ctx.font = `${fontSize} ${fontFamily}`;
+            let baseline = size * 0.8;
+            let middle = size * 0.5;
+            const metrics = ctx.measureText ? ctx.measureText(FONT_METRICS_SAMPLE_TEXT) : null;
             if (metrics) {
                 if (typeof metrics.actualBoundingBoxAscent === 'number') {
                     baseline = metrics.actualBoundingBoxAscent;
@@ -3350,23 +3004,23 @@ var createMiniAppFontMetricsProvider = function (measureCanvas) {
                     middle = (metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
                 }
             }
-            var value = { baseline: baseline, middle: middle };
+            const value = { baseline, middle };
             cache[key] = value;
             return value;
         }
     };
 };
-var createNativeMiniAppFontMetrics = function (fontMetrics) {
-    var cache = {};
+const createNativeMiniAppFontMetrics = (fontMetrics) => {
+    const cache = {};
     return {
-        getMetrics: function (fontFamily, fontSize) {
-            var key = fontFamily + "|" + fontSize;
-            var cached = cache[key];
+        getMetrics(fontFamily, fontSize) {
+            const key = `${fontFamily}|${fontSize}`;
+            const cached = cache[key];
             if (typeof cached !== 'undefined') {
                 return cached;
             }
-            var metrics = fontMetrics.getMetrics(fontFamily, fontSize);
-            var patched = {
+            const metrics = fontMetrics.getMetrics(fontFamily, fontSize);
+            const patched = {
                 baseline: metrics.baseline + NATIVE_MINIAPP_TEXT_BASELINE_OFFSET,
                 middle: metrics.middle + NATIVE_MINIAPP_TEXT_BASELINE_OFFSET
             };
@@ -3375,45 +3029,41 @@ var createNativeMiniAppFontMetrics = function (fontMetrics) {
         }
     };
 };
-var shouldUseRectangularSolidBorderFill = function (curves, styles) {
-    var borders = [
+const shouldUseRectangularSolidBorderFill = (curves, styles) => {
+    const borders = [
         { style: styles.borderTopStyle, color: styles.borderTopColor, width: styles.borderTopWidth },
         { style: styles.borderRightStyle, color: styles.borderRightColor, width: styles.borderRightWidth },
         { style: styles.borderBottomStyle, color: styles.borderBottomColor, width: styles.borderBottomWidth },
         { style: styles.borderLeftStyle, color: styles.borderLeftColor, width: styles.borderLeftWidth }
     ];
-    var firstBorder = borders[0];
+    const firstBorder = borders[0];
     return (!hasBezierBorderCorners(curves) &&
-        borders.every(function (border) {
-            return border.style === 1 /* SOLID */ &&
-                border.width > 0 &&
-                !isTransparent(border.color) &&
-                border.color === firstBorder.color;
-        }));
+        borders.every((border) => border.style === 1 /* BORDER_STYLE.SOLID */ &&
+            border.width > 0 &&
+            !isTransparent(border.color) &&
+            border.color === firstBorder.color));
 };
-var hasBezierBorderCorners = function (curves) {
-    return [
-        curves.topLeftBorderBox,
-        curves.topRightBorderBox,
-        curves.bottomRightBorderBox,
-        curves.bottomLeftBorderBox,
-        curves.topLeftPaddingBox,
-        curves.topRightPaddingBox,
-        curves.bottomRightPaddingBox,
-        curves.bottomLeftPaddingBox
-    ].some(function (path) { return isBezierCurve(path); });
-};
-var calculateBackgroundCurvedPaintingArea = function (clip, curves) {
+const hasBezierBorderCorners = (curves) => [
+    curves.topLeftBorderBox,
+    curves.topRightBorderBox,
+    curves.bottomRightBorderBox,
+    curves.bottomLeftBorderBox,
+    curves.topLeftPaddingBox,
+    curves.topRightPaddingBox,
+    curves.bottomRightPaddingBox,
+    curves.bottomLeftPaddingBox
+].some((path) => isBezierCurve(path));
+const calculateBackgroundCurvedPaintingArea = (clip, curves) => {
     switch (clip) {
-        case 0 /* BORDER_BOX */:
+        case 0 /* BACKGROUND_CLIP.BORDER_BOX */:
             return calculateBorderBoxPath(curves);
-        case 2 /* CONTENT_BOX */:
+        case 2 /* BACKGROUND_CLIP.CONTENT_BOX */:
             return calculateContentBoxPath(curves);
-        case 1 /* PADDING_BOX */:
+        case 1 /* BACKGROUND_CLIP.PADDING_BOX */:
         default:
             return calculatePaddingBoxPath(curves);
     }
 };
 
-export { renderMiniAppCanvas };
+module.exports = {renderMiniAppCanvas: renderMiniAppCanvas, serializeMiniAppRenderInput: serializeMiniAppRenderInput};
 //# sourceMappingURL=canvas-renderer-miniapp.js.map
