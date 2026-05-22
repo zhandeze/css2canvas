@@ -1,4 +1,4 @@
-import type {TextAlign, TextDirection, TextLineBox} from './types.ts';
+import type {TextAlign, TextDirection, TextLineBox} from './types';
 
 function resolveAlign(textAlign: TextAlign, direction: TextDirection): 'left' | 'center' | 'right' {
   if (textAlign === 'center') {

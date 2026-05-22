@@ -1,17 +1,13 @@
 import {testList, ignoredTests} from '../build/reftests';
 // @ts-ignore
-import {default as platform} from 'platform';
-// @ts-ignore
-import Promise from 'es6-promise';
+import 'es6-promise/auto';
 import {ScreenshotRequest} from './types';
-
-// @ts-ignore
-window.Promise = Promise;
 const testRunnerUrl = location.href;
 const hasHistoryApi = typeof window.history !== 'undefined' && typeof window.history.replaceState !== 'undefined';
+const platformInfo = (window as Window & {platform?: {name?: string; version?: string}}).platform ?? {};
 
 const uploadResults = (canvas: HTMLCanvasElement, url: string) => {
-	return new Promise((resolve: () => void, reject: (error: string) => void) => {
+	return new Promise<void>((resolve, reject) => {
 		// @ts-ignore
 		const xhr = 'withCredentials' in new XMLHttpRequest() ? new XMLHttpRequest() : new XDomainRequest();
 
@@ -28,8 +24,8 @@ const uploadResults = (canvas: HTMLCanvasElement, url: string) => {
 			screenshot: canvas.toDataURL(),
 			test: url,
 			platform: {
-				name: platform.name,
-				version: platform.version
+				name: platformInfo.name || 'unknown',
+				version: platformInfo.version || 'unknown'
 			},
 			devicePixelRatio: window.devicePixelRatio || 1,
 			windowWidth: window.innerWidth,
@@ -43,10 +39,10 @@ const uploadResults = (canvas: HTMLCanvasElement, url: string) => {
 
 testList
 	.filter((test) => {
-		return !Array.isArray(ignoredTests[test]) || ignoredTests[test].indexOf(platform.name || '') === -1;
+		return !Array.isArray(ignoredTests[test]) || ignoredTests[test].indexOf(platformInfo.name || '') === -1;
 	})
 	.forEach((url) => {
-		describe(url, function () {
+		describe(url, function (this: Mocha.Suite) {
 			this.timeout(60000);
 			this.retries(2);
 			const windowWidth = 800;

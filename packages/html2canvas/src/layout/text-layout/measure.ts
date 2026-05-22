@@ -1,6 +1,6 @@
-import type {TextMeasure, TextMeasureResult, TextStyleInput} from './types.ts';
+import type {TextMeasure, TextMeasureResult, TextStyleInput} from './types';
 
-import {layoutPreparedText, prepareTextBlock} from './pretext-adapter.ts';
+import {layoutPreparedText, prepareTextBlock} from './pretext-adapter';
 
 const AUTO_TEXT_MEASURE_SIGNATURE = Symbol('autoTextMeasureSignature');
 

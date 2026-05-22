@@ -1,4 +1,4 @@
-import type {NormalizedTextStyle, TextDecorationBox, TextLineBox, TextDecorationLine} from './types.ts';
+import type {NormalizedTextStyle, TextDecorationBox, TextLineBox, TextDecorationLine} from './types';
 
 function decorationY(line: TextDecorationLine, lineTop: number, fontSize: number, lineHeight: number): number {
   if (line === 'overline') {

@@ -12,6 +12,7 @@ import {SelectElementContainer} from './elements/select-element-container';
 import {TextareaElementContainer} from './elements/textarea-element-container';
 import {IFrameElementContainer} from './replaced-elements/iframe-element-container';
 import {Context} from '../core/context';
+import {COLORS, isTransparent, parseColor} from '../css/types/color';
 
 const LIST_OWNERS = ['OL', 'UL', 'MENU'];
 
@@ -88,7 +89,38 @@ const createContainer = (context: Context, element: Element): ElementContainer =
 	}
 
 	if (isIFrameElement(element)) {
-		return new IFrameElementContainer(context, element);
+		const container = new IFrameElementContainer(context, element);
+		try {
+			if (
+				element.contentWindow &&
+				element.contentWindow.document &&
+				element.contentWindow.document.documentElement
+			) {
+				container.tree = parseTree(context, element.contentWindow.document.documentElement);
+
+				// http://www.w3.org/TR/css3-background/#special-backgrounds
+				const documentBackgroundColor = element.contentWindow.document.documentElement
+					? parseColor(
+							context,
+							getComputedStyle(element.contentWindow.document.documentElement).backgroundColor as string
+						)
+					: COLORS.TRANSPARENT;
+				const bodyBackgroundColor = element.contentWindow.document.body
+					? parseColor(
+							context,
+							getComputedStyle(element.contentWindow.document.body).backgroundColor as string
+						)
+					: COLORS.TRANSPARENT;
+
+				container.backgroundColor = isTransparent(documentBackgroundColor)
+					? isTransparent(bodyBackgroundColor)
+						? container.styles.backgroundColor
+						: bodyBackgroundColor
+					: documentBackgroundColor;
+			}
+		} catch (e) {}
+
+		return container;
 	}
 
 	return new ElementContainer(context, element);

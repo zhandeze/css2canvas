@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 const cors = require('cors');
 const path = require('path');
 const os = require('os');
@@ -593,7 +593,7 @@ screenshotApp.use((error: Error, _req: express.Request, _res: express.Response, 
 	next();
 });
 
-const args = yargs(process.argv.slice(2)).number(['port', 'cors']).argv;
+const args = yargs(process.argv.slice(2)).number(['port', 'cors']).parseSync();
 
 if (args.port) {
 	app.listen(args.port, () => {

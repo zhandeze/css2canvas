@@ -151,31 +151,51 @@ export const serializeMiniAppContainer = (
 	}
 ): SerializedMiniAppContainer => {
 	const containerType = normalizeMiniAppContainerType(container.containerType ?? 'element');
-	const serialized: SerializedMiniAppContainer = containerType === 'ol' ? {
-		containerType,
-		flags: container.flags,
-		bounds: container.bounds,
-		styles: clonePlain(container.styles),
-		textNodes: container.textNodes.map(serializeTextNode),
-		elements: container.elements,
-		start: typeof container.start === 'number' ? container.start : 0,
-		reversed: typeof container.reversed === 'boolean' ? container.reversed : false
-	} : containerType === 'li' ? {
-		containerType,
-		flags: container.flags,
-		bounds: container.bounds,
-		styles: clonePlain(container.styles),
-		textNodes: container.textNodes.map(serializeTextNode),
-		elements: container.elements,
-		value: container.value
-	} : {
-		containerType,
-		flags: container.flags,
-		bounds: container.bounds,
-		styles: clonePlain(container.styles),
-		textNodes: container.textNodes.map(serializeTextNode),
-		elements: container.elements
-	};
+	let serialized: SerializedMiniAppContainer;
+
+	if (containerType === 'ol') {
+		serialized = {
+			containerType,
+			flags: container.flags,
+			bounds: container.bounds,
+			styles: clonePlain(container.styles),
+			textNodes: container.textNodes.map(serializeTextNode),
+			elements: container.elements,
+			start: typeof container.start === 'number' ? container.start : 0,
+			reversed: typeof container.reversed === 'boolean' ? container.reversed : false
+		};
+	} else if (containerType === 'li') {
+		serialized = {
+			containerType,
+			flags: container.flags,
+			bounds: container.bounds,
+			styles: clonePlain(container.styles),
+			textNodes: container.textNodes.map(serializeTextNode),
+			elements: container.elements,
+			value: container.value
+		};
+	} else if (containerType === 'image') {
+		serialized = {
+			containerType,
+			flags: container.flags,
+			bounds: container.bounds,
+			styles: clonePlain(container.styles),
+			textNodes: container.textNodes.map(serializeTextNode),
+			elements: container.elements,
+			src: container.src ?? '',
+			intrinsicWidth: typeof container.intrinsicWidth === 'number' ? container.intrinsicWidth : 0,
+			intrinsicHeight: typeof container.intrinsicHeight === 'number' ? container.intrinsicHeight : 0
+		};
+	} else {
+		serialized = {
+			containerType: 'element',
+			flags: container.flags,
+			bounds: container.bounds,
+			styles: clonePlain(container.styles),
+			textNodes: container.textNodes.map(serializeTextNode),
+			elements: container.elements
+		};
+	}
 
 	if (typeof container.src === 'string') {
 		(serialized as SerializedImageContainer).src = container.src;

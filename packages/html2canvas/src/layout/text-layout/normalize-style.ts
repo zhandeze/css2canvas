@@ -1,4 +1,4 @@
-import type {NormalizedTextStyle, TextDecorationLine, TextStyleInput} from './types.ts';
+import type {NormalizedTextStyle, TextDecorationLine, TextStyleInput} from './types';
 
 const DEFAULT_LINE_HEIGHT_MULTIPLIER = 1.2;
 

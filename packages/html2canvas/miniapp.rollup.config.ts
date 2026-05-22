@@ -17,7 +17,7 @@ export default {
     plugins: [
         resolve(),
         json(),
-        typescript({sourceMap: true, inlineSources: true}),
+        typescript({sourceMap: true, inlineSources: true, tsconfig: './tsconfig.rollup.json'}),
         commonjs({
             include: 'node_modules/**'
         }),

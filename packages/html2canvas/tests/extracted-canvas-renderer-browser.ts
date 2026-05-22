@@ -14,7 +14,7 @@ import {ElementContainer} from '../src/dom/element-container';
 import {TextBounds} from '../src/css/layout/text-bounds';
 import {layoutToMiniAppRenderInput} from '../src/miniapp/layout-to-miniapp';
 import {renderMiniAppCanvas} from '../src/miniapp/canvas-renderer-miniapp';
-import {computeLayout, measureTextBlock} from 'layout';
+import {computeLayout, measureTextBlock} from '../src/layout';
 
 type CompareResult = {
 	identical: boolean;
@@ -43,8 +43,8 @@ type LayoutFixtureNode = {
 		textDecorationColor?: string;
 		color?: string;
 	};
-	layout?: {left: number; top: number; width: number; height: number; right?: number; bottom?: number; direction?: string};
-	lastLayout?: any;
+	layout: {left: number; top: number; width: number; height: number; right?: number; bottom?: number; direction?: string};
+	lastLayout: any;
 	nextAbsoluteChild: LayoutFixtureNode | null;
 	nextFlexChild: LayoutFixtureNode | null;
 	flags?: number;
@@ -442,13 +442,13 @@ const renderMiniAppLayoutCompare = async (rawOptions: string | CompareOptions): 
 	const input = await exportRenderInput(rawOptions);
 	const compare = await renderOriginalAndExtracted(rawOptions);
 	const layoutRoot = buildLayoutFixture(input);
-	computeLayout(layoutRoot, input.renderOptions.width, 'ltr');
+	computeLayout(layoutRoot as never, input.renderOptions.width, 'ltr');
 	const miniInput = layoutToMiniAppRenderInput({
 		selector: input.selector,
 		renderOptions: input.renderOptions,
 		windowBounds: input.windowBounds,
 		environment: input.environment,
-		root: layoutRoot
+		root: layoutRoot as never
 	});
 	const canvas = document.createElement('canvas');
 	canvas.width = Math.floor(input.renderOptions.width * input.renderOptions.scale);
@@ -457,8 +457,8 @@ const renderMiniAppLayoutCompare = async (rawOptions: string | CompareOptions): 
 	canvas.style.height = `${input.renderOptions.height}px`;
 
 	await renderMiniAppCanvas(miniInput, {
-		canvas,
-		createCanvas: () => document.createElement('canvas'),
+		canvas: canvas as never,
+		createCanvas: () => document.createElement('canvas') as never,
 		loadImage: (src: string) =>
 			new Promise((resolve, reject) => {
 				const img = new Image();
@@ -512,14 +512,14 @@ const buildLayoutFixture = (input: SerializedRenderInput): LayoutFixtureNode => 
 					measure
 				},
 				children: [],
-				layout: undefined,
-				lastLayout: undefined,
+				layout: {left: 0, top: 0, width: 0, height: 0},
+				lastLayout: null,
 				nextAbsoluteChild: null,
 				nextFlexChild: null
 			}
 		],
-		layout: undefined,
-		lastLayout: undefined,
+		layout: {left: 0, top: 0, width: 0, height: 0},
+		lastLayout: null,
 		nextAbsoluteChild: null,
 		nextFlexChild: null
 	};

@@ -1,5 +1,8 @@
 module.exports = {
-    preset: 'ts-jest',
     testEnvironment: 'jsdom',
-    roots: ['src']
+    roots: ['src'],
+    testPathIgnorePatterns: ['/src/layout/tests/'],
+    transform: {
+        '^.+\\.ts$': ['ts-jest', {tsconfig: 'tsconfig.jest.json'}]
+    }
 };

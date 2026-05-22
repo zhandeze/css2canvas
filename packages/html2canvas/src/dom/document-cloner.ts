@@ -196,7 +196,7 @@ export class DocumentCloner {
 		} catch (e) {
 			// accessing node.sheet.cssRules throws a DOMException
 			this.context.logger.error('Unable to access cssRules property', e);
-			if (e.name !== 'SecurityError') {
+			if (!(e instanceof Error) || e.name !== 'SecurityError') {
 				throw e;
 			}
 		}
@@ -576,8 +576,9 @@ const serializeDoctype = (doctype?: DocumentType | null): string => {
 			str += doctype.name;
 		}
 
-		if (doctype.internalSubset) {
-			str += doctype.internalSubset;
+		const internalSubset = doctype as DocumentType & {internalSubset?: string};
+		if (internalSubset.internalSubset) {
+			str += internalSubset.internalSubset;
 		}
 
 		if (doctype.publicId) {
@@ -604,7 +605,7 @@ const restoreOwnerScroll = (ownerDocument: Document | null, x: number, y: number
 	}
 };
 
-const restoreNodeScroll = ([element, x, y]: [HTMLElement, number, number]) => {
+const restoreNodeScroll = ([element, x, y]: [Element, number, number]) => {
 	element.scrollLeft = x;
 	element.scrollTop = y;
 };

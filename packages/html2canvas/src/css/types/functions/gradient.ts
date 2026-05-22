@@ -104,10 +104,10 @@ const findCorner = (width: number, height: number, x: number, y: number, closest
         [0, height],
         [width, 0],
         [width, height]
-    ];
+    ] as [number, number][];
 
     return corners.reduce(
-        (stat, corner) => {
+        (stat: {optimumDistance: number; optimumCorner: [number, number] | null}, corner) => {
             const [cx, cy] = corner;
             const d = distance(x - cx, y - cy);
             if (closest ? d < stat.optimumDistance : d > stat.optimumDistance) {

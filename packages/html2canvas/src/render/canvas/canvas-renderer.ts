@@ -5,10 +5,10 @@ import {
 } from './extracted-canvas-renderer';
 import {createBrowserCanvasRendererEnvironment} from './browser-canvas-renderer-environment';
 
-export {
+export {ExtractedCanvasRenderer} from './extracted-canvas-renderer';
+export type {
     CanvasRendererEnvironment,
     FontMetricsProvider,
-    ExtractedCanvasRenderer,
     RenderConfigurations,
     RenderOptions
 } from './extracted-canvas-renderer';

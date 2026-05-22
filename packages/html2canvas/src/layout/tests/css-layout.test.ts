@@ -1,10 +1,8 @@
-import assert from 'node:assert/strict';
-import test from 'node:test';
-
 import {computeLayout} from '../css-layout';
 import type {LayoutNode} from '../css-layout';
 
-test('computeLayout matches the documented padding and stretch example', () => {
+describe('computeLayout', () => {
+it('matches the documented padding and stretch example', () => {
   const nodeTree: LayoutNode = {
     style: {
       padding: 50
@@ -30,7 +28,7 @@ test('computeLayout matches the documented padding and stretch example', () => {
 
   computeLayout(nodeTree);
 
-  assert.deepEqual(nodeTree.layout, {
+  expect(nodeTree.layout).toEqual({
     width: 120,
     height: 120,
     top: 0,
@@ -40,7 +38,7 @@ test('computeLayout matches the documented padding and stretch example', () => {
     direction: 'ltr'
   });
 
-  assert.deepEqual(nodeTree.children[0].layout, {
+  expect(nodeTree.children[0].layout).toEqual({
     width: 20,
     height: 20,
     top: 50,
@@ -51,7 +49,7 @@ test('computeLayout matches the documented padding and stretch example', () => {
   });
 });
 
-test('computeLayout uses style.measure(width) for reflowable leaf nodes', () => {
+it('uses style.measure(width) for reflowable leaf nodes', () => {
   const calls: number[] = [];
   const nodeTree: LayoutNode = {
     style: {
@@ -80,8 +78,8 @@ test('computeLayout uses style.measure(width) for reflowable leaf nodes', () => 
 
   computeLayout(nodeTree, 200, 'ltr');
 
-  assert.deepEqual(calls, [180]);
-  assert.deepEqual(nodeTree.children[0].layout, {
+  expect(calls).toEqual([180]);
+  expect(nodeTree.children[0].layout).toEqual({
     width: 40,
     height: 30,
     top: 10,
@@ -90,6 +88,7 @@ test('computeLayout uses style.measure(width) for reflowable leaf nodes', () => 
     bottom: 0,
     direction: 'ltr'
   });
-  assert.equal(nodeTree.layout.width, 60);
-  assert.equal(nodeTree.layout.height, 50);
+  expect(nodeTree.layout.width).toBe(60);
+  expect(nodeTree.layout.height).toBe(50);
+});
 });

@@ -1,6 +1,3 @@
-import assert from 'node:assert/strict';
-import test from 'node:test';
-
 import {computeLayout} from '../css-layout';
 import type {LayoutNode} from '../css-layout';
 
@@ -42,7 +39,8 @@ class FakeOffscreenCanvas {
 (globalThis as typeof globalThis & {OffscreenCanvas?: typeof FakeOffscreenCanvas}).OffscreenCanvas =
   FakeOffscreenCanvas as unknown as typeof OffscreenCanvas;
 
-test('computeLayout auto-creates text measure from text style', () => {
+describe('computeLayout text layout', () => {
+test('auto-creates text measure from text style', () => {
   const nodeTree: LayoutNode = {
     style: {
       padding: 10,
@@ -74,7 +72,7 @@ test('computeLayout auto-creates text measure from text style', () => {
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.deepEqual(nodeTree.children[0].layout, {
+  expect(nodeTree.children[0].layout).toEqual({
     width: 60,
     height: 40,
     top: 10,
@@ -83,12 +81,12 @@ test('computeLayout auto-creates text measure from text style', () => {
     bottom: 0,
     direction: 'ltr',
   });
-  assert.equal(nodeTree.layout.width, 80);
-  assert.equal(nodeTree.layout.height, 60);
-  assert.equal(typeof nodeTree.children[0].style.measure, 'function');
+  expect(nodeTree.layout.width).toBe(80);
+  expect(nodeTree.layout.height).toBe(60);
+  expect(typeof nodeTree.children[0].style.measure).toBe('function');
 });
 
-test('computeLayout refreshes auto text measure when text changes', () => {
+test('refreshes auto text measure when text changes', () => {
   const child: LayoutNode = {
     style: {
       text: 'abcdefgh',
@@ -116,19 +114,19 @@ test('computeLayout refreshes auto text measure when text changes', () => {
   };
 
   computeLayout(nodeTree, 80, 'ltr');
-  assert.equal(child.layout.width, 60);
-  assert.equal(child.layout.height, 40);
+  expect(child.layout.width).toBe(60);
+  expect(child.layout.height).toBe(40);
 
   child.style.text = 'ab';
   child.isDirty = true;
   nodeTree.isDirty = true;
 
   computeLayout(nodeTree, 80, 'ltr');
-  assert.equal(child.layout.width, 20);
-  assert.equal(child.layout.height, 20);
+  expect(child.layout.width).toBe(20);
+  expect(child.layout.height).toBe(20);
 });
 
-test('computeLayout keeps explicit measure when provided', () => {
+test('keeps explicit measure when provided', () => {
   const calls: number[] = [];
   const nodeTree: LayoutNode = {
     style: {
@@ -158,12 +156,12 @@ test('computeLayout keeps explicit measure when provided', () => {
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.deepEqual(calls, [60]);
-  assert.equal(nodeTree.children[0].layout.width, 30);
-  assert.equal(nodeTree.children[0].layout.height, 10);
+  expect(calls).toEqual([60]);
+  expect(nodeTree.children[0].layout.width).toBe(30);
+  expect(nodeTree.children[0].layout.height).toBe(10);
 });
 
-test('computeLayout uses default lineHeight when text style omits it', () => {
+test('uses default lineHeight when text style omits it', () => {
   const child: LayoutNode = {
     style: {
       text: 'abcdefgh',
@@ -191,12 +189,12 @@ test('computeLayout uses default lineHeight when text style omits it', () => {
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.equal(child.layout.width, 60);
-  assert.equal(child.layout.height, 38.4);
-  assert.equal(nodeTree.layout.height, 58.4);
+  expect(child.layout.width).toBe(60);
+  expect(child.layout.height).toBeCloseTo(38.4);
+  expect(nodeTree.layout.height).toBeCloseTo(58.4);
 });
 
-test('computeLayout treats numeric unitless lineHeight as fontSize multiplier', () => {
+test('treats numeric unitless lineHeight as fontSize multiplier', () => {
   const child: LayoutNode = {
     style: {
       text: 'abcdefgh',
@@ -225,12 +223,12 @@ test('computeLayout treats numeric unitless lineHeight as fontSize multiplier', 
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.equal(child.layout.width, 60);
-  assert.equal(child.layout.height, 32);
-  assert.equal(nodeTree.layout.height, 52);
+  expect(child.layout.width).toBe(60);
+  expect(child.layout.height).toBe(32);
+  expect(nodeTree.layout.height).toBe(52);
 });
 
-test('computeLayout treats fractional unitless lineHeight as fontSize multiplier', () => {
+test('treats fractional unitless lineHeight as fontSize multiplier', () => {
   const child: LayoutNode = {
     style: {
       text: 'abcdefgh',
@@ -259,12 +257,12 @@ test('computeLayout treats fractional unitless lineHeight as fontSize multiplier
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.equal(child.layout.width, 60);
-  assert.equal(child.layout.height, 38.4);
-  assert.equal(nodeTree.layout.height, 58.4);
+  expect(child.layout.width).toBe(60);
+  expect(child.layout.height).toBeCloseTo(38.4);
+  expect(nodeTree.layout.height).toBeCloseTo(58.4);
 });
 
-test('computeLayout still accepts pixel lineHeight values', () => {
+test('still accepts pixel lineHeight values', () => {
   const child: LayoutNode = {
     style: {
       text: 'abcdefgh',
@@ -293,7 +291,8 @@ test('computeLayout still accepts pixel lineHeight values', () => {
 
   computeLayout(nodeTree, 80, 'ltr');
 
-  assert.equal(child.layout.width, 60);
-  assert.equal(child.layout.height, 40);
-  assert.equal(nodeTree.layout.height, 60);
+  expect(child.layout.width).toBe(60);
+  expect(child.layout.height).toBe(40);
+  expect(nodeTree.layout.height).toBe(60);
+});
 });
