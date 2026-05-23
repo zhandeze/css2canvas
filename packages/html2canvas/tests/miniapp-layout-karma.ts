@@ -167,8 +167,8 @@ export const registerMiniAppLayoutKarmaTests = (): void => {
         const root = fixture.createLayoutRoot();
         computeLayout(root as never, undefined, 'ltr');
 
-        const width = Math.ceil(root.layout.width);
-        const height = Math.ceil(root.layout.height);
+        const width = Math.ceil(root.layout.width ?? 0);
+        const height = Math.ceil(root.layout.height ?? 0);
         const input = layoutToMiniAppRenderInput({
           selector: fixture.selector,
           renderOptions: {

@@ -1,4 +1,5 @@
 import {ensureTextMeasure} from './text-layout/measure';
+import type {TextMeasure, TextStyleInput} from './text-layout/types';
 
 /**
  * Copyright (c) 2014, Facebook, Inc.
@@ -14,9 +15,14 @@ export type FlexDirection = 'row' | 'row-reverse' | 'column' | 'column-reverse';
 export type JustifyContent = 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around';
 export type AlignContent = 'flex-start' | 'center' | 'flex-end' | 'stretch';
 export type AlignItem = 'flex-start' | 'center' | 'flex-end' | 'stretch';
-export type PositionType = 'relative' | 'absolute';
+export type PositionType = 'static' | 'relative' | 'absolute' | 'fixed';
 export type AxisDimension = 'width' | 'height';
 export type Edge = 'left' | 'right' | 'top' | 'bottom';
+
+export interface LayoutZIndex {
+  auto: boolean;
+  order: number;
+}
 
 export interface LayoutBox {
   width: number | undefined;
@@ -26,6 +32,9 @@ export interface LayoutBox {
   right: number;
   bottom: number;
   direction?: LayoutDirection;
+  position?: PositionType;
+  zIndex?: LayoutZIndex;
+  isFixedStackingContext?: boolean;
 }
 
 export interface LayoutClipRect {
@@ -35,7 +44,31 @@ export interface LayoutClipRect {
   bottom: number;
 }
 
-export interface LayoutStyle {
+export interface LayoutMeasureResult {
+  width: number;
+  height: number;
+}
+
+export type LayoutMeasure = TextMeasure | ((width: number) => LayoutMeasureResult);
+
+export interface LayoutCache {
+  requestedWidth?: number;
+  requestedHeight?: number;
+  parentMaxWidth?: number;
+  width?: number;
+  height?: number;
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+  direction?: LayoutDirection;
+  position?: PositionType;
+  zIndex?: LayoutZIndex;
+  isFixedStackingContext?: boolean;
+  overflowClip?: LayoutClipRect;
+}
+
+export interface LayoutStyle extends TextStyleInput {
   direction?: LayoutDirection;
   flexDirection?: FlexDirection;
   justifyContent?: JustifyContent;
@@ -76,23 +109,34 @@ export interface LayoutStyle {
   right?: number;
   top?: number;
   bottom?: number;
-  text?: string;
-  measure?: (width: number) => {width: number; height: number};
-  [key: string]: any;
+  inset?: number;
+  overflow?: string;
+  overflowX?: string;
+  overflowY?: string;
+  zIndex?: number | 'auto' | LayoutZIndex;
+  measure?: LayoutMeasure;
 }
 
-export interface LayoutNode {
-  layout: any;
-  style: any;
-  children: LayoutNode[];
+export interface LayoutBaseNode {
+  layout: LayoutBox;
+  style: LayoutStyle;
   isDirty?: boolean;
   shouldUpdate?: boolean;
-  lastLayout: any;
+  lastLayout: LayoutCache | undefined;
   lineIndex?: number;
   overflowClip?: LayoutClipRect;
+}
+
+export interface LayoutNode extends LayoutBaseNode {
+  children: LayoutNode[];
   nextAbsoluteChild: LayoutNode | null;
   nextFlexChild: LayoutNode | null;
-  [key: string]: any;
+}
+
+export interface ComputedLayoutNode extends LayoutBaseNode {
+  children: ComputedLayoutNode[];
+  nextAbsoluteChild: ComputedLayoutNode | null;
+  nextFlexChild: ComputedLayoutNode | null;
 }
 
 interface DimensionMap {
@@ -111,12 +155,13 @@ interface EdgeMap {
 
 type LayoutEngine = {
   layoutNodeImpl(
-    node: LayoutNode,
+    layoutContext: LayoutContext,
+    node: ComputedLayoutNode,
     parentMaxWidth: number | undefined,
     parentDirection: LayoutDirection | undefined
   ): void;
-  computeLayout(node: LayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection): void;
-  fillNodes(node: LayoutNode): LayoutNode;
+  computeLayout(node: ComputedLayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection): ComputedLayoutNode;
+  fillNodes(node: LayoutNode): ComputedLayoutNode;
 };
 
 const CSS_UNDEFINED = undefined;
@@ -141,8 +186,15 @@ const CSS_ALIGN_CENTER: AlignItem = 'center';
 const CSS_ALIGN_FLEX_END: AlignItem = 'flex-end';
 const CSS_ALIGN_STRETCH: AlignItem = 'stretch';
 
+const CSS_POSITION_STATIC: PositionType = 'static';
 const CSS_POSITION_RELATIVE: PositionType = 'relative';
 const CSS_POSITION_ABSOLUTE: PositionType = 'absolute';
+const CSS_POSITION_FIXED: PositionType = 'fixed';
+
+type LayoutContext = {
+  rootNode: ComputedLayoutNode;
+  fixedChildren: ComputedLayoutNode[];
+};
 
 const leading: EdgeMap = {
   row: 'left',
@@ -173,7 +225,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
   // When transpiled to Java / C the node type has layout, children and style
   // properties. For the JavaScript version this function adds these properties
   // if they don't already exist.
-  function fillNodes(node: LayoutNode): LayoutNode {
+  function fillNodes(node: LayoutNode): ComputedLayoutNode {
     if (!node.layout || node.isDirty) {
       node.layout = {
         width: undefined,
@@ -192,8 +244,8 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     if (!node.children) {
       node.children = [];
     }
-    node.children.forEach(fillNodes);
-    return node;
+    node.children = node.children.map((child) => fillNodes(child));
+    return node as ComputedLayoutNode;
   }
 
   function isUndefined(value: unknown): value is undefined {
@@ -208,7 +260,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return flexDirection === CSS_FLEX_DIRECTION_COLUMN || flexDirection === CSS_FLEX_DIRECTION_COLUMN_REVERSE;
   }
 
-  function getLeadingMargin(node: LayoutNode, axis: FlexDirection): number {
+  function getLeadingMargin(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.marginStart !== undefined && isRowDirection(axis)) {
       return node.style.marginStart;
     }
@@ -240,7 +292,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getTrailingMargin(node: LayoutNode, axis: FlexDirection): number {
+  function getTrailingMargin(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.marginEnd !== undefined && isRowDirection(axis)) {
       return node.style.marginEnd;
     }
@@ -272,7 +324,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getLeadingPadding(node: LayoutNode, axis: FlexDirection): number {
+  function getLeadingPadding(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.paddingStart !== undefined && node.style.paddingStart >= 0 && isRowDirection(axis)) {
       return node.style.paddingStart;
     }
@@ -304,7 +356,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getTrailingPadding(node: LayoutNode, axis: FlexDirection): number {
+  function getTrailingPadding(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.paddingEnd !== undefined && node.style.paddingEnd >= 0 && isRowDirection(axis)) {
       return node.style.paddingEnd;
     }
@@ -336,7 +388,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getLeadingBorder(node: LayoutNode, axis: FlexDirection): number {
+  function getLeadingBorder(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.borderStartWidth !== undefined && node.style.borderStartWidth >= 0 && isRowDirection(axis)) {
       return node.style.borderStartWidth;
     }
@@ -368,7 +420,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getTrailingBorder(node: LayoutNode, axis: FlexDirection): number {
+  function getTrailingBorder(node: ComputedLayoutNode, axis: FlexDirection): number {
     if (node.style.borderEndWidth !== undefined && node.style.borderEndWidth >= 0 && isRowDirection(axis)) {
       return node.style.borderEndWidth;
     }
@@ -400,41 +452,41 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return 0;
   }
 
-  function getLeadingPaddingAndBorder(node: LayoutNode, axis: FlexDirection): number {
+  function getLeadingPaddingAndBorder(node: ComputedLayoutNode, axis: FlexDirection): number {
     return getLeadingPadding(node, axis) + getLeadingBorder(node, axis);
   }
 
-  function getTrailingPaddingAndBorder(node: LayoutNode, axis: FlexDirection): number {
+  function getTrailingPaddingAndBorder(node: ComputedLayoutNode, axis: FlexDirection): number {
     return getTrailingPadding(node, axis) + getTrailingBorder(node, axis);
   }
 
-  function getBorderAxis(node: LayoutNode, axis: FlexDirection): number {
+  function getBorderAxis(node: ComputedLayoutNode, axis: FlexDirection): number {
     return getLeadingBorder(node, axis) + getTrailingBorder(node, axis);
   }
 
-  function getMarginAxis(node: LayoutNode, axis: FlexDirection): number {
+  function getMarginAxis(node: ComputedLayoutNode, axis: FlexDirection): number {
     return getLeadingMargin(node, axis) + getTrailingMargin(node, axis);
   }
 
-  function getPaddingAndBorderAxis(node: LayoutNode, axis: FlexDirection): number {
+  function getPaddingAndBorderAxis(node: ComputedLayoutNode, axis: FlexDirection): number {
     return getLeadingPaddingAndBorder(node, axis) + getTrailingPaddingAndBorder(node, axis);
   }
 
-  function getJustifyContent(node: LayoutNode): JustifyContent {
+  function getJustifyContent(node: ComputedLayoutNode): JustifyContent {
     if (node.style.justifyContent) {
       return node.style.justifyContent;
     }
     return 'flex-start';
   }
 
-  function getAlignContent(node: LayoutNode): AlignContent {
+  function getAlignContent(node: ComputedLayoutNode): AlignContent {
     if (node.style.alignContent) {
       return node.style.alignContent;
     }
     return 'flex-start';
   }
 
-  function getAlignItem(node: LayoutNode, child: LayoutNode): AlignItem {
+  function getAlignItem(node: ComputedLayoutNode, child: ComputedLayoutNode): AlignItem {
     if (child.style.alignSelf) {
       return child.style.alignSelf;
     }
@@ -456,7 +508,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return axis;
   }
 
-  function resolveDirection(node: LayoutNode, parentDirection?: LayoutDirection): LayoutDirection {
+  function resolveDirection(node: ComputedLayoutNode, parentDirection?: LayoutDirection): LayoutDirection {
     let direction: LayoutDirection;
     if (node.style.direction) {
       direction = node.style.direction;
@@ -471,7 +523,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return direction;
   }
 
-  function getFlexDirection(node: LayoutNode): FlexDirection {
+  function getFlexDirection(node: ComputedLayoutNode): FlexDirection {
     if (node.style.flexDirection) {
       return node.style.flexDirection;
     }
@@ -486,14 +538,36 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     }
   }
 
-  function getPositionType(node: LayoutNode): PositionType {
-    if (node.style.position) {
-      return node.style.position;
+  function getPositionType(node: ComputedLayoutNode): PositionType {
+    const position = node.style.position;
+    if (
+      position === CSS_POSITION_STATIC ||
+      position === CSS_POSITION_RELATIVE ||
+      position === CSS_POSITION_ABSOLUTE ||
+      position === CSS_POSITION_FIXED
+    ) {
+      return position;
     }
-    return 'relative';
+    return CSS_POSITION_STATIC;
   }
 
-  function isOverflowHidden(node: LayoutNode): boolean {
+  function isInFlowPosition(positionType: PositionType): boolean {
+    return positionType === CSS_POSITION_STATIC || positionType === CSS_POSITION_RELATIVE;
+  }
+
+  function establishesAbsoluteContainingBlock(positionType: PositionType): boolean {
+    return (
+      positionType === CSS_POSITION_RELATIVE ||
+      positionType === CSS_POSITION_ABSOLUTE ||
+      positionType === CSS_POSITION_FIXED
+    );
+  }
+
+  function appliesRelativeOffset(positionType: PositionType): boolean {
+    return positionType === CSS_POSITION_RELATIVE || positionType === CSS_POSITION_ABSOLUTE || positionType === CSS_POSITION_FIXED;
+  }
+
+  function isOverflowHidden(node: ComputedLayoutNode): boolean {
     const overflow = node.style.overflow;
     const overflowX = node.style.overflowX;
     const overflowY = node.style.overflowY;
@@ -501,39 +575,83 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     return overflow === 'hidden' || overflowX === 'hidden' || overflowY === 'hidden';
   }
 
-  function isFlex(node: LayoutNode): boolean {
-    return getPositionType(node) === CSS_POSITION_RELATIVE && (node.style.flex ?? 0) > 0;
+  function isFlex(node: ComputedLayoutNode): boolean {
+    return isInFlowPosition(getPositionType(node)) && (node.style.flex ?? 0) > 0;
   }
 
-  function isFlexWrap(node: LayoutNode): boolean {
+  function isFlexWrap(node: ComputedLayoutNode): boolean {
     return node.style.flexWrap === 'wrap';
   }
 
-  function getDimWithMargin(node: LayoutNode, axis: FlexDirection): number {
+  function getDimWithMargin(node: ComputedLayoutNode, axis: FlexDirection): number {
     return (node.layout[dim[axis]] ?? 0) + getMarginAxis(node, axis);
   }
 
-  function isDimDefined(node: LayoutNode, axis: FlexDirection): boolean {
+  function isDimDefined(node: ComputedLayoutNode, axis: FlexDirection): boolean {
     const value = node.style[dim[axis]];
     return value !== undefined && value >= 0;
   }
 
-  function isPosDefined(node: LayoutNode, pos: Edge): boolean {
-    return node.style[pos] !== undefined;
+  function getInset(node: ComputedLayoutNode): number | undefined {
+    const inset = node.style.inset;
+    if (typeof inset === 'number' && Number.isFinite(inset)) {
+      return inset;
+    }
+    return undefined;
   }
 
-  function isMeasureDefined(node: LayoutNode): boolean {
+  function isPosDefined(node: ComputedLayoutNode, pos: Edge): boolean {
+    return node.style[pos] !== undefined || getInset(node) !== undefined;
+  }
+
+  function isMeasureDefined(node: ComputedLayoutNode): boolean {
     return node.style.measure !== undefined;
   }
 
-  function getPosition(node: LayoutNode, pos: Edge): number {
+  function getPosition(node: ComputedLayoutNode, pos: Edge): number {
     if (node.style[pos] !== undefined) {
       return node.style[pos];
+    }
+    const inset = getInset(node);
+    if (inset !== undefined) {
+      return inset;
     }
     return 0;
   }
 
-  function boundAxis(node: LayoutNode, axis: FlexDirection, value: number): number {
+  function getLayoutZIndex(node: ComputedLayoutNode, positionType: PositionType): LayoutZIndex {
+    if (positionType === CSS_POSITION_STATIC) {
+      return {
+        auto: true,
+        order: 0
+      };
+    }
+
+    const rawZIndex = node.style.zIndex;
+    if (rawZIndex && typeof rawZIndex === 'object') {
+      const candidate = rawZIndex as {auto?: unknown; order?: unknown};
+      if (typeof candidate.auto === 'boolean' && typeof candidate.order === 'number') {
+        return {
+          auto: candidate.auto,
+          order: candidate.order
+        };
+      }
+    }
+
+    if (typeof rawZIndex === 'number' && Number.isFinite(rawZIndex)) {
+      return {
+        auto: false,
+        order: rawZIndex
+      };
+    }
+
+    return {
+      auto: true,
+      order: 0
+    };
+  }
+
+  function boundAxis(node: ComputedLayoutNode, axis: FlexDirection, value: number): number {
     const min = {
       row: node.style.minWidth,
       'row-reverse': node.style.minWidth,
@@ -566,7 +684,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
   }
 
   // When the user specifically sets a value for width or height
-  function setDimensionFromStyle(node: LayoutNode, axis: FlexDirection): void {
+  function setDimensionFromStyle(node: ComputedLayoutNode, axis: FlexDirection): void {
     // The parent already computed us a width or height. We just skip it
     if (node.layout[dim[axis]] !== undefined) {
       return;
@@ -584,25 +702,282 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     node.layout[dim[axis]] = fmaxf(boundAxis(node, axis, styleDim), getPaddingAndBorderAxis(node, axis));
   }
 
-  function setTrailingPosition(node: LayoutNode, child: LayoutNode, axis: FlexDirection): void {
+  function setTrailingPosition(node: ComputedLayoutNode, child: ComputedLayoutNode, axis: FlexDirection): void {
     child.layout[trailing[axis]] =
       (node.layout[dim[axis]] ?? 0) - (child.layout[dim[axis]] ?? 0) - (child.layout[pos[axis]] ?? 0);
   }
 
   // If both left and right are defined, then use left. Otherwise return
   // +left or -right depending on which is defined.
-  function getRelativePosition(node: LayoutNode, axis: FlexDirection): number {
-    if (node.style[leading[axis]] !== undefined) {
+  function getRelativePosition(node: ComputedLayoutNode, axis: FlexDirection): number {
+    if (isPosDefined(node, leading[axis])) {
       return getPosition(node, leading[axis]);
     }
     return -getPosition(node, trailing[axis]);
   }
 
+  function setCachedLayout(node: ComputedLayoutNode): void {
+    const lastLayout = node.lastLayout ?? (node.lastLayout = {});
+
+    lastLayout.width = node.layout.width;
+    lastLayout.height = node.layout.height;
+    lastLayout.top = node.layout.top;
+    lastLayout.left = node.layout.left;
+    lastLayout.right = node.layout.right;
+    lastLayout.bottom = node.layout.bottom;
+    lastLayout.direction = node.layout.direction;
+    lastLayout.position = node.layout.position;
+    lastLayout.zIndex = node.layout.zIndex ? {...node.layout.zIndex} : undefined;
+    lastLayout.isFixedStackingContext = node.layout.isFixedStackingContext;
+    lastLayout.overflowClip = node.overflowClip ? {...node.overflowClip} : undefined;
+  }
+
+  function restoreCachedLayout(node: ComputedLayoutNode): void {
+    const lastLayout = node.lastLayout;
+    if (!lastLayout) {
+      return;
+    }
+
+    node.layout.width = lastLayout.width;
+    node.layout.height = lastLayout.height;
+    node.layout.top = lastLayout.top ?? 0;
+    node.layout.left = lastLayout.left ?? 0;
+    node.layout.right = lastLayout.right ?? 0;
+    node.layout.bottom = lastLayout.bottom ?? 0;
+    node.layout.direction = lastLayout.direction;
+    node.layout.position = lastLayout.position;
+    node.layout.zIndex = lastLayout.zIndex ? {...lastLayout.zIndex} : undefined;
+    node.layout.isFixedStackingContext = lastLayout.isFixedStackingContext;
+    node.overflowClip = lastLayout.overflowClip ? {...lastLayout.overflowClip} : undefined;
+  }
+
+  function prefillFixedDimensions(
+    node: ComputedLayoutNode,
+    viewportWidth: number | undefined,
+    viewportHeight: number | undefined
+  ): void {
+    let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis: FlexDirection;
+    let viewportSize: number | undefined;
+
+    for (let ii = 0; ii < 2; ii++) {
+      axis = ii !== 0 ? CSS_FLEX_DIRECTION_ROW : CSS_FLEX_DIRECTION_COLUMN;
+      viewportSize = axis === CSS_FLEX_DIRECTION_ROW ? viewportWidth : viewportHeight;
+
+      if (
+        !isUndefined(viewportSize) &&
+        !isDimDefined(node, axis) &&
+        isPosDefined(node, leading[axis]) &&
+        isPosDefined(node, trailing[axis])
+      ) {
+        node.layout[dim[axis]] = fmaxf(
+          boundAxis(
+            node,
+            axis,
+            viewportSize - getMarginAxis(node, axis) - getPosition(node, leading[axis]) - getPosition(node, trailing[axis])
+          ),
+          getPaddingAndBorderAxis(node, axis)
+        );
+      }
+    }
+  }
+
+  function resolveFixedLeadingPositions(
+    node: ComputedLayoutNode,
+    viewportWidth: number | undefined,
+    viewportHeight: number | undefined
+  ): void {
+    let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis: FlexDirection;
+    let viewportSize: number | undefined;
+
+    for (let ii = 0; ii < 2; ii++) {
+      axis = ii !== 0 ? CSS_FLEX_DIRECTION_ROW : CSS_FLEX_DIRECTION_COLUMN;
+      viewportSize = axis === CSS_FLEX_DIRECTION_ROW ? viewportWidth : viewportHeight;
+
+      if (
+        !isUndefined(viewportSize) &&
+        !isUndefined(node.layout[dim[axis]]) &&
+        isPosDefined(node, trailing[axis]) &&
+        !isPosDefined(node, leading[axis])
+      ) {
+        node.layout[leading[axis]] = viewportSize - (node.layout[dim[axis]] ?? 0) - getPosition(node, trailing[axis]);
+      }
+    }
+  }
+
+  function resolveFixedTrailingPositions(
+    node: ComputedLayoutNode,
+    viewportWidth: number | undefined,
+    viewportHeight: number | undefined
+  ): void {
+    let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis: FlexDirection;
+    let viewportSize: number | undefined;
+
+    for (let ii = 0; ii < 2; ii++) {
+      axis = ii !== 0 ? CSS_FLEX_DIRECTION_ROW : CSS_FLEX_DIRECTION_COLUMN;
+      viewportSize = axis === CSS_FLEX_DIRECTION_ROW ? viewportWidth : viewportHeight;
+
+      if (!isUndefined(viewportSize) && !isUndefined(node.layout[dim[axis]])) {
+        node.layout[trailing[axis]] = viewportSize - (node.layout[dim[axis]] ?? 0) - node.layout[leading[axis]];
+      }
+    }
+  }
+
+  function resetChildrenLayout(node: ComputedLayoutNode): void {
+    node.children.forEach(function (child: ComputedLayoutNode) {
+      child.layout.width = undefined;
+      child.layout.height = undefined;
+      child.layout.top = 0;
+      child.layout.left = 0;
+      child.layout.right = 0;
+      child.layout.bottom = 0;
+      child.overflowClip = undefined;
+    });
+  }
+
+  function prefillAbsoluteDimensions(node: ComputedLayoutNode, containingBlock: ComputedLayoutNode): void {
+    let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis: FlexDirection;
+
+    for (let ii = 0; ii < 2; ii++) {
+      axis = ii !== 0 ? CSS_FLEX_DIRECTION_ROW : CSS_FLEX_DIRECTION_COLUMN;
+
+      if (
+        !isUndefined(containingBlock.layout[dim[axis]]) &&
+        !isDimDefined(node, axis) &&
+        isPosDefined(node, leading[axis]) &&
+        isPosDefined(node, trailing[axis])
+      ) {
+        node.layout[dim[axis]] = fmaxf(
+          boundAxis(
+            node,
+            axis,
+            (containingBlock.layout[dim[axis]] ?? 0) -
+              getPaddingAndBorderAxis(containingBlock, axis) -
+              getMarginAxis(node, axis) -
+              getPosition(node, leading[axis]) -
+              getPosition(node, trailing[axis])
+          ),
+          getPaddingAndBorderAxis(node, axis)
+        );
+      }
+    }
+  }
+
+  function positionAbsoluteNodeAgainstContainingBlock(
+    node: ComputedLayoutNode,
+    immediateParent: ComputedLayoutNode,
+    containingBlock: ComputedLayoutNode,
+    parentOffsetLeft: number,
+    parentOffsetTop: number
+  ): void {
+    let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis: FlexDirection;
+
+    for (let ii = 0; ii < 2; ii++) {
+      axis = ii !== 0 ? CSS_FLEX_DIRECTION_ROW : CSS_FLEX_DIRECTION_COLUMN;
+      const parentOffset = axis === CSS_FLEX_DIRECTION_ROW ? parentOffsetLeft : parentOffsetTop;
+
+      if (isPosDefined(node, leading[axis])) {
+        node.layout[leading[axis]] =
+          getPosition(node, leading[axis]) + getLeadingBorder(containingBlock, axis) + getLeadingMargin(node, axis) - parentOffset;
+      } else if (
+        isPosDefined(node, trailing[axis]) &&
+        !isUndefined(containingBlock.layout[dim[axis]]) &&
+        !isUndefined(node.layout[dim[axis]])
+      ) {
+        node.layout[leading[axis]] =
+          (containingBlock.layout[dim[axis]] ?? 0) - (node.layout[dim[axis]] ?? 0) - getPosition(node, trailing[axis]) - parentOffset;
+      }
+
+      if (!isUndefined(immediateParent.layout[dim[axis]]) && !isUndefined(node.layout[dim[axis]])) {
+        node.layout[trailing[axis]] =
+          (immediateParent.layout[dim[axis]] ?? 0) - (node.layout[dim[axis]] ?? 0) - (node.layout[leading[axis]] ?? 0);
+      }
+    }
+  }
+
+  function relayoutAbsoluteNode(
+    layoutContext: LayoutContext,
+    node: ComputedLayoutNode,
+    immediateParent: ComputedLayoutNode,
+    containingBlock: ComputedLayoutNode,
+    parentDirection: LayoutDirection | undefined,
+    parentOffsetLeft: number,
+    parentOffsetTop: number
+  ): void {
+    node.layout.width = undefined;
+    node.layout.height = undefined;
+    node.layout.top = 0;
+    node.layout.left = 0;
+    node.layout.right = 0;
+    node.layout.bottom = 0;
+    node.overflowClip = undefined;
+
+    resetChildrenLayout(node);
+    prefillAbsoluteDimensions(node, containingBlock);
+
+    const parentMaxWidth =
+      containingBlock.layout.width !== undefined
+        ? containingBlock.layout.width - getPaddingAndBorderAxis(containingBlock, CSS_FLEX_DIRECTION_ROW)
+        : undefined;
+
+    layoutNodeImpl({rootNode: layoutContext.rootNode, fixedChildren: []}, node, parentMaxWidth, parentDirection);
+    positionAbsoluteNodeAgainstContainingBlock(node, immediateParent, containingBlock, parentOffsetLeft, parentOffsetTop);
+    setCachedLayout(node);
+  }
+
+  function normalizeAbsoluteContainingBlocks(
+    layoutContext: LayoutContext,
+    node: ComputedLayoutNode,
+    parentDirection: LayoutDirection | undefined,
+    containingBlock: ComputedLayoutNode,
+    offsetLeft: number,
+    offsetTop: number
+  ): void {
+    const direction = resolveDirection(node, parentDirection);
+    const nodePositionType = getPositionType(node);
+    const nextContainingBlock = establishesAbsoluteContainingBlock(nodePositionType) ? node : containingBlock;
+    const nextOffsetLeft = establishesAbsoluteContainingBlock(nodePositionType) ? 0 : offsetLeft;
+    const nextOffsetTop = establishesAbsoluteContainingBlock(nodePositionType) ? 0 : offsetTop;
+
+    for (const child of node.children) {
+      const childPositionType = getPositionType(child);
+
+      if (childPositionType === CSS_POSITION_ABSOLUTE) {
+        if (nextContainingBlock !== node) {
+          relayoutAbsoluteNode(layoutContext, child, node, nextContainingBlock, direction, nextOffsetLeft, nextOffsetTop);
+        }
+
+        normalizeAbsoluteContainingBlocks(layoutContext, child, direction, child, 0, 0);
+        continue;
+      }
+
+      if (childPositionType === CSS_POSITION_FIXED) {
+        normalizeAbsoluteContainingBlocks(layoutContext, child, direction, child, 0, 0);
+        continue;
+      }
+
+      if (establishesAbsoluteContainingBlock(childPositionType)) {
+        normalizeAbsoluteContainingBlocks(layoutContext, child, direction, child, 0, 0);
+        continue;
+      }
+
+      normalizeAbsoluteContainingBlocks(
+        layoutContext,
+        child,
+        direction,
+        nextContainingBlock,
+        nextOffsetLeft + child.layout.left,
+        nextOffsetTop + child.layout.top
+      );
+    }
+  }
+
   function layoutNodeImpl(
-    node: LayoutNode,
+    layoutContext: LayoutContext,
+    node: ComputedLayoutNode,
     parentMaxWidth: number | undefined,
     /*css_direction_t*/ parentDirection?: LayoutDirection
   ): void {
+    const positionType = getPositionType(node);
     const /*css_direction_t*/ direction = resolveDirection(node, parentDirection);
     const /*(c)!css_flex_direction_t*/ /*(java)!int*/ mainAxis = resolveAxis(getFlexDirection(node), direction);
     const /*(c)!css_flex_direction_t*/ /*(java)!int*/ crossAxis = getCrossFlexDirection(mainAxis, direction);
@@ -614,13 +989,23 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
     // Set the resolved resolution in the node's layout
     node.layout.direction = direction;
+    node.layout.position = positionType;
+    node.layout.zIndex = getLayoutZIndex(node, positionType);
+    node.layout.isFixedStackingContext = positionType === CSS_POSITION_FIXED;
 
     // The position is set by the parent, but we need to complete it with a
     // delta composed of the margin and left/top/right/bottom
-    node.layout[leading[mainAxis]] += getLeadingMargin(node, mainAxis) + getRelativePosition(node, mainAxis);
-    node.layout[trailing[mainAxis]] += getTrailingMargin(node, mainAxis) + getRelativePosition(node, mainAxis);
-    node.layout[leading[crossAxis]] += getLeadingMargin(node, crossAxis) + getRelativePosition(node, crossAxis);
-    node.layout[trailing[crossAxis]] += getTrailingMargin(node, crossAxis) + getRelativePosition(node, crossAxis);
+    node.layout[leading[mainAxis]] += getLeadingMargin(node, mainAxis);
+    node.layout[trailing[mainAxis]] += getTrailingMargin(node, mainAxis);
+    node.layout[leading[crossAxis]] += getLeadingMargin(node, crossAxis);
+    node.layout[trailing[crossAxis]] += getTrailingMargin(node, crossAxis);
+
+    if (appliesRelativeOffset(positionType)) {
+      node.layout[leading[mainAxis]] += getRelativePosition(node, mainAxis);
+      node.layout[trailing[mainAxis]] += getRelativePosition(node, mainAxis);
+      node.layout[leading[crossAxis]] += getRelativePosition(node, crossAxis);
+      node.layout[trailing[crossAxis]] += getRelativePosition(node, crossAxis);
+    }
 
     // Inline immutable values from the target node to avoid excessive method
     // invocations during the layout calculation.
@@ -681,11 +1066,11 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
     let /*int*/ i;
     let /*int*/ ii;
-    let /*css_node_t**/ child: LayoutNode;
+    let /*css_node_t**/ child: ComputedLayoutNode;
     let /*(c)!css_flex_direction_t*/ /*(java)!int*/ axis;
 
-    let /*css_node_t**/ firstAbsoluteChild: LayoutNode | null = null;
-    let /*css_node_t**/ currentAbsoluteChild: LayoutNode | null = null;
+    let /*css_node_t**/ firstAbsoluteChild: ComputedLayoutNode | null = null;
+    let /*css_node_t**/ currentAbsoluteChild: ComputedLayoutNode | null = null;
 
     let /*float*/ definedMainDim = 0;
     if (isMainDimDefined) {
@@ -740,19 +1125,20 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
       let /*float*/ maxWidth: number | undefined;
       for (i = startLine; i < childCount; ++i) {
-        child = node.children[i];
+        child = node.children[i]!;
         child.lineIndex = linesCount;
 
         child.nextAbsoluteChild = null;
         child.nextFlexChild = null;
 
         const /*css_align_t*/ alignItem = getAlignItem(node, child);
+        const childPositionType = getPositionType(child);
 
         // Pre-fill cross axis dimensions when the child is using stretch before
         // we call the recursive layout pass
         if (
           alignItem === CSS_ALIGN_STRETCH &&
-          getPositionType(child) === CSS_POSITION_RELATIVE &&
+          isInFlowPosition(childPositionType) &&
           isCrossDimDefined &&
           !isDimDefined(child, crossAxis)
         ) {
@@ -765,7 +1151,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
             // You never want to go smaller than padding
             getPaddingAndBorderAxis(child, crossAxis)
           );
-        } else if (getPositionType(child) === CSS_POSITION_ABSOLUTE) {
+        } else if (childPositionType === CSS_POSITION_ABSOLUTE) {
           // Store a private linked list of absolutely positioned children
           // so that we can efficiently traverse them later.
           if (firstAbsoluteChild === null) {
@@ -790,7 +1176,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
                 boundAxis(
                   child,
                   axis,
-                  node.layout[dim[axis]] -
+                  (node.layout[dim[axis]] ?? 0) -
                     getPaddingAndBorderAxis(node, axis) -
                     getMarginAxis(child, axis) -
                     getPosition(child, leading[axis]) -
@@ -801,6 +1187,8 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
               );
             }
           }
+        } else if (childPositionType === CSS_POSITION_FIXED) {
+          layoutContext.fixedChildren.push(child);
         }
 
         let /*float*/ nextContentDim = 0;
@@ -837,13 +1225,13 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
           }
 
           // This is the main recursive call. We layout non flexible children.
-          if (alreadyComputedNextLayout === 0) {
-            layoutNode(/*(java)!layoutContext, */ child, maxWidth, direction);
+          if (childPositionType !== CSS_POSITION_FIXED && alreadyComputedNextLayout === 0) {
+            layoutNodeWithContext(layoutContext, child, maxWidth, direction);
           }
 
-          // Absolute positioned elements do not take part of the layout, so we
+          // Out-of-flow positioned elements do not take part of the layout, so we
           // don't use them to compute mainContentDim
-          if (getPositionType(child) === CSS_POSITION_RELATIVE) {
+          if (isInFlowPosition(childPositionType)) {
             nonFlexibleChildrenCount++;
             // At this point we know the final size and margin of the element.
             nextContentDim = getDimWithMargin(child, mainAxis);
@@ -867,7 +1255,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
         // Disable simple stacking in the main axis for the current line as
         // we found a non-trivial child. The remaining children will be laid out
         // in <Loop C>.
-        if (isSimpleStackMain && (getPositionType(child) !== CSS_POSITION_RELATIVE || isFlex(child))) {
+        if (isSimpleStackMain && (!isInFlowPosition(childPositionType) || isFlex(child))) {
           isSimpleStackMain = false;
           firstComplexMain = i;
         }
@@ -877,7 +1265,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
         // in <Loop D>.
         if (
           isSimpleStackCross &&
-          (getPositionType(child) !== CSS_POSITION_RELATIVE ||
+          (!isInFlowPosition(childPositionType) ||
             (alignItem !== CSS_ALIGN_STRETCH && alignItem !== CSS_ALIGN_FLEX_START) ||
             isUndefined(child.layout[dim[crossAxis]]))
         ) {
@@ -965,13 +1353,13 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
           maxWidth = CSS_UNDEFINED;
           if (isDimDefined(node, resolvedRowAxis)) {
-            maxWidth = node.layout[dim[resolvedRowAxis]] - paddingAndBorderAxisResolvedRow;
+            maxWidth = (node.layout[dim[resolvedRowAxis]] ?? 0) - paddingAndBorderAxisResolvedRow;
           } else if (!isMainRowDirection) {
             maxWidth = (parentMaxWidth ?? 0) - getMarginAxis(node, resolvedRowAxis) - paddingAndBorderAxisResolvedRow;
           }
 
           // And we recursively call the layout algorithm for this child
-          layoutNode(/*(java)!layoutContext, */ currentFlexChild, maxWidth, direction);
+          layoutNodeWithContext(layoutContext, currentFlexChild, maxWidth, direction);
 
           child = currentFlexChild;
           currentFlexChild = currentFlexChild.nextFlexChild;
@@ -1008,7 +1396,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
       mainDim += leadingMainDim;
 
       for (i = firstComplexMain; i < endLine; ++i) {
-        child = node.children[i];
+        child = node.children[i]!;
 
         if (getPositionType(child) === CSS_POSITION_ABSOLUTE && isPosDefined(child, leading[mainAxis])) {
           // In case the child is position absolute and has left/top being
@@ -1031,7 +1419,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
           // Now that we placed the element, we need to update the variables
           // We only need to do that for relative elements. Absolute elements
           // do not take part in that phase.
-          if (getPositionType(child) === CSS_POSITION_RELATIVE) {
+          if (isInFlowPosition(getPositionType(child))) {
             // The main dimension is the sum of all the elements dimension plus
             // the spacing.
             mainDim += betweenMainDim + getDimWithMargin(child, mainAxis);
@@ -1042,7 +1430,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
         }
       }
 
-      let /*float*/ containerCrossAxis = node.layout[dim[crossAxis]];
+      let /*float*/ containerCrossAxis = node.layout[dim[crossAxis]] ?? 0;
       if (!isCrossDimDefined) {
         containerCrossAxis = fmaxf(
           // For the cross dim, we add both sides at the end because the value
@@ -1055,7 +1443,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
       // <Loop D> Position elements in the cross axis
       for (i = firstComplexCross; i < endLine; ++i) {
-        child = node.children[i];
+        child = node.children[i]!;
 
         if (getPositionType(child) === CSS_POSITION_ABSOLUTE && isPosDefined(child, leading[crossAxis])) {
           // In case the child is absolutely positionned and has a
@@ -1070,7 +1458,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
           // For a relative children, we're either using alignItems (parent) or
           // alignSelf (child) in order to determine the position in the cross axis
-          if (getPositionType(child) === CSS_POSITION_RELATIVE) {
+          if (isInFlowPosition(getPositionType(child))) {
             /*eslint-disable */
             // This variable is intentionally re-defined as the code is transpiled to a block scope language
             let /*css_align_t*/ alignItem = getAlignItem(node, child);
@@ -1134,7 +1522,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     // section 9.4
     //
     if (linesCount > 1 && isCrossDimDefined) {
-      const /*float*/ nodeCrossAxisInnerSize = node.layout[dim[crossAxis]] - paddingAndBorderAxisCross;
+      const /*float*/ nodeCrossAxisInnerSize = (node.layout[dim[crossAxis]] ?? 0) - paddingAndBorderAxisCross;
       const /*float*/ remainingAlignContentDim = nodeCrossAxisInnerSize - linesCrossDim;
 
       let /*float*/ crossDimLead = 0;
@@ -1158,23 +1546,24 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
         // compute the line's height and find the endIndex
         let /*float*/ lineHeight = 0;
         for (ii = startIndex; ii < childCount; ++ii) {
-          child = node.children[ii];
-          if (getPositionType(child) !== CSS_POSITION_RELATIVE) {
+          child = node.children[ii]!;
+          if (!isInFlowPosition(getPositionType(child))) {
             continue;
           }
           if (child.lineIndex !== i) {
             break;
           }
-          if (!isUndefined(child.layout[dim[crossAxis]])) {
-            lineHeight = fmaxf(lineHeight, child.layout[dim[crossAxis]] + getMarginAxis(child, crossAxis));
+          const childCrossDim = child.layout[dim[crossAxis]];
+          if (!isUndefined(childCrossDim)) {
+            lineHeight = fmaxf(lineHeight, childCrossDim + getMarginAxis(child, crossAxis));
           }
         }
         endIndex = ii;
         lineHeight += crossDimLead;
 
         for (ii = startIndex; ii < endIndex; ++ii) {
-          child = node.children[ii];
-          if (getPositionType(child) !== CSS_POSITION_RELATIVE) {
+          child = node.children[ii]!;
+          if (!isInFlowPosition(getPositionType(child))) {
             continue;
           }
 
@@ -1183,9 +1572,9 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
             child.layout[pos[crossAxis]] = currentLead + getLeadingMargin(child, crossAxis);
           } else if (alignContentAlignItem === CSS_ALIGN_FLEX_END) {
             child.layout[pos[crossAxis]] =
-              currentLead + lineHeight - getTrailingMargin(child, crossAxis) - child.layout[dim[crossAxis]];
+              currentLead + lineHeight - getTrailingMargin(child, crossAxis) - (child.layout[dim[crossAxis]] ?? 0);
           } else if (alignContentAlignItem === CSS_ALIGN_CENTER) {
-            const /*float*/ childHeight = child.layout[dim[crossAxis]];
+            const /*float*/ childHeight = child.layout[dim[crossAxis]] ?? 0;
             child.layout[pos[crossAxis]] = currentLead + (lineHeight - childHeight) / 2;
           } else if (alignContentAlignItem === CSS_ALIGN_STRETCH) {
             child.layout[pos[crossAxis]] = currentLead + getLeadingMargin(child, crossAxis);
@@ -1234,7 +1623,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     // <Loop F> Set trailing position if necessary
     if (needsMainTrailingPos || needsCrossTrailingPos) {
       for (i = 0; i < childCount; ++i) {
-        child = node.children[i];
+        child = node.children[i]!;
 
         if (needsMainTrailingPos) {
           setTrailingPosition(node, child, mainAxis);
@@ -1264,7 +1653,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
             boundAxis(
               currentAbsoluteChild,
               axis,
-              node.layout[dim[axis]] -
+              (node.layout[dim[axis]] ?? 0) -
                 getBorderAxis(node, axis) -
                 getMarginAxis(currentAbsoluteChild, axis) -
                 getPosition(currentAbsoluteChild, leading[axis]) -
@@ -1277,8 +1666,8 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
         if (isPosDefined(currentAbsoluteChild, trailing[axis]) && !isPosDefined(currentAbsoluteChild, leading[axis])) {
           currentAbsoluteChild.layout[leading[axis]] =
-            node.layout[dim[axis]] -
-            currentAbsoluteChild.layout[dim[axis]] -
+            (node.layout[dim[axis]] ?? 0) -
+            (currentAbsoluteChild.layout[dim[axis]] ?? 0) -
             getPosition(currentAbsoluteChild, trailing[axis]);
         }
       }
@@ -1313,7 +1702,54 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
     }
   }
 
-  function layoutNode(node: LayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection) {
+  function layoutFixedNode(layoutContext: LayoutContext, node: ComputedLayoutNode, parentDirection?: LayoutDirection): void {
+    const direction = resolveDirection(node, parentDirection);
+    const root = layoutContext.rootNode;
+    const viewportWidth = root.layout.width;
+    const viewportHeight = root.layout.height;
+
+    node.layout.width = undefined;
+    node.layout.height = undefined;
+    node.layout.top = 0;
+    node.layout.left = 0;
+    node.layout.right = 0;
+    node.layout.bottom = 0;
+    node.overflowClip = undefined;
+
+    prefillFixedDimensions(node, viewportWidth, viewportHeight);
+
+    layoutNodeImpl(layoutContext, node, viewportWidth, direction);
+
+    resolveFixedLeadingPositions(node, viewportWidth, viewportHeight);
+    resolveFixedTrailingPositions(node, viewportWidth, viewportHeight);
+
+    // Children of a fixed node keep using the fixed box as their containing block.
+    for (const child of node.children) {
+      if (getPositionType(child) === CSS_POSITION_FIXED) {
+        continue;
+      }
+
+      if (child.layout.width !== undefined && node.layout.width !== undefined) {
+        child.layout.right = node.layout.width - child.layout.width - child.layout.left;
+      }
+      if (child.layout.height !== undefined && node.layout.height !== undefined) {
+        child.layout.bottom = node.layout.height - child.layout.height - child.layout.top;
+      }
+    }
+
+    // Maintain resolved direction metadata explicitly after the root-scoped pass.
+    node.layout.direction = direction;
+    node.layout.position = CSS_POSITION_FIXED;
+    node.layout.zIndex = getLayoutZIndex(node, CSS_POSITION_FIXED);
+    node.layout.isFixedStackingContext = true;
+  }
+
+  function layoutNodeWithContext(
+    layoutContext: LayoutContext,
+    node: ComputedLayoutNode,
+    parentMaxWidth?: number,
+    parentDirection?: LayoutDirection
+  ) {
     node.shouldUpdate = true;
 
     const direction = node.style.direction || CSS_DIRECTION_LTR;
@@ -1326,10 +1762,7 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
       node.lastLayout.direction === direction;
 
     if (skipLayout) {
-      node.layout.width = node.lastLayout.width;
-      node.layout.height = node.lastLayout.height;
-      node.layout.top = node.lastLayout.top;
-      node.layout.left = node.lastLayout.left;
+      restoreCachedLayout(node);
     } else {
       if (!node.lastLayout) {
         node.lastLayout = {};
@@ -1341,23 +1774,33 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
       node.lastLayout.direction = direction;
 
       // Reset child layouts
-      node.children.forEach(function (child: LayoutNode) {
-        child.layout.width = undefined;
-        child.layout.height = undefined;
-        child.layout.top = 0;
-        child.layout.left = 0;
-        child.overflowClip = undefined;
-      });
+      resetChildrenLayout(node);
 
       node.overflowClip = undefined;
 
-      layoutNodeImpl(node, parentMaxWidth, parentDirection);
+      layoutNodeImpl(layoutContext, node, parentMaxWidth, parentDirection);
 
-      node.lastLayout.width = node.layout.width;
-      node.lastLayout.height = node.layout.height;
-      node.lastLayout.top = node.layout.top;
-      node.lastLayout.left = node.layout.left;
+      if (node === layoutContext.rootNode && layoutContext.fixedChildren.length > 0) {
+        const fixedDirection = node.layout.direction;
+        for (let fixedIndex = 0; fixedIndex < layoutContext.fixedChildren.length; fixedIndex++) {
+          layoutFixedNode(layoutContext, layoutContext.fixedChildren[fixedIndex], fixedDirection);
+        }
+        layoutContext.fixedChildren.length = 0;
+      }
+
+      setCachedLayout(node);
     }
+  }
+
+  function layoutNode(
+    node: ComputedLayoutNode,
+    parentMaxWidth?: number,
+    parentDirection?: LayoutDirection
+  ): ComputedLayoutNode {
+    const layoutContext = {rootNode: node, fixedChildren: []};
+    layoutNodeWithContext(layoutContext, node, parentMaxWidth, parentDirection);
+    normalizeAbsoluteContainingBlocks(layoutContext, node, parentDirection, node, 0, 0);
+    return node;
   }
 
   return {
@@ -1369,23 +1812,33 @@ const layoutEngine: LayoutEngine = (function (): LayoutEngine {
 
 export const computeLayoutEngine: LayoutEngine = layoutEngine;
 
-function hydrateAutomaticTextMeasures(node: LayoutNode): void {
-  ensureTextMeasure(node.style);
+function hydrateAutomaticTextMeasures(node: ComputedLayoutNode): void {
+  ensureTextMeasure(node.style as LayoutStyle & {measure?: TextMeasure});
   node.children.forEach(hydrateAutomaticTextMeasures);
 }
 
-export function fillNodes(node: LayoutNode): LayoutNode {
+export function fillNodes(node: LayoutNode): ComputedLayoutNode {
   return computeLayoutEngine.fillNodes(node);
 }
 
-export function layoutNodeImpl(node: LayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection): void {
-  computeLayoutEngine.layoutNodeImpl(node, parentMaxWidth, parentDirection);
+export function layoutNodeImpl(
+  node: LayoutNode,
+  parentMaxWidth?: number,
+  parentDirection?: LayoutDirection
+): ComputedLayoutNode {
+  const computedNode = computeLayoutEngine.fillNodes(node);
+  computeLayoutEngine.layoutNodeImpl({rootNode: computedNode, fixedChildren: []}, computedNode, parentMaxWidth, parentDirection);
+  return computedNode;
 }
 
-export function computeLayout(node: LayoutNode, parentMaxWidth?: number, parentDirection?: LayoutDirection): void {
-  computeLayoutEngine.fillNodes(node);
-  hydrateAutomaticTextMeasures(node);
-  computeLayoutEngine.computeLayout(node, parentMaxWidth, parentDirection);
+export function computeLayout(
+  node: LayoutNode,
+  parentMaxWidth?: number,
+  parentDirection?: LayoutDirection
+): ComputedLayoutNode {
+  const computedNode = computeLayoutEngine.fillNodes(node);
+  hydrateAutomaticTextMeasures(computedNode);
+  return computeLayoutEngine.computeLayout(computedNode, parentMaxWidth, parentDirection);
 }
 
 export default computeLayout;

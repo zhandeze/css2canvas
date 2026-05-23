@@ -85,7 +85,7 @@ Name | Value
 width, height | positive number
 minWidth, minHeight | positive number
 maxWidth, maxHeight | positive number
-left, right, top, bottom | number
+left, right, top, bottom, inset | number
 margin, marginLeft, marginRight, marginTop, marginBottom | number
 padding, paddingLeft, paddingRight, paddingTop, paddingBottom | positive number
 borderWidth, borderLeftWidth, borderRightWidth, borderTopWidth, borderBottomWidth | positive number
@@ -94,9 +94,14 @@ justifyContent | 'flex-start', 'center', 'flex-end', 'space-between', 'space-aro
 alignItems, alignSelf | 'flex-start', 'center', 'flex-end', 'stretch'
 flex | positive number
 flexWrap | 'wrap', 'nowrap'
-position | 'relative', 'absolute'
+position | 'static', 'relative', 'absolute', 'fixed'
+overflow, overflowX, overflowY | 'hidden'
+zIndex | number
 
 - `inherit` value is not implemented because it's a way to disambiguate between multiple colliding rules. This should be done in a pre-processing step, not in the actual layout algorithm.
+- `inset` is a shorthand for `top`, `right`, `bottom`, `left`.
+- `static` ignores offsets and `zIndex`; `relative` keeps normal flow and applies offsets; `absolute` and `fixed` are out of flow.
+- `overflow: hidden` only computes clip bounds (`overflowClip`); it does not change element size.
 
 
 
@@ -107,7 +112,7 @@ Since we are only using flexbox, we can use defaults that are much more sensible
 ```css
 div, span {
   box-sizing: border-box;
-  position: relative;
+  position: static;
 
   display: flex;
   flex-direction: column;
@@ -124,7 +129,7 @@ div, span {
 - `box-sizing: border-box` is the most convenient way to express the relation between `width` and `borderWidth`.
 - Everything is `display: flex` by default. All the behaviors of `block` and `inline-block` can be expressed in term of `flex` but not the opposite.
 - All the flex elements are oriented from top to bottom, left to right and do not shrink. This is how things are laid out using the default CSS settings and what you'd expect.
-- Everything is `position: relative`. This makes `position: absolute` target the direct parent and not some parent which is either `relative` or `absolute`. If you want to position an element relative to something else, you should move it in the DOM instead of relying of CSS. It also makes `top, left, right, bottom` do something when not specifying `position: absolute`.
+- Everything is `position: static` by default.
 
 Native Usage Notes
 ------------------

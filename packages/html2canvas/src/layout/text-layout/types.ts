@@ -20,7 +20,6 @@ export interface TextStyleInput {
   textDecorationColor?: string;
   color?: string;
   direction?: TextDirection;
-  [key: string]: unknown;
 }
 
 export interface NormalizedTextStyle {

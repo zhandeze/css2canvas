@@ -4,13 +4,40 @@ import type {LayoutNode} from '../css-layout';
 const createNode = (style: LayoutNode['style'], children: LayoutNode[] = []): LayoutNode => ({
   style,
   children,
-  layout: undefined,
+  layout: undefined as never,
   lastLayout: undefined,
   nextAbsoluteChild: null,
   nextFlexChild: null
 });
 
 describe('computeLayout', () => {
+  it('returns the same node tree after mutating layout in place', () => {
+    const nodeTree: LayoutNode = {
+      style: {
+        padding: 10
+      },
+      children: [],
+      layout: undefined as never,
+      lastLayout: undefined,
+      nextAbsoluteChild: null,
+      nextFlexChild: null
+    };
+
+    const result = computeLayout(nodeTree, 100, 'ltr');
+
+    expect(result).toBe(nodeTree);
+    expect(result.layout).toMatchObject({
+      width: 20,
+      height: 20,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      direction: 'ltr',
+      position: 'static'
+    });
+  });
+
   it('matches the documented padding and stretch example', () => {
     const nodeTree: LayoutNode = {
       style: {
@@ -23,13 +50,13 @@ describe('computeLayout', () => {
             alignSelf: 'stretch'
           },
           children: [],
-          layout: undefined,
+          layout: undefined as never,
           lastLayout: undefined,
           nextAbsoluteChild: null,
           nextFlexChild: null
         }
       ],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -37,7 +64,7 @@ describe('computeLayout', () => {
 
     computeLayout(nodeTree);
 
-    expect(nodeTree.layout).toEqual({
+    expect(nodeTree.layout).toMatchObject({
       width: 120,
       height: 120,
       top: 0,
@@ -47,7 +74,7 @@ describe('computeLayout', () => {
       direction: 'ltr'
     });
 
-    expect(nodeTree.children[0].layout).toEqual({
+    expect(nodeTree.children[0].layout).toMatchObject({
       width: 20,
       height: 20,
       top: 50,
@@ -73,13 +100,13 @@ describe('computeLayout', () => {
             }
           },
           children: [],
-          layout: undefined,
+          layout: undefined as never,
           lastLayout: undefined,
           nextAbsoluteChild: null,
           nextFlexChild: null
         }
       ],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -88,7 +115,7 @@ describe('computeLayout', () => {
     computeLayout(nodeTree, 200, 'ltr');
 
     expect(calls).toEqual([180]);
-    expect(nodeTree.children[0].layout).toEqual({
+    expect(nodeTree.children[0].layout).toMatchObject({
       width: 40,
       height: 30,
       top: 10,
@@ -120,13 +147,13 @@ describe('computeLayout', () => {
             }
           },
           children: [],
-          layout: undefined,
+          layout: undefined as never,
           lastLayout: undefined,
           nextAbsoluteChild: null,
           nextFlexChild: null
         }
       ],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -134,7 +161,7 @@ describe('computeLayout', () => {
 
     computeLayout(nodeTree, 200, 'ltr');
 
-    expect(nodeTree.layout).toEqual({
+    expect(nodeTree.layout).toMatchObject({
       width: 80,
       height: 50,
       top: 0,
@@ -303,7 +330,7 @@ describe('computeLayout', () => {
 
     computeLayout(nodeTree, 200, 'ltr');
 
-    expect(nodeTree.layout).toEqual({
+    expect(nodeTree.layout).toMatchObject({
       width: 100,
       height: 40,
       top: 0,

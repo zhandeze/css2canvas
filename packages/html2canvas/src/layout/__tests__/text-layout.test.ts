@@ -58,13 +58,13 @@ describe('computeLayout text layout', () => {
             textDecorationColor: 'red'
           },
           children: [],
-          layout: undefined,
+          layout: undefined as never,
           lastLayout: undefined,
           nextAbsoluteChild: null,
           nextFlexChild: null
         }
       ],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -72,7 +72,7 @@ describe('computeLayout text layout', () => {
 
     computeLayout(nodeTree, 80, 'ltr');
 
-    expect(nodeTree.children[0].layout).toEqual({
+    expect(nodeTree.children[0].layout).toMatchObject({
       width: 60,
       height: 40,
       top: 10,
@@ -96,7 +96,7 @@ describe('computeLayout text layout', () => {
         lineHeight: 20
       },
       children: [],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -107,7 +107,7 @@ describe('computeLayout text layout', () => {
         padding: 10
       },
       children: [child],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -142,13 +142,13 @@ describe('computeLayout text layout', () => {
             }
           },
           children: [],
-          layout: undefined,
+          layout: undefined as never,
           lastLayout: undefined,
           nextAbsoluteChild: null,
           nextFlexChild: null
         }
       ],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -170,7 +170,7 @@ describe('computeLayout text layout', () => {
         fontSize: 16
       },
       children: [],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -181,7 +181,7 @@ describe('computeLayout text layout', () => {
         padding: 10
       },
       children: [child],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -204,7 +204,7 @@ describe('computeLayout text layout', () => {
         lineHeight: 1
       },
       children: [],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -215,7 +215,7 @@ describe('computeLayout text layout', () => {
         padding: 10
       },
       children: [child],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -238,7 +238,7 @@ describe('computeLayout text layout', () => {
         lineHeight: 1.2
       },
       children: [],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -249,7 +249,7 @@ describe('computeLayout text layout', () => {
         padding: 10
       },
       children: [child],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -272,7 +272,7 @@ describe('computeLayout text layout', () => {
         lineHeight: 20
       },
       children: [],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null
@@ -283,7 +283,7 @@ describe('computeLayout text layout', () => {
         padding: 10
       },
       children: [child],
-      layout: undefined,
+      layout: undefined as never,
       lastLayout: undefined,
       nextAbsoluteChild: null,
       nextFlexChild: null

@@ -16,7 +16,7 @@ const createNode = (
 ): LayoutMiniAppNode => ({
   style,
   children,
-  layout: undefined,
+  layout: undefined as never,
   lastLayout: undefined,
   nextAbsoluteChild: null,
   nextFlexChild: null,
