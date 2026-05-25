@@ -3,7 +3,7 @@ import html2canvas from '../src/index';
 import {CacheStorage} from '../src/core/cache-storage';
 import {computeLayout} from '../src/layout';
 import {renderMiniAppCanvas} from '../src/miniapp/canvas-renderer-miniapp';
-import {layoutToMiniAppRenderInput} from '../src/miniapp/layout-to-miniapp';
+import {layoutToMiniAppRenderInput} from '../src/miniapp/render-input';
 import {FontMetrics} from '../src/render/font-metrics';
 import type {MiniAppLayoutFixture} from './miniapp-layout-compare-fixture';
 import {miniappLayoutCompareFixtures} from './miniapp-layout-compare-fixture';
@@ -119,9 +119,12 @@ const renderMiniAppFixture = async (fixture: MiniAppLayoutFixture) => {
 
   const width = Math.ceil(root.layout.width);
   const height = Math.ceil(root.layout.height);
-  const input = layoutToMiniAppRenderInput({
+  const baseInput = layoutToMiniAppRenderInput(root as never);
+  const input = {
+    ...baseInput,
     selector: fixture.selector,
     renderOptions: {
+      ...baseInput.renderOptions,
       backgroundColor: null,
       scale: fixture.scale,
       x: 0,
@@ -138,9 +141,8 @@ const renderMiniAppFixture = async (fixture: MiniAppLayoutFixture) => {
     environment: {
       userAgent: window.navigator.userAgent,
       useMiterTextStroke: 'chrome' in window
-    },
-    root
-  });
+    }
+  };
 
   const canvas = document.createElement('canvas');
   canvas.width = Math.floor(width * fixture.scale);
@@ -169,9 +171,12 @@ export const registerMiniAppLayoutKarmaTests = (): void => {
 
         const width = Math.ceil(root.layout.width ?? 0);
         const height = Math.ceil(root.layout.height ?? 0);
-        const input = layoutToMiniAppRenderInput({
+        const baseInput = layoutToMiniAppRenderInput(root as never);
+        const input = {
+          ...baseInput,
           selector: fixture.selector,
           renderOptions: {
+            ...baseInput.renderOptions,
             backgroundColor: null,
             scale: fixture.scale,
             x: 0,
@@ -188,9 +193,8 @@ export const registerMiniAppLayoutKarmaTests = (): void => {
           environment: {
             userAgent: window.navigator.userAgent,
             useMiterTextStroke: 'chrome' in window
-          },
-          root
-        });
+          }
+        };
 
         expect(input.root.bounds.width).to.equal(408);
         expect(input.root.bounds.left).to.equal(0);

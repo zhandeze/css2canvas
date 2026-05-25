@@ -57,10 +57,6 @@ export interface ExtractedRenderInputEntry {
       scale?: number;
       width: number;
       height: number;
-      canvas?: {
-        width: number;
-        height: number;
-      };
     };
   };
 }

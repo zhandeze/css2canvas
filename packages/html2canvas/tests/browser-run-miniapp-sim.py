@@ -13,16 +13,6 @@ examples = [
         "url": "http://127.0.0.1:8090/examples/demo2.html",
         "selector": "body",
     },
-    {
-        "name": "existing_canvas",
-        "url": "http://127.0.0.1:8090/examples/existing_canvas.html",
-        "selector": "#content",
-        "before": """
-const button = document.querySelector('button');
-if (!button) throw new Error('button missing');
-button.click();
-""",
-    },
 ]
 
 results = []
@@ -56,20 +46,10 @@ script_template = """
     selector: SELECTOR_VALUE,
     scale: entry.input.renderOptions.scale
   };
-
-  if (EXAMPLE_NAME === 'existing_canvas') {
-    options.canvasSelector = 'canvas';
-  }
-
-  const expectedSize = entry.input.renderOptions.canvas
-    ? {
-        width: entry.input.renderOptions.canvas.width,
-        height: entry.input.renderOptions.canvas.height
-      }
-    : {
-        width: Math.floor(entry.input.renderOptions.width * entry.input.renderOptions.scale),
-        height: Math.floor(entry.input.renderOptions.height * entry.input.renderOptions.scale)
-      };
+  const expectedSize = {
+    width: Math.floor(entry.input.renderOptions.width * entry.input.renderOptions.scale),
+    height: Math.floor(entry.input.renderOptions.height * entry.input.renderOptions.scale)
+  };
 
   let reference = null;
   const referenceAttempts = [];
@@ -164,16 +144,8 @@ script_template = """
 
   const input = entry.input;
   const miniCanvas = document.createElement('canvas');
-  const existingCanvasSnapshot = input.renderOptions.canvas;
-  if (existingCanvasSnapshot) {
-    miniCanvas.width = existingCanvasSnapshot.width;
-    miniCanvas.height = existingCanvasSnapshot.height;
-    const img = await loadImage(existingCanvasSnapshot.dataURL);
-    miniCanvas.getContext('2d').drawImage(img, 0, 0);
-  } else {
-    miniCanvas.width = Math.floor(input.renderOptions.width * input.renderOptions.scale);
-    miniCanvas.height = Math.floor(input.renderOptions.height * input.renderOptions.scale);
-  }
+  miniCanvas.width = Math.floor(input.renderOptions.width * input.renderOptions.scale);
+  miniCanvas.height = Math.floor(input.renderOptions.height * input.renderOptions.scale);
   miniCanvas.style.width = String(input.renderOptions.width) + 'px';
   miniCanvas.style.height = String(input.renderOptions.height) + 'px';
 

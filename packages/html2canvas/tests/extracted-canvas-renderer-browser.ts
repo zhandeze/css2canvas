@@ -12,7 +12,7 @@ import {
 import {Context} from '../src/core/context';
 import {ElementContainer} from '../src/dom/element-container';
 import {TextBounds} from '../src/css/layout/text-bounds';
-import {layoutToMiniAppRenderInput} from '../src/miniapp/layout-to-miniapp';
+import {layoutToMiniAppRenderInput} from '../src/miniapp/render-input';
 import {renderMiniAppCanvas} from '../src/miniapp/canvas-renderer-miniapp';
 import {computeLayout, measureTextBlock} from '../src/layout';
 
@@ -83,12 +83,6 @@ type SerializedTextNode = {
   textBounds: SerializedTextBounds[];
 };
 
-type SerializedCanvasSnapshot = {
-  width: number;
-  height: number;
-  dataURL: string;
-};
-
 type SerializedElementContainer = {
   containerType: string;
   flags: number;
@@ -109,7 +103,6 @@ type SerializedElementContainer = {
   height?: number;
   backgroundColor?: number | null;
   tree?: SerializedElementContainer;
-  canvasData?: SerializedCanvasSnapshot;
 };
 
 type SerializedRenderInput = {
@@ -121,7 +114,6 @@ type SerializedRenderInput = {
     y: number;
     width: number;
     height: number;
-    canvas?: SerializedCanvasSnapshot;
   };
   windowBounds: SerializedBounds;
   environment: {
@@ -327,12 +319,6 @@ const serializeTextBounds = (textBounds: TextBounds): SerializedTextBounds => ({
   bounds: serializeBounds(textBounds.bounds)
 });
 
-const serializeCanvasSnapshot = (canvas: HTMLCanvasElement): SerializedCanvasSnapshot => ({
-  width: canvas.width,
-  height: canvas.height,
-  dataURL: canvas.toDataURL()
-});
-
 const serializeContainer = (container: ElementContainer): SerializedElementContainer => {
   const containerType = normalizeMiniAppContainerType(container.containerType);
   const serialized: SerializedElementContainer = {
@@ -361,7 +347,6 @@ const serializeContainer = (container: ElementContainer): SerializedElementConta
     height?: number;
     backgroundColor?: number | null;
     tree?: ElementContainer;
-    canvas?: HTMLCanvasElement;
   };
 
   if (typeof containerData.src === 'string') {
@@ -403,9 +388,6 @@ const serializeContainer = (container: ElementContainer): SerializedElementConta
   if (containerType === 'iframe' && containerData.tree) {
     serialized.tree = serializeContainer(containerData.tree);
   }
-  if (containerType === 'canvas' && containerData.canvas) {
-    serialized.canvasData = serializeCanvasSnapshot(containerData.canvas);
-  }
 
   return serialized;
 };
@@ -432,8 +414,7 @@ const exportRenderInput = async (rawOptions: string | CompareOptions): Promise<S
       x: prepared.renderOptions.x,
       y: prepared.renderOptions.y,
       width: prepared.renderOptions.width,
-      height: prepared.renderOptions.height,
-      canvas: prepared.renderOptions.canvas ? serializeCanvasSnapshot(prepared.renderOptions.canvas) : undefined
+      height: prepared.renderOptions.height
     },
     windowBounds: serializeBounds(prepared.context.windowBounds),
     environment: {
@@ -451,13 +432,17 @@ const renderMiniAppLayoutCompare = async (rawOptions: string | CompareOptions): 
   const compare = await renderOriginalAndExtracted(rawOptions);
   const layoutRoot = buildLayoutFixture(input);
   computeLayout(layoutRoot as never, input.renderOptions.width, 'ltr');
-  const miniInput = layoutToMiniAppRenderInput({
+  const baseInput = layoutToMiniAppRenderInput(layoutRoot as never);
+  const miniInput = {
+    ...baseInput,
     selector: input.selector,
-    renderOptions: input.renderOptions,
+    renderOptions: {
+      ...baseInput.renderOptions,
+      ...input.renderOptions
+    },
     windowBounds: input.windowBounds,
-    environment: input.environment,
-    root: layoutRoot as never
-  });
+    environment: input.environment
+  };
   const canvas = document.createElement('canvas');
   canvas.width = Math.floor(input.renderOptions.width * input.renderOptions.scale);
   canvas.height = Math.floor(input.renderOptions.height * input.renderOptions.scale);

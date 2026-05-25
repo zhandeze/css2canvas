@@ -1,4 +1,15 @@
-import type {LayoutMiniAppNode} from '../src/miniapp/layout-to-miniapp';
+import type {ComputedLayoutNode} from '../src/layout';
+
+type FixtureStyle = ComputedLayoutNode['style'] & {
+  backgroundColor?: string;
+  borderColor?: string;
+};
+
+type FixtureNode = ComputedLayoutNode &
+  Record<string, unknown> & {
+    style: FixtureStyle;
+    children: FixtureNode[];
+  };
 
 export interface MiniAppLayoutFixture {
   name: string;
@@ -6,14 +17,14 @@ export interface MiniAppLayoutFixture {
   html: string;
   css: string;
   scale: number;
-  createLayoutRoot(): LayoutMiniAppNode;
+  createLayoutRoot(): ComputedLayoutNode;
 }
 
 const createNode = (
-  style: Record<string, unknown>,
-  children: LayoutMiniAppNode[] = [],
-  extra: Partial<LayoutMiniAppNode> = {}
-): LayoutMiniAppNode => ({
+  style: FixtureStyle,
+  children: FixtureNode[] = [],
+  extra: Partial<FixtureNode> = {}
+): FixtureNode => ({
   style,
   children,
   layout: undefined as never,

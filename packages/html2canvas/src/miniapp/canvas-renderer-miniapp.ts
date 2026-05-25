@@ -28,20 +28,17 @@ import {transformPath, Path} from '../render/path';
 import {getBackgroundValueForIndex} from '../render/background';
 import {isBezierCurve} from '../render/bezier-curve';
 import {
+  DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE,
+  DEFAULT_MINIAPP_USER_AGENT,
   MiniAppRenderInput,
   SerializedImageContainer,
-  SerializedListItemContainer,
   SerializedMiniAppContainer,
-  SerializedOrderedListContainer,
   SerializedStyles,
   SerializedTextNode
 } from './render-input';
 
 const MASK_OFFSET = 10000;
 const NATIVE_MINIAPP_TEXT_BASELINE_OFFSET = 3.25;
-const DEFAULT_MINIAPP_USER_AGENT =
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36';
-const DEFAULT_MINIAPP_USE_MITER_TEXT_STROKE = true;
 const FONT_METRICS_SAMPLE_TEXT = 'Hidden Text';
 
 type RevivedStyles = ElementContainerRenderStyle & {
@@ -80,22 +77,7 @@ type RevivedImageContainer = RevivedBaseContainer & {
   intrinsicHeight: number;
 };
 
-type RevivedListItemContainer = RevivedBaseContainer & {
-  containerType: 'li';
-  value: number;
-};
-
-type RevivedOrderedListContainer = RevivedBaseContainer & {
-  containerType: 'ol';
-  start: number;
-  reversed: boolean;
-};
-
-type RevivedContainer =
-  | RevivedElementContainer
-  | RevivedImageContainer
-  | RevivedListItemContainer
-  | RevivedOrderedListContainer;
+type RevivedContainer = RevivedElementContainer | RevivedImageContainer;
 
 export interface MiniAppCanvasLike {
   width: number;
@@ -198,27 +180,10 @@ const reviveImageContainer = (container: SerializedImageContainer): RevivedImage
   ...reviveBaseContainer(container)
 });
 
-const reviveListItemContainer = (container: SerializedListItemContainer): RevivedListItemContainer => ({
-  containerType: 'li',
-  value: typeof container.value === 'number' ? container.value : 0,
-  ...reviveBaseContainer(container)
-});
-
-const reviveOrderedListContainer = (container: SerializedOrderedListContainer): RevivedOrderedListContainer => ({
-  containerType: 'ol',
-  start: container.start,
-  reversed: container.reversed,
-  ...reviveBaseContainer(container)
-});
-
 const reviveContainer = (container: SerializedMiniAppContainer): RevivedContainer => {
   switch (container.containerType) {
     case 'image':
       return reviveImageContainer(container);
-    case 'li':
-      return reviveListItemContainer(container);
-    case 'ol':
-      return reviveOrderedListContainer(container);
     case 'element':
     default:
       return {
@@ -398,7 +363,6 @@ export const renderMiniAppCanvas = async (
   return options.canvas;
 };
 
-export {serializeMiniAppRenderInput} from './render-input';
 
 const preloadImages = async (container: RevivedContainer, cache: MiniAppCache): Promise<void> => {
   if (container.containerType === 'image') {

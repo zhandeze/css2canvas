@@ -90,17 +90,6 @@ const exampleDefinitions: ExampleDefinition[] = [
     name: 'demo2',
     path: '/examples/demo2.html',
     selector: 'body'
-  },
-  {
-    name: 'existing_canvas',
-    path: '/examples/existing_canvas.html',
-    selector: '#content',
-    canvasSelector: 'canvas',
-    before: `
-const button = document.querySelector('button');
-if (!button) throw new Error('button missing');
-button.click();
-`
   }
 ];
 
@@ -319,12 +308,10 @@ const buildBrowserHarnessScript = (
   url: string
 ): string => {
   const beforeHook = example.before ? `${example.before}\n` : '';
-  const expectedWidth = exampleEntry.input.renderOptions.canvas
-    ? exampleEntry.input.renderOptions.canvas.width
-    : Math.floor(exampleEntry.input.renderOptions.width * (exampleEntry.input.renderOptions.scale || 1));
-  const expectedHeight = exampleEntry.input.renderOptions.canvas
-    ? exampleEntry.input.renderOptions.canvas.height
-    : Math.floor(exampleEntry.input.renderOptions.height * (exampleEntry.input.renderOptions.scale || 1));
+  const expectedWidth = Math.floor(exampleEntry.input.renderOptions.width * (exampleEntry.input.renderOptions.scale || 1));
+  const expectedHeight = Math.floor(
+    exampleEntry.input.renderOptions.height * (exampleEntry.input.renderOptions.scale || 1)
+  );
   return `
 import json
 

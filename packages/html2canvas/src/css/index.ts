@@ -149,6 +149,7 @@ export interface MiniAppSerializedStyleDeclaration {
   visibility: ReturnType<typeof visibility.parse>;
   webkitTextStrokeColor: Color;
   webkitTextStrokeWidth: number;
+  wordBreak: ReturnType<typeof wordBreak.parse>;
   zIndex: ReturnType<typeof zIndex.parse>;
 }
 

@@ -245,13 +245,6 @@ Page({
     this.clearCanvas(this.measureCanvas);
     (this.tempCanvases || []).forEach((canvas) => this.clearCanvas(canvas));
 
-    const existingCanvasSnapshot = input.renderOptions.canvas;
-    if (existingCanvasSnapshot && existingCanvasSnapshot.dataURL) {
-      const image = await this.loadImage(existingCanvasSnapshot.dataURL);
-      const ctx = this.displayCanvas.getContext('2d');
-      ctx.drawImage(image, 0, 0);
-    }
-
     await renderMiniAppCanvas(input, {
       canvas: this.displayCanvas,
       createCanvas: () => this.createCanvas(),
